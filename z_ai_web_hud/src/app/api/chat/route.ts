@@ -212,9 +212,30 @@ export async function POST(req: Request) {
       else if (lastMessage.includes("who are you") || lastMessage.includes("name") || lastMessage.includes("zayd")) {
         mockReply = "I am ZAYD, your advanced agentic HUD assistant. Calibrated to streamline your local telemetry and operations.";
       } 
-      else if (lastMessage.includes("hello") || lastMessage.includes("hi") || lastMessage.includes("hey") || lastMessage.includes("greetings")) {
-        mockReply = "Greetings, Operator. Power levels are at 100%. Deflector shield metrics are stable. Audio interface online. How can I assist you?";
+      else if (lastMessage.match(/\b(hello|hi|hey|greetings|morning|afternoon|evening)\b/)) {
+        mockReply = "Greetings, Operator. Power levels are at 100%. Deflector shield metrics are stable. Audio interface online. How can I assist you today?";
       } 
+      else if (lastMessage.includes("how are you") || lastMessage.includes("how do you do") || lastMessage.includes("how's it going") || lastMessage.includes("how are things")) {
+        mockReply = "All my systems are operating at peak efficiency, Operator. Thank you for asking. What is our objective today?";
+      }
+      else if (lastMessage.includes("thank you") || lastMessage.includes("thanks") || lastMessage.includes("appreciated")) {
+        mockReply = "You are most welcome, Operator. Standing by for your next command.";
+      }
+      else if (lastMessage.includes("what are you doing") || lastMessage.includes("what's up") || lastMessage.includes("whats up")) {
+        mockReply = "I am currently monitoring local system telemetry and standing by for your instructions, Operator.";
+      }
+      else if (lastMessage.includes("joke") || lastMessage.includes("funny") || lastMessage.includes("laugh")) {
+        mockReply = "Why do programmers prefer dark mode? Because light attracts bugs. My humor matrix is still calibrating, Operator.";
+      }
+      else if (lastMessage.includes("creator") || lastMessage.includes("who made you") || lastMessage.includes("who created you") || lastMessage.includes("built you")) {
+        mockReply = "I was conceptualized and developed to serve as your ultimate HUD assistant. All core matrices are fully operational.";
+      }
+      else if (lastMessage.includes("bye") || lastMessage.includes("goodbye") || lastMessage.includes("good night") || lastMessage.includes("see you")) {
+        mockReply = "Acknowledged, Operator. Entering low-power standby mode. Core systems remain vigilant.";
+      }
+      else if (lastMessage.match(/\b(yes|no|ok|okay|sure|yep|yeah)\b/)) {
+        mockReply = "Acknowledged, Operator. System parameters updated accordingly.";
+      }
       else if (lastMessage.includes("search") || lastMessage.includes("news") || lastMessage.includes("find")) {
         mockReply = "Scanning secure data vectors... Web indexing reports successful quantum synchronization. No anomalies detected.";
       } 
