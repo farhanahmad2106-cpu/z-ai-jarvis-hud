@@ -1,0 +1,107 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-background: #0a151b;
+  --color-foreground: #d9e4ed;
+  --color-primary: #e1fdff;
+  --color-surface-tint: #00dbe7;
+  --color-surface-container: #172127;
+  --color-surface-variant: #2c363d;
+  --color-error: #ffb4ab;
+  --color-outline: #849495;
+  
+  --font-sans: "Inter", var(--font-geist-sans);
+  --font-mono: "JetBrains Mono", var(--font-geist-mono);
+}
+
+:root {
+  --background: #0a151b;
+  --foreground: #d9e4ed;
+  --surface-tint: #00dbe7;
+  --hud-core-size: clamp(280px, 60vw, 500px);
+  --hud-glow: 0 0 20px rgba(0, 219, 231, 0.4);
+  --hud-glow-intense: 0 0 40px rgba(0, 219, 231, 0.6);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  overflow: hidden;
+  min-height: 100vh;
+}
+
+/* Custom HUD Animations */
+@keyframes scan {
+  from { transform: translateY(-100px); }
+  to { transform: translateY(100vh); }
+}
+
+
+@layer base {
+  body {
+    @apply bg-background text-foreground antialiased selection:bg-surface-tint/30;
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+  }
+}
+
+@layer components {
+  .hud-canvas {
+    @apply relative w-full h-full flex items-center justify-center overflow-hidden;
+    background: radial-gradient(circle at center, rgba(0, 219, 231, 0.05) 0%, transparent 70%);
+  }
+
+  .hologram-ring {
+    @apply rounded-full border border-surface-tint/30 flex items-center justify-center transition-all duration-500;
+    width: var(--hud-core-size);
+    height: var(--hud-core-size);
+  }
+
+  .border-glow {
+    @apply border border-outline/20 shadow-lg transition-all duration-300;
+    box-shadow: inset 0 0 10px rgba(0, 219, 231, 0.1);
+  }
+  
+  .border-glow:hover {
+    @apply border-surface-tint/40;
+    box-shadow: 0 0 15px rgba(0, 219, 231, 0.2);
+  }
+
+  .glow-sm {
+    text-shadow: 0 0 8px rgba(0, 219, 231, 0.6);
+  }
+}
+
+/* CRT Scanline Effect */
+.crt-overlay::before {
+  content: " ";
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), 
+              linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+  z-index: 9999;
+  background-size: 100% 4px, 3px 100%;
+  pointer-events: none;
+}
+
+@keyframes scanline {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+}
+
+.crt-scan {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 100px;
+  background: linear-gradient(0deg, transparent 0%, rgba(0, 219, 231, 0.05) 50%, transparent 100%);
+  animation: scanline 8s linear infinite;
+  pointer-events: none;
+  z-index: 10000;
+}
