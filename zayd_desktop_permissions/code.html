@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ZAYD_OS | Permissions Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;family=JetBrains+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            background-color: #0a151b;
+            background-image: linear-gradient(rgba(0, 219, 231, 0.03) 1px, transparent 1px);
+            background-size: 100% 4px;
+            overflow-x: hidden;
+        }
+        .glow-sm { text-shadow: 0 0 8px rgba(0, 219, 231, 0.6); }
+        .hud-border { border: 1px solid rgba(0, 219, 231, 0.3); }
+        .hud-border-active { border: 1px solid #00dbe7; box-shadow: inset 0 0 8px rgba(0, 219, 231, 0.2); }
+        .glass-surface { backdrop-filter: blur(20px); }
+        .scan-line {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: rgba(0, 219, 231, 0.05);
+            z-index: 100;
+            pointer-events: none;
+            animation: scan 8s linear infinite;
+        }
+        @keyframes scan {
+            from { top: 0; }
+            to { top: 100%; }
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#e1fdff",
+                        "primary-fixed": "#74f5ff",
+                        "on-primary-fixed": "#002022",
+                        "surface-container-high": "#212b32",
+                        "inverse-surface": "#d9e4ed",
+                        "surface-bright": "#303a42",
+                        "on-secondary": "#002d6f",
+                        "tertiary-fixed-dim": "#ffb3ac",
+                        "tertiary-container": "#ffd0cb",
+                        "secondary-container": "#568dff",
+                        "on-secondary-fixed-variant": "#00429c",
+                        "inverse-on-surface": "#283239",
+                        "surface-variant": "#2c363d",
+                        "surface-container-highest": "#2c363d",
+                        "primary-fixed-dim": "#00dbe7",
+                        "on-tertiary-fixed": "#410003",
+                        "on-error": "#690005",
+                        "error": "#ffb4ab",
+                        "error-container": "#93000a",
+                        "secondary-fixed": "#d9e2ff",
+                        "on-tertiary-container": "#c20018",
+                        "outline": "#849495",
+                        "surface-container": "#172127",
+                        "on-primary-container": "#006a71",
+                        "on-surface-variant": "#b9cacb",
+                        "tertiary": "#fff5f4",
+                        "primary-container": "#00f2ff",
+                        "on-primary": "#00363a",
+                        "background": "#0a151b",
+                        "surface-tint": "#00dbe7",
+                        "surface-dim": "#0a151b",
+                        "on-background": "#d9e4ed",
+                        "on-surface": "#d9e4ed",
+                        "outline-variant": "#3a494b",
+                        "on-tertiary-fixed-variant": "#930010",
+                        "secondary": "#b0c6ff",
+                        "on-secondary-container": "#002661",
+                        "on-error-container": "#ffdad6",
+                        "surface-container-lowest": "#060f16",
+                        "on-secondary-fixed": "#001945",
+                        "secondary-fixed-dim": "#b0c6ff",
+                        "inverse-primary": "#00696f",
+                        "on-primary-fixed-variant": "#004f54",
+                        "on-tertiary": "#680008",
+                        "surface-container-low": "#131d23",
+                        "surface": "#0a151b",
+                        "tertiary-fixed": "#ffdad6"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "terminal-indent": "12px",
+                        "container-padding": "24px",
+                        "margin-safe": "32px",
+                        "gutter": "16px",
+                        "unit": "4px"
+                    },
+                    "fontFamily": {
+                        "label-caps": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "data-mono": ["JetBrains Mono"],
+                        "headline-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-caps": ["11px", {"lineHeight": "16px", "letterSpacing": "0.2em", "fontWeight": "800"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "data-mono": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "0.1em", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="text-on-surface selection:bg-primary-fixed-dim selection:text-on-primary-fixed">
+<div class="scan-line"></div>
+<!-- TopNavBar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-container-padding h-16 bg-surface-container-low/80 backdrop-blur-xl border-b border-primary/30 shadow-[0_0_15px_rgba(0,219,231,0.1)] transition-all duration-300 ease-in-out">
+<div class="font-data-mono text-headline-md text-primary-fixed glow-sm">ZAYD_OS_v2.0</div>
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-on-surface-variant font-label-caps hover:text-primary-fixed hover:drop-shadow-[0_0_5px_#00dbe7] transition-all duration-300" href="#">CORE</a>
+<a class="text-primary-fixed-dim border-b-2 border-primary-fixed-dim pb-1 font-label-caps hover:text-primary-fixed hover:drop-shadow-[0_0_5px_#00dbe7] transition-all duration-300" href="#">MODULES</a>
+<a class="text-on-surface-variant font-label-caps hover:text-primary-fixed hover:drop-shadow-[0_0_5px_#00dbe7] transition-all duration-300" href="#">NEURAL</a>
+<a class="text-on-surface-variant font-label-caps hover:text-primary-fixed hover:drop-shadow-[0_0_5px_#00dbe7] transition-all duration-300" href="#">LOGS</a>
+</nav>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-primary-fixed-dim hover:drop-shadow-[0_0_5px_#00dbe7] transition-all duration-300">security</button>
+<button class="material-symbols-outlined text-primary-fixed-dim hover:drop-shadow-[0_0_5px_#00dbe7] transition-all duration-300">bolt</button>
+<button class="material-symbols-outlined text-primary-fixed-dim hover:drop-shadow-[0_0_5px_#00dbe7] transition-all duration-300">settings</button>
+</div>
+</header>
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-16 bottom-0 w-64 z-40 flex flex-col pt-gutter bg-surface-container-lowest/90 backdrop-blur-2xl border-r border-primary/20 transition-all duration-300">
+<div class="px-6 py-4 mb-6">
+<div class="text-label-caps font-bold text-primary">ZAYD_CORE</div>
+<div class="font-data-mono text-body-sm opacity-60">AI_STATUS: ACTIVE</div>
+</div>
+<nav class="flex-1 space-y-1">
+<div class="flex items-center gap-4 bg-primary/10 text-primary-fixed border-l-4 border-primary-fixed p-terminal-indent font-data-mono text-body-sm cursor-pointer hover:bg-surface-container-high transition-all">
+<span class="material-symbols-outlined">analytics</span>
+<span>DIAGNOSTICS</span>
+</div>
+<div class="flex items-center gap-4 text-on-surface-variant p-terminal-indent font-data-mono text-body-sm cursor-pointer hover:bg-surface-container-high hover:text-primary-fixed-dim transition-all">
+<span class="material-symbols-outlined">terminal</span>
+<span>SYSTEM_LOGS</span>
+</div>
+<div class="flex items-center gap-4 text-on-surface-variant p-terminal-indent font-data-mono text-body-sm cursor-pointer hover:bg-surface-container-high hover:text-primary-fixed-dim transition-all">
+<span class="material-symbols-outlined">router</span>
+<span>NETWORK</span>
+</div>
+<div class="flex items-center gap-4 text-on-surface-variant p-terminal-indent font-data-mono text-body-sm cursor-pointer hover:bg-surface-container-high hover:text-primary-fixed-dim transition-all">
+<span class="material-symbols-outlined">fingerprint</span>
+<span>BIO_SYNC</span>
+</div>
+<div class="flex items-center gap-4 text-on-surface-variant p-terminal-indent font-data-mono text-body-sm cursor-pointer hover:bg-surface-container-high hover:text-primary-fixed-dim transition-all">
+<span class="material-symbols-outlined">database</span>
+<span>ARCHIVE</span>
+</div>
+</nav>
+<div class="p-6 border-t border-primary/10 space-y-4">
+<button class="w-full py-2 px-4 border border-primary/40 text-primary-fixed-dim font-label-caps hover:bg-primary/20 transition-all">EXECUTE_PURGE</button>
+<div class="flex justify-between text-on-surface-variant">
+<span class="material-symbols-outlined cursor-pointer hover:text-primary-fixed transition-all">help</span>
+<span class="material-symbols-outlined cursor-pointer hover:text-error transition-all">power_settings_new</span>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="ml-64 mt-16 p-margin-safe min-h-screen">
+<!-- Header Section -->
+<section class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
+<div>
+<h1 class="font-headline-md text-headline-md text-primary-fixed mb-1 glow-sm">PERMISSION_CENTRAL</h1>
+<p class="font-data-mono text-body-sm text-on-surface-variant">MANAGING_AUTHORIZED_MODULES_082</p>
+</div>
+<div class="flex gap-4">
+<button class="flex items-center gap-2 px-6 py-2 border border-error/50 text-error font-label-caps hover:bg-error/10 transition-all">
+<span class="material-symbols-outlined text-[18px]">gpp_maybe</span>
+                    REVOKE ALL
+                </button>
+<button class="flex items-center gap-2 px-6 py-2 border border-primary-fixed-dim bg-primary-fixed-dim/10 text-primary-fixed font-label-caps hover:bg-primary-fixed-dim/20 transition-all">
+<span class="material-symbols-outlined text-[18px]">target</span>
+                    SCAN NEW MODULE
+                </button>
+</div>
+</section>
+<div class="grid grid-cols-12 gap-gutter">
+<!-- App Card: WhatsApp -->
+<div class="col-span-12 lg:col-span-4 bg-surface-container-low/50 backdrop-blur-md border-t-2 border-primary-fixed-dim p-6 relative group overflow-hidden">
+<div class="absolute top-0 right-0 p-2 font-data-mono text-[10px] text-primary-fixed-dim opacity-30">APP_ID: WA_01</div>
+<div class="flex items-start gap-4 mb-6">
+<div class="w-12 h-12 bg-surface-container-high flex items-center justify-center border border-primary/20">
+<span class="material-symbols-outlined text-primary-fixed text-3xl">chat</span>
+</div>
+<div>
+<h3 class="font-headline-md text-primary-fixed">WhatsApp</h3>
+<p class="font-data-mono text-[12px] text-on-surface-variant">ENCRYPTED_COMMS_v4.2</p>
+</div>
+</div>
+<div class="space-y-4">
+<div class="flex items-center justify-between p-2 border-b border-primary/10">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary-fixed-dim text-xl">photo_camera</span>
+<span class="font-label-caps text-on-surface">CAMERA_FEED</span>
+</div>
+<div class="w-10 h-5 bg-primary-fixed-dim/30 rounded-full relative cursor-pointer">
+<div class="absolute right-0.5 top-0.5 w-4 h-4 bg-primary-fixed-dim rounded-full shadow-[0_0_8px_#00dbe7]"></div>
+</div>
+</div>
+<div class="flex items-center justify-between p-2 border-b border-primary/10">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary-fixed-dim text-xl">mic</span>
+<span class="font-label-caps text-on-surface">VOICE_UPLINK</span>
+</div>
+<div class="w-10 h-5 bg-primary-fixed-dim/30 rounded-full relative cursor-pointer">
+<div class="absolute right-0.5 top-0.5 w-4 h-4 bg-primary-fixed-dim rounded-full shadow-[0_0_8px_#00dbe7]"></div>
+</div>
+</div>
+<div class="flex items-center justify-between p-2 border-b border-primary/10">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary-fixed-dim text-xl">contact_page</span>
+<span class="font-label-caps text-on-surface">CONTACT_SYNC</span>
+</div>
+<div class="w-10 h-5 bg-surface-container-highest rounded-full relative cursor-pointer">
+<div class="absolute left-0.5 top-0.5 w-4 h-4 bg-outline rounded-full"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- App Card: VS Code -->
+<div class="col-span-12 lg:col-span-4 bg-surface-container-low/50 backdrop-blur-md border-t-2 border-primary-fixed-dim p-6 relative group overflow-hidden">
+<div class="absolute top-0 right-0 p-2 font-data-mono text-[10px] text-primary-fixed-dim opacity-30">APP_ID: VSC_09</div>
+<div class="flex items-start gap-4 mb-6">
+<div class="w-12 h-12 bg-surface-container-high flex items-center justify-center border border-primary/20">
+<span class="material-symbols-outlined text-primary-fixed text-3xl">code</span>
+</div>
+<div>
+<h3 class="font-headline-md text-primary-fixed">VS Code</h3>
+<p class="font-data-mono text-[12px] text-on-surface-variant">DEVELOPER_ENV_LATEST</p>
+</div>
+</div>
+<div class="space-y-4">
+<div class="flex items-center justify-between p-2 border-b border-primary/10">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary-fixed-dim text-xl">folder_managed</span>
+<span class="font-label-caps text-on-surface">FS_READ_WRITE</span>
+</div>
+<div class="w-10 h-5 bg-primary-fixed-dim/30 rounded-full relative cursor-pointer">
+<div class="absolute right-0.5 top-0.5 w-4 h-4 bg-primary-fixed-dim rounded-full shadow-[0_0_8px_#00dbe7]"></div>
+</div>
+</div>
+<div class="flex items-center justify-between p-2 border-b border-primary/10">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary-fixed-dim text-xl">terminal</span>
+<span class="font-label-caps text-on-surface">SHELL_ACCESS</span>
+</div>
+<div class="w-10 h-5 bg-primary-fixed-dim/30 rounded-full relative cursor-pointer">
+<div class="absolute right-0.5 top-0.5 w-4 h-4 bg-primary-fixed-dim rounded-full shadow-[0_0_8px_#00dbe7]"></div>
+</div>
+</div>
+<div class="flex items-center justify-between p-2 border-b border-primary/10">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary-fixed-dim text-xl">lan</span>
+<span class="font-label-caps text-on-surface">LOCAL_PROXY</span>
+</div>
+<div class="w-10 h-5 bg-primary-fixed-dim/30 rounded-full relative cursor-pointer">
+<div class="absolute right-0.5 top-0.5 w-4 h-4 bg-primary-fixed-dim rounded-full shadow-[0_0_8px_#00dbe7]"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- App Card: Web Browser -->
+<div class="col-span-12 lg:col-span-4 bg-surface-container-low/50 backdrop-blur-md border-t-2 border-primary-fixed-dim p-6 relative group overflow-hidden">
+<div class="absolute top-0 right-0 p-2 font-data-mono text-[10px] text-primary-fixed-dim opacity-30">APP_ID: BRW_88</div>
+<div class="flex items-start gap-4 mb-6">
+<div class="w-12 h-12 bg-surface-container-high flex items-center justify-center border border-primary/20">
+<span class="material-symbols-outlined text-primary-fixed text-3xl">language</span>
+</div>
+<div>
+<h3 class="font-headline-md text-primary-fixed">Web Browser</h3>
+<p class="font-data-mono text-[12px] text-on-surface-variant">QUANTUM_ENGINE_X</p>
+</div>
+</div>
+<div class="space-y-4">
+<div class="flex items-center justify-between p-2 border-b border-primary/10">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary-fixed-dim text-xl">location_on</span>
+<span class="font-label-caps text-on-surface">GEO_TRACKING</span>
+</div>
+<div class="w-10 h-5 bg-surface-container-highest rounded-full relative cursor-pointer">
+<div class="absolute left-0.5 top-0.5 w-4 h-4 bg-outline rounded-full"></div>
+</div>
+</div>
+<div class="flex items-center justify-between p-2 border-b border-primary/10">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary-fixed-dim text-xl">cookie</span>
+<span class="font-label-caps text-on-surface">PERSIST_DATA</span>
+</div>
+<div class="w-10 h-5 bg-primary-fixed-dim/30 rounded-full relative cursor-pointer">
+<div class="absolute right-0.5 top-0.5 w-4 h-4 bg-primary-fixed-dim rounded-full shadow-[0_0_8px_#00dbe7]"></div>
+</div>
+</div>
+<div class="flex items-center justify-between p-2 border-b border-primary/10">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary-fixed-dim text-xl">sensors</span>
+<span class="font-label-caps text-on-surface">BIOMETRIC_HID</span>
+</div>
+<div class="w-10 h-5 bg-surface-container-highest rounded-full relative cursor-pointer">
+<div class="absolute left-0.5 top-0.5 w-4 h-4 bg-outline rounded-full"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Terminal Pane: Manual Script Execution -->
+<div class="col-span-12 bg-surface-container-lowest/80 border border-primary/30 p-gutter font-data-mono relative">
+<div class="flex items-center justify-between mb-4 border-b border-primary/20 pb-2">
+<div class="flex items-center gap-2">
+<span class="w-3 h-3 bg-error rounded-full"></span>
+<span class="w-3 h-3 bg-secondary-container rounded-full"></span>
+<span class="w-3 h-3 bg-primary-fixed-dim rounded-full"></span>
+<span class="ml-4 font-label-caps text-primary-fixed opacity-70">MANUAL_SCRIPT_EXECUTION_PANE</span>
+</div>
+<span class="text-[10px] text-on-surface-variant">PID: 9942 // SESSION: ROOT</span>
+</div>
+<div class="h-64 overflow-y-auto space-y-1 text-body-sm scrollbar-hide">
+<p class="text-primary-fixed opacity-60">Initializing secure terminal bridge...</p>
+<p class="text-primary-fixed opacity-60">Connecting to ZAYD_CORE... [OK]</p>
+<p class="text-on-surface"><span class="text-primary-fixed">root@zayd:~$</span> list --authorized --active</p>
+<p class="text-secondary-container">1. MODULE: whatsapp.exe | PERMISSIONS: camera, mic | STATUS: RUNNING</p>
+<p class="text-secondary-container">2. MODULE: vscode.sh | PERMISSIONS: filesystem, terminal, network | STATUS: ACTIVE</p>
+<p class="text-secondary-container">3. MODULE: browser.bin | PERMISSIONS: cookies | STATUS: IDLE</p>
+<p class="text-on-surface"><span class="text-primary-fixed">root@zayd:~$</span> <span class="animate-pulse">_</span></p>
+</div>
+<div class="mt-4 pt-4 border-t border-primary/20 flex gap-4">
+<input class="flex-1 bg-transparent border-b border-primary-fixed-dim text-primary-fixed focus:outline-none focus:border-primary placeholder:text-primary-fixed/30 font-data-mono" placeholder="ENTER_COMMAND_OR_SCRIPT_HASH..." type="text"/>
+<button class="px-8 py-1 bg-primary-fixed-dim text-on-primary-fixed font-bold hover:brightness-110 transition-all">EXEC</button>
+</div>
+</div>
+<!-- Graphic/Status Card -->
+<div class="col-span-12 lg:col-span-8 bg-surface-container-high/30 hud-border p-6 flex flex-col justify-center">
+<div class="flex items-center gap-8">
+<div class="flex-1 h-24 border-l border-primary/40 relative">
+<div class="absolute inset-0 bg-gradient-to-r from-primary-fixed-dim/10 to-transparent"></div>
+<div class="h-full w-full flex items-center justify-around px-4">
+<div class="w-1 bg-primary-fixed-dim h-1/2"></div>
+<div class="w-1 bg-primary-fixed-dim h-3/4"></div>
+<div class="w-1 bg-primary-fixed-dim h-1/3"></div>
+<div class="w-1 bg-primary-fixed-dim h-full"></div>
+<div class="w-1 bg-primary-fixed-dim h-2/3"></div>
+</div>
+<div class="absolute -bottom-6 left-0 font-data-mono text-[10px] text-on-surface-variant">REAL-TIME_PERM_TRAFFIC</div>
+</div>
+<div class="text-right">
+<div class="text-display-lg font-data-mono text-primary-fixed glow-sm">08</div>
+<div class="font-label-caps text-on-surface-variant">ACTIVE_SESSIONS</div>
+</div>
+</div>
+</div>
+<!-- Visualization Card -->
+<div class="col-span-12 lg:col-span-4 h-48 relative overflow-hidden group border border-primary/20">
+<img class="w-full h-full object-cover opacity-40 group-hover:opacity-60 transition-opacity duration-700" data-alt="A highly complex digital interface showing glowing blue data streams and circuit board patterns in a dark, atmospheric environment. The visual style is cinematic and futuristic, featuring sharp lines, holographic overlays, and a deep teal and black color palette. Soft light blooms emanate from the active nodes, creating a high-tech surveillance or hacking aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAd5qEAX2Hl7-ECrQSKfx8J-CuSM1Yk1aPZOWmIDVnEAJIA8ByiEF2rvMzuDlHnVcD1TtmqxyOfCBYL8Aq45EcITF3EB9NvM_PFkFoKsORMa_Mu5cNK1D9ADS3WsANfMfcwdql2BmuviZZvC6zbZPtP6U7s9OFE_rJwRgjGvAZCSDw2_NXKVpkzrHopvAubN0KISJshq0h7JFfXv6wttFsOMI2UrvdX8DHXKVFKInuRVq83GWzqBGxNdU0Uo5GlXWGhvKYtdPWe4yI"/>
+<div class="absolute inset-0 flex items-center justify-center bg-background/60">
+<div class="text-center">
+<span class="material-symbols-outlined text-4xl text-primary-fixed-dim mb-2">radar</span>
+<div class="font-label-caps text-primary-fixed">LIVE_HEURISTIC_SCAN</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- FAB for quick script (suppressed on details, but active on dashboard) -->
+<button class="fixed bottom-8 right-8 w-14 h-14 bg-primary-fixed-dim rounded-full shadow-[0_0_20px_#00dbe7] flex items-center justify-center text-on-primary-fixed hover:scale-110 transition-transform z-50">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">bolt</span>
+</button>
+</body></html>

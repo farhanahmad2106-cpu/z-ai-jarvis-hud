@@ -1,0 +1,218 @@
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>J.A.R.V.I.S. Secure Access</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;family=JetBrains+Mono:wght@400&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glow-sm { text-shadow: 0 0 8px rgba(0, 219, 231, 0.6); }
+        .glow-border { box-shadow: 0 0 15px rgba(0, 219, 231, 0.2), inset 0 0 10px rgba(0, 219, 231, 0.1); }
+        .scanline {
+            background: linear-gradient(to bottom, transparent 50%, rgba(0, 219, 231, 0.05) 50%);
+            background-size: 100% 4px;
+        }
+        .hud-gradient {
+            background: radial-gradient(circle at center, #131d23 0%, #0a151b 100%);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-surface-variant": "#b9cacb",
+                        "surface-tint": "#00dbe7",
+                        "background": "#0a151b",
+                        "surface-container": "#172127",
+                        "secondary": "#b0c6ff",
+                        "outline": "#849495",
+                        "on-surface": "#d9e4ed",
+                        "surface-variant": "#2c363d",
+                        "on-background": "#d9e4ed",
+                        "on-primary": "#00363a",
+                        "primary-container": "#00f2ff",
+                        "primary": "#e1fdff",
+                        "surface-container-low": "#131d23",
+                        "surface-container-lowest": "#060f16",
+                        "outline-variant": "#3a494b",
+                        "surface": "#0a151b"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "unit": "4px",
+                        "terminal-indent": "12px",
+                        "margin-safe": "32px",
+                        "container-padding": "24px",
+                        "gutter": "16px"
+                    },
+                    "fontFamily": {
+                        "body-sm": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "data-mono": ["JetBrains Mono"],
+                        "label-caps": ["Inter"],
+                        "display-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "0.1em", "fontWeight": "600"}],
+                        "data-mono": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "400"}],
+                        "label-caps": ["11px", {"lineHeight": "16px", "letterSpacing": "0.2em", "fontWeight": "800"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  <style data-stitch-cursor=""></style><style data-stitch-scroll-lock=""></style></head>
+<body class="bg-background text-on-surface font-body-sm selection:bg-surface-tint selection:text-background min-h-screen overflow-hidden flex flex-col relative">
+<!-- Global Scanline Overlay -->
+<div class="fixed inset-0 pointer-events-none scanline z-[100] opacity-30"></div>
+<!-- Background HUD Visuals -->
+<div class="fixed inset-0 hud-gradient z-0">
+<div class="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]"></div>
+</div>
+<!-- Top App Bar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-container-padding py-unit border-b border-outline-variant bg-background/40 backdrop-blur-md">
+<div class="flex items-center gap-gutter">
+<button class="p-2 text-surface-tint active:scale-95 duration-75">
+<span class="material-symbols-outlined" data-icon="menu_open">menu_open</span>
+</button>
+<h1 class="font-headline-md text-headline-md tracking-[0.2em] text-surface-tint drop-shadow-[0_0_8px_rgba(0,219,231,0.8)]">ZAYD</h1>
+</div>
+<div class="flex items-center gap-gutter">
+<div class="flex flex-col items-end">
+<span class="font-label-caps text-label-caps text-surface-tint uppercase">Status: Secure Link</span>
+<span class="font-data-mono text-[10px] text-on-surface-variant opacity-60">ENCRYPTION: AES-256-GCM</span>
+</div>
+<button class="p-2 text-surface-tint active:scale-95 duration-75">
+<span class="material-symbols-outlined" data-icon="settings_input_component">settings_input_component</span>
+</button>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-1 relative flex flex-col items-center justify-center p-container-padding z-10">
+<!-- Perimeter Data Clusters (HUD Feel) -->
+<div class="absolute top-margin-safe left-margin-safe hidden md:block pt-16">
+<div class="border-l-2 border-surface-tint/30 pl-4 py-2 space-y-2">
+<p class="font-label-caps text-label-caps text-on-surface-variant">ALT_READING</p>
+<p class="font-data-mono text-headline-md text-surface-tint glow-sm">1123 <span class="text-body-sm opacity-50">m</span></p>
+<div class="h-32 w-1 bg-surface-variant overflow-hidden">
+<div class="bg-surface-tint h-1/2 w-full animate-pulse shadow-[0_0_8px_#00dbe7]"></div>
+</div>
+</div>
+</div>
+<div class="absolute top-margin-safe right-margin-safe hidden md:block pt-16">
+<div class="border-r-2 border-surface-tint/30 pr-4 py-2 text-right space-y-4">
+<div class="relative w-24 h-24 rounded-full border border-surface-tint/20 flex items-center justify-center">
+<div class="absolute inset-0 border-t-2 border-surface-tint rounded-full opacity-60"></div>
+<span class="material-symbols-outlined text-surface-tint text-4xl" data-icon="blur_circular">blur_circular</span>
+</div>
+<div>
+<p class="font-label-caps text-label-caps text-on-surface-variant">CORE_TEMP</p>
+<p class="font-data-mono text-body-sm text-surface-tint">34.2°C</p>
+</div>
+</div>
+</div>
+<!-- Central Biometric Scanner -->
+<div class="relative group">
+<!-- Pulsing Rings -->
+<div class="absolute -inset-16 border border-surface-tint/10 rounded-full animate-ping opacity-20"></div>
+<div class="absolute -inset-8 border border-surface-tint/20 rounded-full animate-pulse opacity-40"></div>
+<div class="relative w-64 h-64 md:w-80 md:h-80 flex flex-col items-center justify-center bg-surface-container-low/40 backdrop-blur-2xl rounded-full border-2 border-surface-tint/30 shadow-[0_0_50px_rgba(0,219,231,0.2)]">
+<!-- Inner HUD elements -->
+<div class="absolute inset-4 border border-dashed border-surface-tint/20 rounded-full"></div>
+<div class="z-20 flex flex-col items-center">
+<div class="mb-4">
+<span class="material-symbols-outlined text-display-lg text-surface-tint glow-sm" data-icon="fingerprint" style="font-size: 84px;">fingerprint</span>
+</div>
+<p class="font-label-caps text-label-caps text-surface-tint tracking-[0.3em] mb-1">SCANNING...</p>
+<div class="w-16 h-[1px] bg-surface-tint"></div>
+</div>
+<!-- Rotation Ring -->
+<div class="absolute inset-0 border-4 border-transparent border-t-surface-tint/50 border-b-surface-tint/50 rounded-full animate-[spin_10s_linear_infinite]"></div>
+</div>
+<!-- Scanning Line (Horizontal) -->
+<div class="absolute top-1/2 left-0 w-full h-[1px] bg-surface-tint/50 shadow-[0_0_10px_#00dbe7] z-30 animate-[bounce_4s_infinite]"></div>
+</div>
+<!-- Unlock Trigger -->
+<div class="mt-16 flex flex-col items-center space-y-8 max-w-sm w-full">
+<div class="text-center">
+<p class="font-label-caps text-label-caps text-on-surface-variant opacity-80 mb-2">SYSTEM_ADMINISTRATION_OVERRIDE</p>
+<h2 class="font-data-mono text-body-sm text-primary opacity-60">IDENTIFICATION REQUIRED</h2>
+</div>
+<button class="w-full py-4 border border-surface-tint/50 bg-surface-tint/5 backdrop-blur-md font-label-caps text-label-caps text-surface-tint tracking-widest hover:bg-surface-tint hover:text-background transition-all duration-300 glow-border group active:scale-95">
+<span class="flex items-center justify-center gap-2">
+                    ENTER PASSCODE
+                    <span class="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform" data-icon="arrow_forward">arrow_forward</span>
+</span>
+</button>
+<div class="flex gap-4">
+<div class="w-3 h-3 bg-surface-tint shadow-[0_0_8px_#00dbe7] rounded-sm"></div>
+<div class="w-3 h-3 bg-surface-variant rounded-sm"></div>
+<div class="w-3 h-3 bg-surface-variant rounded-sm"></div>
+<div class="w-3 h-3 bg-surface-variant rounded-sm"></div>
+</div>
+</div>
+</main>
+<!-- Bottom Status Panel -->
+<div class="fixed bottom-0 left-0 w-full z-40 bg-surface-container-lowest/80 backdrop-blur-xl border-t border-outline-variant px-container-padding py-3">
+<div class="flex justify-between items-center max-w-6xl mx-auto">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-surface-tint text-xl" data-icon="terminal">terminal</span>
+<div class="flex flex-col">
+<span class="font-label-caps text-[9px] text-on-surface-variant">LOG_ACTIVITY</span>
+<span class="font-data-mono text-[11px] text-surface-tint">MOD_082: ATTEMPTING HANDSHAKE...</span>
+</div>
+</div>
+<div class="hidden md:flex items-center gap-8">
+<div class="text-right">
+<span class="font-label-caps text-[9px] text-on-surface-variant uppercase">NETWORK</span>
+<p class="font-data-mono text-[11px] text-primary">ENCRYPTED_TUNNEL_04</p>
+</div>
+<div class="h-6 w-[1px] bg-outline-variant"></div>
+<div class="text-right">
+<span class="font-label-caps text-[9px] text-on-surface-variant uppercase">TIMESTAMP</span>
+<p class="font-data-mono text-[11px] text-primary">23:59:58 UTC</p>
+</div>
+</div>
+<div class="flex items-center gap-2 px-3 py-1 bg-surface-tint/10 border border-surface-tint/30">
+<div class="w-2 h-2 rounded-full bg-surface-tint animate-pulse"></div>
+<span class="font-label-caps text-[10px] text-surface-tint">ACTIVE</span>
+</div>
+</div>
+</div>
+<!-- Decorative HUD Corner Widgets -->
+<div class="fixed top-20 left-6 pointer-events-none opacity-40">
+<div class="text-[10px] font-data-mono text-on-surface-variant leading-tight">
+            SYS_INIT: OK<br>
+            KER_VER: 5.15.0-JRV<br>
+            SEC_LVL: 09<br>
+            TRC_ROUTE: HIDDEN
+        </div>
+</div>
+<div class="fixed bottom-20 right-6 pointer-events-none opacity-40">
+<div class="flex flex-col items-end gap-1">
+<div class="w-16 h-1 bg-outline-variant"><div class="w-3/4 h-full bg-surface-tint"></div></div>
+<div class="w-20 h-1 bg-outline-variant"><div class="w-1/2 h-full bg-surface-tint"></div></div>
+<div class="w-14 h-1 bg-outline-variant"><div class="w-full h-full bg-surface-tint"></div></div>
+<p class="text-[9px] font-label-caps text-on-surface-variant mt-2">BUFFER_LOAD</p>
+</div>
+</div>
+
+
+</body></html>

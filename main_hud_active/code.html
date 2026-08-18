@@ -1,0 +1,293 @@
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>ZAYD Core Interface</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;family=JetBrains+Mono:wght@400;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-surface-variant": "#b9cacb",
+                        "surface-tint": "#00dbe7",
+                        "on-tertiary-fixed": "#410003",
+                        "background": "#0a151b",
+                        "on-error-container": "#ffdad6",
+                        "surface-container": "#172127",
+                        "secondary": "#b0c6ff",
+                        "surface-bright": "#303a42",
+                        "outline": "#849495",
+                        "on-surface": "#d9e4ed",
+                        "secondary-fixed": "#d9e2ff",
+                        "tertiary-fixed-dim": "#ffb3ac",
+                        "inverse-on-surface": "#283239",
+                        "surface-variant": "#2c363d",
+                        "on-background": "#d9e4ed",
+                        "on-tertiary-fixed-variant": "#930010",
+                        "on-primary": "#00363a",
+                        "secondary-container": "#568dff",
+                        "on-primary-fixed-variant": "#004f54",
+                        "on-primary-container": "#006a71",
+                        "tertiary-fixed": "#ffdad6",
+                        "on-secondary-fixed-variant": "#00429c",
+                        "inverse-primary": "#00696f",
+                        "on-secondary-container": "#002661",
+                        "error": "#ffb4ab",
+                        "surface-container-low": "#131d23",
+                        "on-tertiary-container": "#c20018",
+                        "primary-fixed": "#74f5ff",
+                        "secondary-fixed-dim": "#b0c6ff",
+                        "surface-container-high": "#212b32",
+                        "primary-container": "#00f2ff",
+                        "inverse-surface": "#d9e4ed",
+                        "primary": "#e1fdff",
+                        "surface-dim": "#0a151b",
+                        "primary-fixed-dim": "#00dbe7",
+                        "error-container": "#93000a",
+                        "on-error": "#690005",
+                        "surface-container-lowest": "#060f16",
+                        "tertiary-container": "#ffd0cb",
+                        "tertiary": "#fff5f4",
+                        "outline-variant": "#3a494b",
+                        "on-secondary-fixed": "#001945",
+                        "on-tertiary": "#680008",
+                        "surface-container-highest": "#2c363d",
+                        "on-secondary": "#002d6f",
+                        "on-primary-fixed": "#002022",
+                        "surface": "#0a151b"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "unit": "4px",
+                        "terminal-indent": "12px",
+                        "margin-safe": "32px",
+                        "container-padding": "24px",
+                        "gutter": "16px"
+                    },
+                    "fontFamily": {
+                        "body-sm": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "data-mono": ["JetBrains Mono"],
+                        "label-caps": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "headline-md-mobile": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "0.1em", "fontWeight": "600"}],
+                        "data-mono": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "400"}],
+                        "label-caps": ["11px", {"lineHeight": "16px", "letterSpacing": "0.2em", "fontWeight": "800"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-md-mobile": ["20px", {"lineHeight": "28px", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .scanline {
+            width: 100%;
+            height: 100px;
+            z-index: 10;
+            background: linear-gradient(0deg, rgba(0, 0, 0, 0) 0%, rgba(0, 219, 231, 0.05) 50%, rgba(0, 0, 0, 0) 100%);
+            opacity: 0.1;
+            position: absolute;
+            bottom: 100%;
+            pointer-events: none;
+            animation: scan 8s linear infinite;
+        }
+        @keyframes scan {
+            to { bottom: -100px; }
+        }
+        .glow-sm { text-shadow: 0 0 8px rgba(0, 219, 231, 0.6); }
+        .border-glow { border: 1px solid rgba(0, 219, 231, 0.3); box-shadow: inset 0 0 10px rgba(0, 219, 231, 0.1); }
+        .hologram-ring { border: 2px solid #00dbe7; box-shadow: 0 0 20px rgba(0, 219, 231, 0.4), inset 0 0 20px rgba(0, 219, 231, 0.4); }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  <style data-stitch-cursor=""></style><style data-stitch-scroll-lock=""></style></head>
+<body class="bg-background text-on-background font-body-sm overflow-hidden selection:bg-surface-tint selection:text-background">
+<!-- Global Scanlines Effect -->
+<div class="fixed inset-0 pointer-events-none z-[100] bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.15)_50%),linear-gradient(90deg,rgba(255,0,0,0.03),rgba(0,255,0,0.01),rgba(0,0,255,0.03))] bg-[length:100%_4px,3px_100%]"></div>
+<div class="scanline"></div>
+<!-- Top App Bar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-container-padding py-unit border-b border-outline-variant bg-background/40 backdrop-blur-md">
+<div class="flex items-center gap-gutter">
+<button class="material-symbols-outlined text-surface-tint hover:glow-sm active:scale-95 transition-all">menu_open</button>
+<div class="font-headline-md text-headline-md tracking-[0.2em] text-surface-tint drop-shadow-[0_0_8px_rgba(0,219,231,0.8)]">ZAYD</div>
+</div>
+<div class="flex items-center gap-gutter">
+<span class="font-label-caps text-label-caps text-surface-tint opacity-70">SEC_LEVEL_09</span>
+<button class="material-symbols-outlined text-surface-tint hover:glow-sm active:scale-95 transition-all">settings_input_component</button>
+</div>
+</header>
+<!-- Main Content Area (HUD Canvas) -->
+<main class="relative h-screen w-full flex items-center justify-center pt-16 pb-20 px-margin-safe overflow-hidden">
+<!-- Left Wing: Altimeter & Telemetry -->
+<aside class="absolute left-margin-safe top-1/2 -translate-y-1/2 flex flex-col gap-4">
+<div class="border-glow bg-surface-container-lowest/60 backdrop-blur-md p-container-padding rounded-xl w-32">
+<div class="font-label-caps text-label-caps text-surface-tint mb-4">ALT_METER</div>
+<div class="flex flex-col gap-2">
+<div class="h-1 w-full bg-surface-tint shadow-[0_0_10px_#00dbe7]"></div>
+<div class="h-1 w-[80%] bg-surface-tint/60"></div>
+<div class="h-1 w-[90%] bg-surface-tint/60"></div>
+<div class="h-1 w-[70%] bg-surface-tint/60"></div>
+<div class="h-1 w-[60%] bg-surface-tint/60"></div>
+<div class="h-1 w-[85%] bg-surface-tint/60"></div>
+<div class="h-1 w-full bg-surface-tint/20"></div>
+</div>
+<div class="mt-4 font-data-mono text-data-mono text-surface-tint">1123.4 FT</div>
+</div>
+<div class="border-glow bg-surface-container-lowest/60 backdrop-blur-md p-container-padding rounded-xl w-32">
+<div class="font-label-caps text-label-caps text-surface-tint mb-2">PITCH</div>
+<div class="relative h-20 w-full flex items-center justify-center overflow-hidden">
+<div class="absolute w-full h-[1px] bg-surface-tint/30 rotate-12"></div>
+<div class="absolute w-1/2 h-[1px] bg-surface-tint shadow-[0_0_5px_#00dbe7]"></div>
+</div>
+</div>
+</aside>
+<!-- Center: Holographic Core -->
+<section class="relative flex items-center justify-center">
+<!-- Outer Rotating Ring -->
+<div class="absolute w-96 h-96 rounded-full border-2 border-dashed border-surface-tint/20 animate-[spin_20s_linear_infinite]"></div>
+<!-- Mid Hex Ring -->
+<div class="absolute w-80 h-80 rounded-full border border-surface-tint/40 flex items-center justify-center">
+<div class="w-full h-full border-l-4 border-r-4 border-surface-tint/60 rounded-full animate-[spin_10s_linear_infinite]"></div>
+</div>
+<!-- Inner Solid Core -->
+<div class="w-48 h-48 rounded-full hologram-ring flex items-center justify-center bg-surface-tint/10 backdrop-blur-xl">
+<div class="flex flex-col items-center">
+<div class="font-display-lg text-display-lg text-surface-tint glow-sm">ZAYD</div>
+<div class="font-label-caps text-label-caps text-on-surface-variant tracking-widest">ACTIVE</div>
+</div>
+</div>
+<!-- Data Particles (CSS Only) -->
+<div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+<div class="w-2 h-2 bg-surface-tint rounded-full absolute -top-12 left-1/2 animate-ping"></div>
+<div class="w-1 h-1 bg-surface-tint rounded-full absolute top-1/2 -right-12 animate-ping delay-100"></div>
+</div>
+</section>
+<!-- Right Wing: Status & Sensors -->
+<aside class="absolute right-margin-safe top-1/2 -translate-y-1/2 flex flex-col gap-gutter text-right">
+<div class="border-glow bg-surface-container-lowest/60 backdrop-blur-md p-container-padding rounded-xl w-48">
+<div class="flex items-center justify-end gap-2 mb-2">
+<span class="font-label-caps text-label-caps text-on-surface-variant">STATUS:</span>
+<span class="font-label-caps text-label-caps text-[#00ff9d] glow-sm">ONLINE</span>
+</div>
+<div class="flex items-center justify-end gap-2">
+<span class="font-label-caps text-label-caps text-on-surface-variant">MIC:</span>
+<span class="flex h-2 w-2 rounded-full bg-[#00ff9d] shadow-[0_0_8px_#00ff9d]"></span>
+<span class="font-label-caps text-label-caps text-[#00ff9d]">ACTIVE</span>
+</div>
+</div>
+<!-- Waveform Sensor -->
+<div class="border-glow bg-surface-container-lowest/60 backdrop-blur-md p-gutter rounded-xl">
+<div class="font-label-caps text-label-caps text-surface-tint text-left mb-2">V_INPUT</div>
+<svg class="w-full h-12 stroke-surface-tint fill-none stroke-1" viewBox="0 0 100 30">
+<path class="opacity-50" d="M0 15 Q 10 5, 20 15 T 40 15 T 60 15 T 80 15 T 100 15"></path>
+<path class="opacity-80" d="M0 15 Q 5 25, 10 15 T 20 15 T 30 15 T 40 15 T 50 15 T 60 15 T 70 15 T 80 15 T 90 15 T 100 15"></path>
+</svg>
+</div>
+<div class="grid grid-cols-2 gap-2">
+<div class="border-glow bg-surface-container-lowest/40 p-2 rounded-lg">
+<div class="font-label-caps text-[9px] text-on-surface-variant">CPU_LOAD</div>
+<div class="font-data-mono text-xs text-surface-tint">42.8%</div>
+</div>
+<div class="border-glow bg-surface-container-lowest/40 p-2 rounded-lg">
+<div class="font-label-caps text-[9px] text-on-surface-variant">TEMP_CR</div>
+<div class="font-data-mono text-xs text-surface-tint">34°C</div>
+</div>
+</div>
+</aside>
+<!-- Bottom: Terminal Window -->
+<section class="absolute bottom-24 left-margin-safe w-96 border-t-2 border-surface-tint/50 bg-background/80 backdrop-blur-2xl p-container-padding shadow-2xl rounded-tr-3xl">
+<div class="flex justify-between items-center mb-4 border-b border-outline-variant/30 pb-2">
+<div class="font-label-caps text-label-caps text-surface-tint">SYSTEM_LOG [MOD_082]</div>
+<div class="text-[10px] font-data-mono text-on-surface-variant opacity-50">STABLE_V4.2</div>
+</div>
+<div class="font-data-mono text-data-mono text-on-surface-variant space-y-1 h-32 overflow-hidden">
+<div class="flex gap-2"><span class="text-surface-tint">&gt;</span> SYSTEM_BOOT_SEQUENCE_COMPLETE</div>
+<div class="flex gap-2"><span class="text-surface-tint">&gt;</span> NEURAL_LINK_ESTABLISHED</div>
+<div class="flex gap-2"><span class="text-surface-tint">&gt;</span> ENCRYPTED_TUNNEL: 127.0.0.1:8080</div>
+<div class="flex gap-2"><span class="text-surface-tint">&gt;</span> WAITING_FOR_OPERATOR_INPUT...</div>
+<div class="flex gap-2 opacity-40"><span class="text-surface-tint">&gt;</span> 0x8F3A2... SYNC_SUCCESS</div>
+<div class="flex gap-2 opacity-20"><span class="text-surface-tint">&gt;</span> 0x11B90... BUFFER_FLUSH</div>
+</div>
+<!-- Scrolling Hex Decoration -->
+<div class="mt-4 pt-2 border-t border-outline-variant/10 flex justify-between">
+<span class="text-[9px] font-data-mono text-surface-tint/40">LATENCY: 4ms</span>
+<span class="text-[9px] font-data-mono text-surface-tint/40">BUFFER: 1024KB</span>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-safe border-t border-outline-variant bg-surface-container-lowest/80 backdrop-blur-xl">
+<!-- Terminal (Active) -->
+<a class="flex flex-col items-center justify-center text-surface-tint border-t-2 border-surface-tint py-2 shadow-[0_-4px_12px_rgba(0,219,231,0.3)] scale-110 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined">terminal</span>
+</a>
+<!-- Security -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant opacity-60 py-2 hover:opacity-100 hover:text-primary-container transition-opacity" href="#">
+<span class="material-symbols-outlined">security</span>
+</a>
+<!-- HUD Core -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant opacity-60 py-2 hover:opacity-100 hover:text-primary-container transition-opacity" href="#">
+<span class="material-symbols-outlined">blur_circular</span>
+</a>
+<!-- Analytics -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant opacity-60 py-2 hover:opacity-100 hover:text-primary-container transition-opacity" href="#">
+<span class="material-symbols-outlined">analytics</span>
+</a>
+<!-- Topology -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant opacity-60 py-2 hover:opacity-100 hover:text-primary-container transition-opacity" href="#">
+<span class="material-symbols-outlined">account_tree</span>
+</a>
+</nav>
+<!-- Navigation Drawer (Desktop Only / Hidden by default) -->
+<div class="hidden fixed left-0 top-0 h-full w-80 z-50 bg-surface-container-low/90 backdrop-blur-2xl border-r border-surface-tint/30 shadow-[10px_0_30px_rgba(0,0,0,0.5)] transform -translate-x-full transition-transform lg:translate-x-0 lg:flex flex-col">
+<div class="p-container-padding flex items-center space-x-3 border-b border-outline-variant/30">
+<div class="w-12 h-12 rounded-lg bg-surface-tint/20 border border-surface-tint flex items-center justify-center">
+<span class="material-symbols-outlined text-surface-tint">memory</span>
+</div>
+<div>
+<div class="font-label-caps text-label-caps text-surface-tint">SYSTEM_ADMIN</div>
+<div class="font-data-mono text-[10px] text-on-surface-variant">MOD_082_CONNECTED</div>
+</div>
+</div>
+<nav class="flex-1 py-gutter">
+<div class="flex items-center space-x-3 bg-surface-variant/40 text-surface-tint border-l-4 border-surface-tint px-4 py-3 translate-x-1 transition-transform cursor-pointer">
+<span class="material-symbols-outlined">history_edu</span>
+<span class="font-data-mono text-data-mono">System Logs</span>
+</div>
+<div class="flex items-center space-x-3 text-on-surface-variant px-4 py-3 opacity-70 hover:bg-surface-variant/60 hover:text-primary transition-colors cursor-pointer">
+<span class="material-symbols-outlined">fingerprint</span>
+<span class="font-data-mono text-data-mono">Biometric Access</span>
+</div>
+<div class="flex items-center space-x-3 text-on-surface-variant px-4 py-3 opacity-70 hover:bg-surface-variant/60 hover:text-primary transition-colors cursor-pointer">
+<span class="material-symbols-outlined">lan</span>
+<span class="font-data-mono text-data-mono">Network Topology</span>
+</div>
+<div class="flex items-center space-x-3 text-on-surface-variant px-4 py-3 opacity-70 hover:bg-surface-variant/60 hover:text-primary transition-colors cursor-pointer">
+<span class="material-symbols-outlined">memory</span>
+<span class="font-data-mono text-data-mono">Core Diagnostics</span>
+</div>
+</nav>
+<div class="p-container-padding border-t border-outline-variant/30 font-data-mono text-[10px] text-surface-tint/50">
+            V.4.2.0-STABLE | UP_TIME: 14:02:44
+        </div>
+</div>
+
+
+</body></html>

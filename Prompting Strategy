@@ -1,0 +1,22 @@
+# MISSION SPEC: [Project/Feature Name]
+
+## 1. OBJECTIVE
+[Clearly state what the agent needs to build, refactor, or fix in one sentence.]
+
+## 2. REQUISITES & STACK
+- Frontend: [e.g., Next.js, Tailwind CSS]
+- Backend/Database: [e.g., Supabase, Express]
+- Packages to use: [List any specific npm/pip libraries if required]
+
+## 3. ARCHITECTURAL REQUIREMENTS
+- [Requirement 1: e.g., Create a dashboard canvas utilizing standard CSS flexbox layouts.]
+- [Requirement 2: e.g., Set up a state management system for active data nodes.]
+
+## 4. VERIFICATION CRITERIA
+- [Rule 1: e.g., Run `npm run build` and ensure zero TypeScript errors.]
+- [Rule 2: e.g., Execute local server and verify the landing page renders correctly.]
+- [Rule 3: Ensure all new components pass basic responsiveness criteria.]
+
+## 5. RESTRAINT POLICIES
+- DO NOT touch existing files in the `/auth` directory.
+- DO NOT configure a production database; use local mock data arrays for now.

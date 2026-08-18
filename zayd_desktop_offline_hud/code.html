@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;family=JetBrains+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            background-color: #0a151b;
+            color: #d9e4ed;
+            overflow: hidden;
+            font-family: 'Inter', sans-serif;
+        }
+        .scanline-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                to bottom,
+                transparent 50%,
+                rgba(0, 0, 0, 0.05) 51%
+            );
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 100;
+        }
+        .glitch-border {
+            position: relative;
+        }
+        .glitch-border::after {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border: 1px solid #ffb4ab;
+            opacity: 0.5;
+            clip-path: inset(0 0 95% 0);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glow-error {
+            box-shadow: 0 0 15px rgba(255, 180, 171, 0.2);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "primary": "#e1fdff",
+                      "primary-fixed": "#74f5ff",
+                      "on-primary-fixed": "#002022",
+                      "surface-container-high": "#212b32",
+                      "inverse-surface": "#d9e4ed",
+                      "surface-bright": "#303a42",
+                      "on-secondary": "#002d6f",
+                      "tertiary-fixed-dim": "#ffb3ac",
+                      "tertiary-container": "#ffd0cb",
+                      "secondary-container": "#568dff",
+                      "on-secondary-fixed-variant": "#00429c",
+                      "inverse-on-surface": "#283239",
+                      "surface-variant": "#2c363d",
+                      "surface-container-highest": "#2c363d",
+                      "primary-fixed-dim": "#00dbe7",
+                      "on-tertiary-fixed": "#410003",
+                      "on-error": "#690005",
+                      "error": "#ffb4ab",
+                      "error-container": "#93000a",
+                      "secondary-fixed": "#d9e2ff",
+                      "on-tertiary-container": "#c20018",
+                      "outline": "#849495",
+                      "surface-container": "#172127",
+                      "on-primary-container": "#006a71",
+                      "on-surface-variant": "#b9cacb",
+                      "tertiary": "#fff5f4",
+                      "primary-container": "#00f2ff",
+                      "on-primary": "#00363a",
+                      "background": "#0a151b",
+                      "surface-tint": "#00dbe7",
+                      "surface-dim": "#0a151b",
+                      "on-background": "#d9e4ed",
+                      "on-surface": "#d9e4ed",
+                      "outline-variant": "#3a494b",
+                      "on-tertiary-fixed-variant": "#930010",
+                      "secondary": "#b0c6ff",
+                      "on-secondary-container": "#002661",
+                      "on-error-container": "#ffdad6",
+                      "surface-container-lowest": "#060f16",
+                      "on-secondary-fixed": "#001945",
+                      "secondary-fixed-dim": "#b0c6ff",
+                      "inverse-primary": "#00696f",
+                      "on-primary-fixed-variant": "#004f54",
+                      "on-tertiary": "#680008",
+                      "surface-container-low": "#131d23",
+                      "surface": "#0a151b",
+                      "tertiary-fixed": "#ffdad6"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "terminal-indent": "12px",
+                      "container-padding": "24px",
+                      "margin-safe": "32px",
+                      "gutter": "16px",
+                      "unit": "4px"
+              },
+              "fontFamily": {
+                      "headline-md-mobile": ["Inter"],
+                      "label-caps": ["Inter"],
+                      "body-sm": ["Inter"],
+                      "display-lg": ["Inter"],
+                      "data-mono": ["JetBrains Mono"],
+                      "headline-md": ["Inter"]
+              },
+              "fontSize": {
+                      "headline-md-mobile": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                      "label-caps": ["11px", {"lineHeight": "16px", "letterSpacing": "0.2em", "fontWeight": "800"}],
+                      "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "data-mono": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "400"}],
+                      "headline-md": ["24px", {"lineHeight": "32px", "letterSpacing": "0.1em", "fontWeight": "600"}]
+              }
+            },
+          },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-surface h-screen">
+<div class="scanline-overlay"></div>
+<!-- TopNavBar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-container-padding h-16 bg-surface-container-low/80 backdrop-blur-xl border-b border-primary/30 shadow-[0_0_15px_rgba(0,219,231,0.1)]">
+<div class="flex items-center gap-8">
+<span class="font-data-mono text-headline-md text-primary-fixed drop-shadow-[0_0_5px_#00dbe7]">ZAYD_OS_v2.0</span>
+<nav class="hidden md:flex gap-6">
+<a class="text-on-surface-variant font-label-caps transition-all duration-300 ease-in-out hover:text-primary-fixed hover:drop-shadow-[0_0_5px_#00dbe7]" href="#">CORE</a>
+<a class="text-on-surface-variant font-label-caps transition-all duration-300 ease-in-out hover:text-primary-fixed hover:drop-shadow-[0_0_5px_#00dbe7]" href="#">MODULES</a>
+<a class="text-on-surface-variant font-label-caps transition-all duration-300 ease-in-out hover:text-primary-fixed hover:drop-shadow-[0_0_5px_#00dbe7]" href="#">NEURAL</a>
+<a class="text-primary-fixed-dim border-b-2 border-primary-fixed-dim pb-1 font-label-caps transition-all duration-300 ease-in-out" href="#">LOGS</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative">
+<input class="bg-surface-container-highest/50 border-b border-primary/30 text-primary-fixed-dim font-data-mono px-4 py-1 text-body-sm focus:outline-none focus:border-primary-fixed-dim focus:ring-0 w-48" placeholder="LOCAL_QUERY..." type="text"/>
+</div>
+<div class="flex gap-4 text-on-surface-variant">
+<span class="material-symbols-outlined cursor-pointer hover:text-primary-fixed-dim">security</span>
+<span class="material-symbols-outlined cursor-pointer hover:text-primary-fixed-dim">bolt</span>
+<span class="material-symbols-outlined cursor-pointer hover:text-primary-fixed-dim">settings</span>
+</div>
+</div>
+</header>
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-16 bottom-0 w-64 z-40 flex flex-col pt-gutter bg-surface-container-lowest/90 backdrop-blur-2xl border-r border-primary/20">
+<div class="px-terminal-indent mb-8">
+<div class="flex items-center gap-3 mb-2">
+<div class="w-10 h-10 border border-error/50 flex items-center justify-center overflow-hidden">
+<img alt="Core Pulse" class="opacity-40 grayscale sepia hue-rotate-[320deg]" data-alt="A macro shot of a complex circuit board with glowing orange and amber data traces. The lighting is low-key, emphasizing the high-intensity heat signatures and electrical failures. Small sparks and digital distortions are layered over the image, creating a high-tech offline aesthetic with red accents." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD4m9gR1kfnCi-YYLexQL5hJoai6ZwijbIGB-a20RnlGpl-i1cortST8P10N1JyZaTixe4SaKVqDCtcxhlP5U7oyvcYcodH00P4MC6Ux51-1m8-NLK8FAyhuH9Dy-z47aaM-3CAx6FxW7tMaiFdN3_DknDyVghYOs1sbzaddCt4cY-Wc13LPR31TkGAJV9jeWs-_Me4ZWKqK9wHxbJ0C8fsW2-CgsGmPdyyiLI6-5W0bcGs8F3pNqYcpmnVC6HWdlXsKeZ890_5IiM"/>
+</div>
+<div>
+<p class="text-label-caps font-bold text-primary">ZAYD_CORE</p>
+<p class="text-data-mono text-[10px] text-error">AI_STATUS: ERROR_RECOVERY</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 space-y-1">
+<div class="flex items-center gap-4 text-on-surface-variant p-terminal-indent hover:bg-surface-container-high hover:text-primary-fixed-dim cursor-pointer transition-all">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-data-mono text-body-sm">DIAGNOSTICS</span>
+</div>
+<div class="flex items-center gap-4 bg-primary/10 text-primary-fixed border-l-4 border-primary-fixed p-terminal-indent cursor-pointer">
+<span class="material-symbols-outlined">terminal</span>
+<span class="font-data-mono text-body-sm">SYSTEM_LOGS</span>
+</div>
+<div class="flex items-center gap-4 text-on-surface-variant p-terminal-indent hover:bg-surface-container-high hover:text-primary-fixed-dim cursor-pointer opacity-50">
+<span class="material-symbols-outlined">router</span>
+<span class="font-data-mono text-body-sm">NETWORK</span>
+<span class="ml-auto text-[10px] bg-error-container text-on-error-container px-1">OFF</span>
+</div>
+<div class="flex items-center gap-4 text-on-surface-variant p-terminal-indent hover:bg-surface-container-high hover:text-primary-fixed-dim cursor-pointer">
+<span class="material-symbols-outlined">fingerprint</span>
+<span class="font-data-mono text-body-sm">BIO_SYNC</span>
+</div>
+<div class="flex items-center gap-4 text-on-surface-variant p-terminal-indent hover:bg-surface-container-high hover:text-primary-fixed-dim cursor-pointer">
+<span class="material-symbols-outlined">database</span>
+<span class="font-data-mono text-body-sm">ARCHIVE</span>
+</div>
+</nav>
+<div class="p-terminal-indent border-t border-primary/10 mt-auto">
+<button class="w-full border border-error text-error font-label-caps py-2 hover:bg-error hover:text-on-error transition-all mb-4">EXECUTE_PURGE</button>
+<div class="flex justify-between text-on-surface-variant px-2 pb-4">
+<span class="material-symbols-outlined cursor-pointer">help</span>
+<span class="material-symbols-outlined cursor-pointer text-error">power_settings_new</span>
+</div>
+</div>
+</aside>
+<!-- Main Canvas -->
+<main class="ml-64 pt-16 h-full relative overflow-y-auto bg-surface">
+<!-- Critical Alert Banner -->
+<div class="w-full bg-error-container/20 border-b border-error/50 flex items-center justify-center gap-4 py-2 relative overflow-hidden">
+<div class="absolute left-0 top-0 h-full w-2 bg-error animate-pulse"></div>
+<span class="material-symbols-outlined text-error" style="font-variation-settings: 'FILL' 1;">warning</span>
+<span class="font-data-mono text-body-sm text-error font-bold tracking-widest">NETWORK FAILURE - LOCAL MODE ACTIVE</span>
+<span class="material-symbols-outlined text-error" style="font-variation-settings: 'FILL' 1;">warning</span>
+</div>
+<div class="p-margin-safe grid grid-cols-12 gap-gutter">
+<!-- Central Core Glitch Widget -->
+<div class="col-span-8 bg-surface-container-low/40 border-t-2 border-error backdrop-blur-md p-gutter relative overflow-hidden">
+<div class="flex justify-between items-start mb-6">
+<div>
+<h2 class="font-label-caps text-on-surface-variant">CENTRAL_PROCESSING</h2>
+<p class="text-primary-fixed font-data-mono text-display-lg">LOCAL_KERNEL</p>
+</div>
+<div class="text-right">
+<span class="text-error font-data-mono text-body-sm">ERR_0x82_CONN_LOST</span>
+<div class="flex gap-1 mt-2">
+<div class="w-2 h-4 bg-error"></div>
+<div class="w-2 h-4 bg-error/40"></div>
+<div class="w-2 h-4 bg-error/20"></div>
+</div>
+</div>
+</div>
+<div class="aspect-video relative border border-primary/20 bg-black/40 overflow-hidden flex items-center justify-center">
+<img alt="Neural Map" class="absolute inset-0 w-full h-full object-cover opacity-20 sepia hue-rotate-[320deg] saturate-200" data-alt="A highly detailed digital representation of a planetary neural network with distorted data nodes and broken fiber-optic lines. The global map is bathed in a harsh amber and deep crimson glow, with digital artifacts and glitch static distorting the continents. The overall atmosphere is tense, cinematic, and industrial, reflecting a catastrophic network failure." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDG1v2WfjT8jqaBJT3cz0MeYZLVELV75CmkN8PEotqMHKKS-o1pK3jbU3r15wKc0QAuPWEJDUfnJm4SuBK50hSG7jb8Ulirh62hS6aJU9FrEgysUCNcwEZQjSqaN-wbCfemCBByyl86Hz8hpxUh7G_Da73nvmRYmys1XNk1jfyq-4ccapZc2Z12T0OFLEDbG436pS8MAGMn4F_hKIcTbGt-7jO-1dDA42SPiK0_efYLZTvXzyQ8TlnZ4eBjx-9no2ViZys9bmwzKF8"/>
+<!-- Glitch Overlay Graphics -->
+<div class="relative z-10 text-center">
+<div class="text-error text-display-lg font-data-mono opacity-80 select-none">NO_SIGNAL</div>
+<div class="mt-4 flex gap-8 justify-center">
+<div class="text-center">
+<p class="text-label-caps text-error/60">LATENCY</p>
+<p class="font-data-mono text-headline-md text-error">∞ ms</p>
+</div>
+<div class="text-center">
+<p class="text-label-caps text-tertiary-fixed-dim">CACHE_READ</p>
+<p class="font-data-mono text-headline-md text-tertiary-fixed-dim">94.2 GB</p>
+</div>
+</div>
+</div>
+<!-- HUD Gauge Overlays -->
+<div class="absolute top-4 left-4 w-24 h-24 border border-error/30 rounded-full flex items-center justify-center">
+<div class="w-16 h-16 border-2 border-error border-t-transparent rounded-full animate-spin"></div>
+<span class="absolute text-[10px] font-data-mono text-error">SYNCING</span>
+</div>
+</div>
+<div class="mt-6 flex gap-4">
+<button class="bg-primary/10 border border-primary-fixed text-primary-fixed px-6 py-2 font-label-caps hover:bg-primary-fixed hover:text-black transition-all">ATTEMPT_RECONNECT</button>
+<button class="border border-on-surface-variant text-on-surface-variant px-6 py-2 font-label-caps hover:bg-on-surface-variant hover:text-black transition-all">FLUSH_DNS_CACHE</button>
+</div>
+</div>
+<!-- Terminal Log Column -->
+<div class="col-span-4 flex flex-col gap-gutter">
+<!-- System Status Widget -->
+<div class="bg-surface-container-high/60 border-t-2 border-primary-fixed p-4 backdrop-blur-md">
+<div class="flex justify-between items-center mb-4">
+<h3 class="font-label-caps text-primary">SYS_RESOURCE</h3>
+<span class="text-[10px] text-on-surface-variant font-data-mono">MOD_402</span>
+</div>
+<div class="space-y-4">
+<div>
+<div class="flex justify-between text-[10px] mb-1 font-data-mono">
+<span>CPU_USAGE</span>
+<span class="text-primary">12%</span>
+</div>
+<div class="h-1 w-full bg-surface-container-highest">
+<div class="h-full bg-primary-fixed" style="width: 12%"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between text-[10px] mb-1 font-data-mono">
+<span>MEM_LOCAL</span>
+<span class="text-tertiary-fixed-dim">88%</span>
+</div>
+<div class="h-1 w-full bg-surface-container-highest">
+<div class="h-full bg-tertiary-fixed-dim" style="width: 88%"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Live Terminal Terminal -->
+<div class="flex-1 bg-black border border-primary/20 p-4 font-data-mono text-[12px] relative">
+<div class="flex justify-between items-center text-on-surface-variant border-b border-primary/10 pb-2 mb-2">
+<span>TERMINAL_SESSION: LOCAL</span>
+<span class="material-symbols-outlined text-[16px]">close</span>
+</div>
+<div class="space-y-1 text-primary-fixed-dim/80">
+<p><span class="text-primary-fixed">&gt;</span> INITIALIZING_OFFLINE_WRAPPER...</p>
+<p><span class="text-primary-fixed">&gt;</span> LOADING_LOCAL_CACHE... [OK]</p>
+<p><span class="text-error">&gt;</span> CRITICAL_ERROR: 0x82_CONN_LOST</p>
+<p><span class="text-error">&gt;</span> UNABLE_TO_REACH_AUTH_SERVER</p>
+<p><span class="text-tertiary-fixed-dim">&gt;</span> SHIFTING_TO_BIO_REDUNDANCY_MODE</p>
+<p><span class="text-primary-fixed">&gt;</span> LOCAL_DB_MOUNTED_AT /mnt/local/core</p>
+<p><span class="text-primary-fixed">&gt;</span> LISTENING_ON_PORT_8080</p>
+<p class="animate-pulse"><span class="text-primary-fixed">&gt;</span> _</p>
+</div>
+<div class="absolute bottom-4 left-4 right-4 flex gap-2">
+<span class="text-primary-fixed font-bold">&gt;</span>
+<input class="bg-transparent border-none p-0 text-primary-fixed-dim focus:ring-0 w-full font-data-mono text-[12px]" placeholder="INPUT_COMMAND..." type="text"/>
+</div>
+</div>
+</div>
+<!-- Bottom Data Chips Row -->
+<div class="col-span-12 flex gap-gutter overflow-x-auto pb-4">
+<div class="min-w-[200px] border border-primary/20 p-3 bg-surface-container-low/40">
+<p class="text-[10px] font-label-caps text-on-surface-variant mb-1">LOCAL_ENCRYPTION</p>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary-fixed text-[18px]">verified_user</span>
+<span class="font-data-mono text-body-sm">AES-256-ACTIVE</span>
+</div>
+</div>
+<div class="min-w-[200px] border border-error/30 p-3 bg-error-container/10">
+<p class="text-[10px] font-label-caps text-error mb-1">NETWORK_STATUS</p>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-error text-[18px]">wifi_off</span>
+<span class="font-data-mono text-body-sm text-error">DISCONNECTED</span>
+</div>
+</div>
+<div class="min-w-[200px] border border-tertiary-fixed-dim/20 p-3 bg-surface-container-low/40">
+<p class="text-[10px] font-label-caps text-on-surface-variant mb-1">UPTIME_LOCAL</p>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-tertiary-fixed-dim text-[18px]">schedule</span>
+<span class="font-data-mono text-body-sm">00:14:42:09</span>
+</div>
+</div>
+<div class="min-w-[200px] border border-primary/20 p-3 bg-surface-container-low/40">
+<p class="text-[10px] font-label-caps text-on-surface-variant mb-1">GEO_LOCK</p>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary-fixed text-[18px]">location_on</span>
+<span class="font-data-mono text-body-sm">S_LAT_40.71</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Contextual HUD Footer Decoration -->
+<footer class="fixed bottom-0 right-0 p-container-padding z-30 pointer-events-none">
+<div class="flex flex-col items-end gap-2">
+<div class="text-[10px] font-data-mono text-on-surface-variant flex items-center gap-4">
+<span>BUFFER_OVERFLOW: 0%</span>
+<div class="w-32 h-1 bg-surface-container-highest"></div>
+</div>
+<div class="text-[12px] font-data-mono text-primary-fixed/50">ZAYD_LOCAL_ENV_STABLE</div>
+</div>
+</footer>
+</body></html>

@@ -1,0 +1,77 @@
+# Z-AI JARVIS HUD — Phase 3 Feature Expansion Plan
+
+We have successfully stabilized the core voice engine, AI API, and TTS pipeline. Now, it is time to elevate the HUD from a basic conversational AI into a true, immersive, agentic JARVIS system. 
+
+Here are five premium, high-impact features we can add. I have outlined the technical approach for each.
+
+## Proposed Features
+
+### 1. Real-Time Facial Authentication (The "True" Biometric Scan)
+**Goal:** Replace the current static "Biometric Scan" animation with actual webcam-based facial recognition.
+**Approach:** 
+- We already have `face-api.js` installed in the `package.json`.
+- When the HUD loads, we access the device webcam and run a lightweight face detection model.
+- The system remains locked in the "Biometric Scan" screen until it physically detects a human face in the camera feed, at which point it authenticates and grants access to the main HUD.
+
+### 2. Holographic Audio Visualizer
+**Goal:** Make the interface feel alive when you speak and when ZAYD speaks.
+**Approach:**
+- Implement the Web Audio API to capture microphone input and TTS output.
+- Create a `canvas`-based or `framer-motion`-based glowing waveform in the center of the HUD that dynamically reacts to the frequency and amplitude of the audio in real-time.
+
+### 3. Real Device Telemetry (Battery & Network)
+**Goal:** Give ZAYD actual awareness of your physical hardware.
+**Approach:**
+- Hook into the browser's `navigator.getBattery()` and `navigator.connection` APIs.
+- When you ask *"Zayd, what is the system status?"*, the AI will literally read your actual device battery percentage, charging status, and internet connection speed, responding with real-world diagnostic data.
+
+### 4. Visual Data Widgets
+**Goal:** Enhance ZAYD's responses with visual UI elements, not just voice.
+**Approach:**
+- When ZAYD uses the `getWeather` tool, we will trigger a React state that spawns a sleek, glassmorphism "Weather Widget" on the HUD showing the temperature and a dynamic icon, alongside the spoken response.
+
+### 5. Contextual Memory (Conversational History)
+**Goal:** Allow ZAYD to remember what you said two minutes ago.
+**Approach:**
+- Currently, the HUD only sends the *immediate* last command to the AI. 
+- We will update `useVoiceInterface.ts` to maintain an array of the last 5 interactions (short-term memory) so you can have fluid, continuous conversations without repeating context.
+
+---
+
+# Phase 4: Agentic Sidecar & Native Automation Integration
+
+Based on the architectural audit of the `vierisid/jarvis` autonomous agent, we can implement a highly privileged execution layer that grants ZAYD true desktop and mobile system-level automation.
+
+## Section 1: Feature Deconstruction & Requirements
+
+### 🖥️ Desktop Sidecar Control
+*   **What it does:** Breaks out of the browser sandbox to execute native OS commands (window management, file manipulation, clipboard access).
+*   **Core Stack/Requirements:** In the target repo, this is achieved via a local Go daemon (`desktop_windows.go`, `platform_linux.go`). It binds directly to OS-level UI automation frameworks (like Microsoft UIA) to manipulate the OS.
+*   **Feasibility for ZAYD:** Highly feasible. We will build a lightweight local daemon (Node.js/Go) that runs in the background on the PC. ZAYD's Next.js frontend will connect to this daemon via a `localhost` WebSocket to securely transmit native execution commands.
+
+### 🌐 Browser Automation Tree
+*   **What it does:** Allows the agent to autonomously browse the web, click buttons, and read DOM structures without user intervention.
+*   **Core Stack/Requirements:** Achieved via the Chrome DevTools Protocol (CDP) (`browser.go`). It attaches directly to running Chrome instances to inject JavaScript and capture rendered trees.
+*   **Feasibility for ZAYD:** Instead of a complex Go CDP wrapper, ZAYD can achieve this by granting Gemini access to a secure headless Puppeteer/Playwright tool endpoint on our backend, allowing ZAYD to fetch and analyze external webpages on demand.
+
+### 👁️ Screen Awareness & OCR
+*   **What it does:** Takes physical screenshots of the user's desktop and runs Optical Character Recognition (OCR) to read unselectable text.
+*   **Core Stack/Requirements:** Uses native OS screenshot binaries (`capture.go`) and PowerShell scripts (`ocr_windows.ps1`) hooked into local Tesseract OCR binaries.
+*   **Feasibility for ZAYD:** On desktop, ZAYD's Sidecar can execute screen capture scripts and pipe the image buffer directly to the Gemini 2.5 Flash Vision API, bypassing the need for clunky local OCR dependencies.
+
+## Section 2: Architectural Mapping (ZAYD Integration Strategy)
+
+ZAYD operates as a hybrid cross-platform application (Next.js Web for PC, Capacitor for Android). To safely implement these aggressive native capabilities, ZAYD must implement a **Bifurcated Execution Strategy**:
+
+1.  **The Desktop Protocol (Sidecar Daemon):** 
+    When ZAYD detects it is running in a desktop browser environment, it will attempt a WebSocket handshake with the **Z-AI Sidecar** running on `localhost:8080`. If authenticated, ZAYD can push terminal commands (e.g., "Create a new folder on the Desktop") to the Sidecar for native execution.
+2.  **The Mobile Protocol (Capacitor Bridge):**
+    When ZAYD detects it is running natively on Android (`Capacitor.isNativePlatform() === true`), it completely bypasses the Sidecar logic. Instead, the AI's agentic tools are dynamically re-routed to use native Capacitor Plugins. For example, a "File Write" command from the AI will seamlessly trigger `@capacitor/filesystem` to write directly to the Android device storage.
+
+## User Review Required
+
+> [!CAUTION]
+> Phase 4 grants the AI significant control over the local operating system. To ensure safety, do you prefer we enforce a "Human-in-the-Loop" validation prompt before ZAYD executes any destructive file system or terminal commands?
+
+> [!NOTE]
+> Which phase would you like to execute first? The Phase 3 Visual/Telemetry upgrades, or the Phase 4 Agentic Sidecar architecture? Once you confirm, I will generate the `task.md` action list.

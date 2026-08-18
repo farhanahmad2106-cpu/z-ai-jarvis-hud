@@ -1,0 +1,71 @@
+env: load .env
+env: export EXPO_PUBLIC_API_URL EXPO_PUBLIC_SALT
+Starting Metro Bundler
+SyntaxError: SyntaxError: C:\Farhan Ahmad\Code Languages\Mr. Z\Z-AI (AntiGravity\stitch_z_ai_jarvis_hud_assistant\z_ai_rn_app\src\components\common\MonoText.tsx: Unexpected token, expected "..." (38:43)
+
+[0m [90m 36 |[39m   [33m<[39m[33mText[39m style[33m=[39m{[[33mSIZE_MAP[39m[size][33m,[39m { color }[33m,[39m style]}[33m>[39m
+ [90m 37 |[39m     {prompt [33m&&[39m (
+[31m[1m>[22m[39m[90m 38 |[39m       [33m<[39m[33mText[39m style[33m=[39m{{ color[33m:[39m promptColor }}{[32m'> '[39m} [33m/[39m[33m>[39m
+ [90m    |[39m                                            [31m[1m^[22m[39m
+ [90m 39 |[39m     )}
+ [90m 40 |[39m     {children}
+ [90m 41 |[39m   [33m<[39m[33m/[39m[33mText[39m[33m>[39m[0m
+SyntaxError: C:\Farhan Ahmad\Code Languages\Mr. Z\Z-AI (AntiGravity\stitch_z_ai_jarvis_hud_assistant\z_ai_rn_app\src\components\common\MonoText.tsx: Unexpected token, expected "..." (38:43)
+
+[0m [90m 36 |[39m   [33m<[39m[33mText[39m style[33m=[39m{[[33mSIZE_MAP[39m[size][33m,[39m { color }[33m,[39m style]}[33m>[39m
+ [90m 37 |[39m     {prompt [33m&&[39m (
+[31m[1m>[22m[39m[90m 38 |[39m       [33m<[39m[33mText[39m style[33m=[39m{{ color[33m:[39m promptColor }}{[32m'> '[39m} [33m/[39m[33m>[39m
+ [90m    |[39m                                            [31m[1m^[22m[39m
+ [90m 39 |[39m     )}
+ [90m 40 |[39m     {children}
+ [90m 41 |[39m   [33m<[39m[33m/[39m[33mText[39m[33m>[39m[0m
+    at constructor (C:\Farhan Ahmad\Code Languages\Mr. Z\Z-AI (AntiGravity\stitch_z_ai_jarvis_hud_assistant\z_ai_rn_app\node_modules\@babel\parser\lib\index.js:365:19)
+    at TypeScriptParserMixin.raise (C:\Farhan Ahmad\Code Languages\Mr. Z\Z-AI (AntiGravity\stitch_z_ai_jarvis_hud_assistant\z_ai_rn_app\node_modules\@babel\parser\lib\index.js:6616:19)
+    at TypeScriptParserMixin.unexpected (C:\Farhan Ahmad\Code Languages\Mr. Z\Z-AI (AntiGravity\stitch_z_ai_jarvis_hud_assistant\z_ai_rn_app\node_modules\@babel\parser\lib\index.js:6636:16)
+    at TypeScriptParserMixin.expect (C:\Farhan Ahmad\Code Languages\Mr. Z\Z-AI (AntiGravity\stitch_z_ai_jarvis_hud_assistant\z_ai_rn_app\node_modules\@babel\parser\lib\index.js:6916:12)
+    at TypeScriptParserMixin.jsxParseAttribute (C:\Farhan Ahmad\Code Languages\Mr. Z\Z-AI (AntiGravity\stitch_z_ai_jarvis_hud_assistant\z_ai_rn_app\node_modules\@babel\parser\lib\index.js:4657:12)
+    at TypeScriptParserMixin.jsxParseOpeningElementAfterName (C:\Farhan Ahmad\Code Languages\Mr. Z\Z-AI (AntiGravity\stitch_z_ai_jarvis_hud_assistant\z_ai_rn_app\node_modules\@babel\parser\lib\index.js:4679:28)
+    at TypeScriptParserMixin.jsxParseOpeningElementAfterName (C:\Farhan Ahmad\Code Languages\Mr. Z\Z-AI (AntiGravity\stitch_z_ai_jarvis_hud_assistant\z_ai_rn_app\node_modules\@babel\parser\lib\index.js:10060:18)
+    at TypeScriptParserMixin.jsxParseOpeningElementAt (C:\Farhan Ahmad\Code Languages\Mr. Z\Z-AI (AntiGravity\stitch_z_ai_jarvis_hud_assistant\z_ai_rn_app\node_modules\@babel\parser\lib\index.js:4674:17)
+    at TypeScriptParserMixin.jsxParseElementAt (C:\Farhan Ahmad\Code Languages\Mr. Z\Z-AI (AntiGravity\stitch_z_ai_jarvis_hud_assistant\z_ai_rn_app\node_modules\@babel\parser\lib\index.js:4698:33)
+    at TypeScriptParserMixin.jsxParseElement (C:\Farhan Ahmad\Code Languages\Mr. Z\Z-AI (AntiGravity\stitch_z_ai_jarvis_hud_assistant\z_ai_rn_app\node_modules\@babel\parser\lib\index.js:4761:17)
+    at TypeScriptParserMixin.parseExprAtom (C:\Farhan Ahmad\Code Languages\Mr. Z\Z-AI (AntiGravity\stitch_z_ai_jarvis_hud_assistant\z_ai_rn_app\node_modules\@babel\parser\lib\index.js:4771:19)
+    at TypeScriptParserMixin.parseExprSubscripts (C:\Farhan Ahmad\Code Languages\Mr. Z\Z-AI (AntiGravity\stitch_z_ai_jarvis_hud_assistant\z_ai_rn_app\node_modules\@babel\parser\lib\index.js:11098:23)
+    at TypeScriptParserMixin.parseUpdate (C:\Farhan Ahmad\Code Languages\Mr. Z\Z-AI (AntiGravity\stitch_z_ai_jarvis_hud_assistant\z_ai_rn_app\node_modules\@babel\parser\lib\index.js:11083:21)
+    at TypeScriptParserMixin.parseMaybeUnary (C:\Farhan Ahmad\Code Languages\Mr. Z\Z-AI (AntiGravity\stitch_z_ai_jarvis_hud_assistant\z_ai_rn_app\node_modules\@babel\parser\lib\index.js:11063:23)
+    at TypeScriptParserMixin.parseMaybeUnary (C:\Farhan Ahmad\Code Languages\Mr. Z\Z-AI (AntiGravity\stitch_z_ai_jarvis_hud_assistant\z_ai_rn_app\node_modules\@babel\parser\lib\index.js:9854:18)
+    at TypeScriptParserMixin.parseMaybeUnaryOrPrivate (C:\Farhan Ahmad\Code Languages\Mr. Z\Z-AI (AntiGravity\stitch_z_ai_jarvis_hud_assistant\z_ai_rn_app\node_modules\@babel\parser\lib\index.js:10916:61)
+    at TypeScriptParserMixin.parseExprOps (C:\Farhan Ahmad\Code Languages\Mr. Z\Z-AI (AntiGravity\stitch_z_ai_jarvis_hud_assistant\z_ai_rn_app\node_modules\@babel\parser\lib\index.js:10921:23)
+    at TypeScriptParserMixin.parseMaybeConditional (C:\Farhan Ahmad\Code Languages\Mr. Z\Z-AI (AntiGravity\stitch_z_ai_jarvis_hud_assistant\z_ai_rn_app\node_modules\@babel\parser\lib\index.js:10898:23)
+    at TypeScriptParserMixin.parseMaybeAssign (C:\Farhan Ahmad\Code Languages\Mr. Z\Z-AI (AntiGravity\stitch_z_ai_jarvis_hud_assistant\z_ai_rn_app\node_modules\@babel\parser\lib\index.js:10848:21)
+    at C:\Farhan Ahmad\Code Languages\Mr. Z\Z-AI (AntiGravity\stitch_z_ai_jarvis_hud_assistant\z_ai_rn_app\node_modules\@babel\parser\lib\index.js:9792:39
+    at TypeScriptParserMixin.tryParse (C:\Farhan Ahmad\Code Languages\Mr. Z\Z-AI (AntiGravity\stitch_z_ai_jarvis_hud_assistant\z_ai_rn_app\node_modules\@babel\parser\lib\index.js:6924:20)
+    at TypeScriptParserMixin.parseMaybeAssign (C:\Farhan Ahmad\Code Languages\Mr. Z\Z-AI (AntiGravity\stitch_z_ai_jarvis_hud_assistant\z_ai_rn_app\node_modules\@babel\parser\lib\index.js:9792:18)
+    at C:\Farhan Ahmad\Code Languages\Mr. Z\Z-AI (AntiGravity\stitch_z_ai_jarvis_hud_assistant\z_ai_rn_app\node_modules\@babel\parser\lib\index.js:10817:39
+    at TypeScriptParserMixin.allowInAnd (C:\Farhan Ahmad\Code Languages\Mr. Z\Z-AI (AntiGravity\stitch_z_ai_jarvis_hud_assistant\z_ai_rn_app\node_modules\@babel\parser\lib\index.js:12443:12)
+    at TypeScriptParserMixin.parseMaybeAssignAllowIn (C:\Farhan Ahmad\Code Languages\Mr. Z\Z-AI (AntiGravity\stitch_z_ai_jarvis_hud_assistant\z_ai_rn_app\node_modules\@babel\parser\lib\index.js:10817:17)
+    at TypeScriptParserMixin.parseMaybeAssignAllowInOrVoidPattern (C:\Farhan Ahmad\Code Languages\Mr. Z\Z-AI (AntiGravity\stitch_z_ai_jarvis_hud_assistant\z_ai_rn_app\node_modules\@babel\parser\lib\index.js:12510:17)
+    at TypeScriptParserMixin.parseParenAndDistinguishExpression (C:\Farhan Ahmad\Code Languages\Mr. Z\Z-AI (AntiGravity\stitch_z_ai_jarvis_hud_assistant\z_ai_rn_app\node_modules\@babel\parser\lib\index.js:11692:28)
+    at TypeScriptParserMixin.parseExprAtom (C:\Farhan Ahmad\Code Languages\Mr. Z\Z-AI (AntiGravity\stitch_z_ai_jarvis_hud_assistant\z_ai_rn_app\node_modules\@babel\parser\lib\index.js:11348:23)
+    at TypeScriptParserMixin.parseExprAtom (C:\Farhan Ahmad\Code Languages\Mr. Z\Z-AI (AntiGravity\stitch_z_ai_jarvis_hud_assistant\z_ai_rn_app\node_modules\@babel\parser\lib\index.js:4776:20)
+    at TypeScriptParserMixin.parseExprSubscripts (C:\Farhan Ahmad\Code Languages\Mr. Z\Z-AI (AntiGravity\stitch_z_ai_jarvis_hud_assistant\z_ai_rn_app\node_modules\@babel\parser\lib\index.js:11098:23)
+    at TypeScriptParserMixin.parseUpdate (C:\Farhan Ahmad\Code Languages\Mr. Z\Z-AI (AntiGravity\stitch_z_ai_jarvis_hud_assistant\z_ai_rn_app\node_modules\@babel\parser\lib\index.js:11083:21)
+    at TypeScriptParserMixin.parseMaybeUnary (C:\Farhan Ahmad\Code Languages\Mr. Z\Z-AI (AntiGravity\stitch_z_ai_jarvis_hud_assistant\z_ai_rn_app\node_modules\@babel\parser\lib\index.js:11063:23)
+    at TypeScriptParserMixin.parseMaybeUnary (C:\Farhan Ahmad\Code Languages\Mr. Z\Z-AI (AntiGravity\stitch_z_ai_jarvis_hud_assistant\z_ai_rn_app\node_modules\@babel\parser\lib\index.js:9854:18)
+    at TypeScriptParserMixin.parseMaybeUnaryOrPrivate (C:\Farhan Ahmad\Code Languages\Mr. Z\Z-AI (AntiGravity\stitch_z_ai_jarvis_hud_assistant\z_ai_rn_app\node_modules\@babel\parser\lib\index.js:10916:61)
+    at TypeScriptParserMixin.parseExprOpBaseRightExpr (C:\Farhan Ahmad\Code Languages\Mr. Z\Z-AI (AntiGravity\stitch_z_ai_jarvis_hud_assistant\z_ai_rn_app\node_modules\@babel\parser\lib\index.js:11003:34)
+    at TypeScriptParserMixin.parseExprOpRightExpr (C:\Farhan Ahmad\Code Languages\Mr. Z\Z-AI (AntiGravity\stitch_z_ai_jarvis_hud_assistant\z_ai_rn_app\node_modules\@babel\parser\lib\index.js:10998:21)
+    at TypeScriptParserMixin.parseExprOp (C:\Farhan Ahmad\Code Languages\Mr. Z\Z-AI (AntiGravity\stitch_z_ai_jarvis_hud_assistant\z_ai_rn_app\node_modules\@babel\parser\lib\index.js:10964:27)
+    at TypeScriptParserMixin.parseExprOp (C:\Farhan Ahmad\Code Languages\Mr. Z\Z-AI (AntiGravity\stitch_z_ai_jarvis_hud_assistant\z_ai_rn_app\node_modules\@babel\parser\lib\index.js:9323:18)
+    at TypeScriptParserMixin.parseExprOps (C:\Farhan Ahmad\Code Languages\Mr. Z\Z-AI (AntiGravity\stitch_z_ai_jarvis_hud_assistant\z_ai_rn_app\node_modules\@babel\parser\lib\index.js:10925:17)
+    at TypeScriptParserMixin.parseMaybeConditional (C:\Farhan Ahmad\Code Languages\Mr. Z\Z-AI (AntiGravity\stitch_z_ai_jarvis_hud_assistant\z_ai_rn_app\node_modules\@babel\parser\lib\index.js:10898:23)
+    at TypeScriptParserMixin.parseMaybeAssign (C:\Farhan Ahmad\Code Languages\Mr. Z\Z-AI (AntiGravity\stitch_z_ai_jarvis_hud_assistant\z_ai_rn_app\node_modules\@babel\parser\lib\index.js:10848:21)
+    at TypeScriptParserMixin.parseMaybeAssign (C:\Farhan Ahmad\Code Languages\Mr. Z\Z-AI (AntiGravity\stitch_z_ai_jarvis_hud_assistant\z_ai_rn_app\node_modules\@babel\parser\lib\index.js:9803:20)
+    at TypeScriptParserMixin.parseExpressionBase (C:\Farhan Ahmad\Code Languages\Mr. Z\Z-AI (AntiGravity\stitch_z_ai_jarvis_hud_assistant\z_ai_rn_app\node_modules\@babel\parser\lib\index.js:10801:23)
+    at C:\Farhan Ahmad\Code Languages\Mr. Z\Z-AI (AntiGravity\stitch_z_ai_jarvis_hud_assistant\z_ai_rn_app\node_modules\@babel\parser\lib\index.js:10797:39
+    at TypeScriptParserMixin.allowInAnd (C:\Farhan Ahmad\Code Languages\Mr. Z\Z-AI (AntiGravity\stitch_z_ai_jarvis_hud_assistant\z_ai_rn_app\node_modules\@babel\parser\lib\index.js:12443:12)
+    at TypeScriptParserMixin.parseExpression (C:\Farhan Ahmad\Code Languages\Mr. Z\Z-AI (AntiGravity\stitch_z_ai_jarvis_hud_assistant\z_ai_rn_app\node_modules\@babel\parser\lib\index.js:10797:17)
+    at TypeScriptParserMixin.jsxParseExpressionContainer (C:\Farhan Ahmad\Code Languages\Mr. Z\Z-AI (AntiGravity\stitch_z_ai_jarvis_hud_assistant\z_ai_rn_app\node_modules\@babel\parser\lib\index.js:4644:31)
+    at TypeScriptParserMixin.jsxParseElementAt (C:\Farhan Ahmad\Code Languages\Mr. Z\Z-AI (AntiGravity\stitch_z_ai_jarvis_hud_assistant\z_ai_rn_app\node_modules\@babel\parser\lib\index.js:4723:36)
+    at TypeScriptParserMixin.jsxParseElement (C:\Farhan Ahmad\Code Languages\Mr. Z\Z-AI (AntiGravity\stitch_z_ai_jarvis_hud_assistant\z_ai_rn_app\node_modules\@babel\parser\lib\index.js:4761:17)
+    at TypeScriptParserMixin.parseExprAtom (C:\Farhan Ahmad\Code Languages\Mr. Z\Z-AI (AntiGravity\stitch_z_ai_jarvis_hud_assistant\z_ai_rn_app\node_modules\@babel\parser\lib\index.js:4771:19)
