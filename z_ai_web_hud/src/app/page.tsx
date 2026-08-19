@@ -39,10 +39,10 @@ export default function Home() {
           if (videoRef.current) {
             videoRef.current.srcObject = mediaStream;
           }
-          // Simulate the ML facial recognition processing delay (3 seconds)
+          // Simulate the ML facial recognition processing delay
           setTimeout(() => {
             setIsLocked(false);
-          }, 3000);
+          }, 800);
         })
         .catch((err) => {
           console.error("Camera access denied", err);

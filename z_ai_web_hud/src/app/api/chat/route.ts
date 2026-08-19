@@ -4,7 +4,6 @@ import { streamText, tool } from 'ai';
 import { z } from 'zod';
 
 // Next.js Route Segments Configuration
-export const runtime = 'edge'; 
 export const dynamic = 'force-dynamic';
 
 // ==========================================
