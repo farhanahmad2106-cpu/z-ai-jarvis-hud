@@ -305,7 +305,7 @@ export async function POST(req: Request) {
               parameters: z.object({
                 location: z.string().describe('The city and state/country (e.g., San Francisco, CA)'),
               }),
-              // @ts-ignore
+              // @ts-expect-error
               execute: async ({ location }: { location: string }) => {
                 try {
                   const geoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(location)}&count=1&language=en&format=json`);
@@ -358,7 +358,7 @@ export async function POST(req: Request) {
               parameters: z.object({
                 query: z.string().describe('The web search query'),
               }),
-              // @ts-ignore
+              // @ts-expect-error
               execute: async ({ query }: { query: string }) => await performWebSearch(query)
             }) as any
           } as any
@@ -378,7 +378,7 @@ export async function POST(req: Request) {
               parameters: z.object({
                 skillFilename: z.string().describe('The filename matching the skill needed (e.g., "typescript-expert", "api-security", "vercel-deployment")'),
               }),
-              // @ts-ignore
+              // @ts-expect-error
               execute: async ({ skillFilename }: { skillFilename: string }) => {
                 try {
                   const targetId = skillFilename.replace('.md', '');
