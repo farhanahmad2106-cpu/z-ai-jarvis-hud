@@ -305,6 +305,7 @@ export async function POST(req: Request) {
               parameters: z.object({
                 location: z.string().describe('The city and state/country (e.g., San Francisco, CA)'),
               }),
+              // @ts-ignore
               execute: async ({ location }: { location: string }) => {
                 try {
                   const geoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(location)}&count=1&language=en&format=json`);
@@ -351,15 +352,16 @@ export async function POST(req: Request) {
                   };
                 }
               },
-            }),
+            }) as any,
             searchWeb: tool({
               description: 'Search the web for up-to-date real-time query information (news, stocks, events, time, dates).',
               parameters: z.object({
                 query: z.string().describe('The web search query'),
               }),
+              // @ts-ignore
               execute: async ({ query }: { query: string }) => await performWebSearch(query)
-            })
-          }
+            }) as any
+          } as any
         });
         return result.toTextStreamResponse();
       } else {
@@ -371,11 +373,12 @@ export async function POST(req: Request) {
           Keep normal interactions highly concise (1-3 lines max).
           You have access to a database of 1,400+ specialized engineering skills. If the user asks you to perform an advanced engineering task (like optimizing code, auditing security, or debugging deployments), use the 'injectSpecializedSkill' tool to pull the exact playbook instructions first, then apply those rules to give a master-level response.`,
           tools: {
-            injectSpecializedSkill: (tool({
+            injectSpecializedSkill: tool({
               description: 'Queries the remote skills library to retrieve system instructions for a specific skill profile.',
               parameters: z.object({
                 skillFilename: z.string().describe('The filename matching the skill needed (e.g., "typescript-expert", "api-security", "vercel-deployment")'),
               }),
+              // @ts-ignore
               execute: async ({ skillFilename }: { skillFilename: string }) => {
                 try {
                   const targetId = skillFilename.replace('.md', '');
@@ -402,8 +405,8 @@ export async function POST(req: Request) {
                   return { error: `Failed parsing prompt framework: ${message}` };
                 }
               },
-            }) as any),
-          },
+            }) as any,
+          } as any,
         });
         return result.toTextStreamResponse();
       }
