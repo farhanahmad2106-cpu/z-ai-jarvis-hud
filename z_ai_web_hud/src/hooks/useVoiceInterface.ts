@@ -127,6 +127,35 @@ export function useVoiceInterface() {
     appendLog(`USER: ${command}`);
 
     try {
+      if (typeof navigator !== 'undefined' && !navigator.onLine) {
+        let offlineResponse = "I am currently disconnected from my core network.";
+        const lowerCmd = command.toLowerCase();
+        
+        if (lowerCmd.includes('time')) {
+          offlineResponse = `The current local time is ${new Date().toLocaleTimeString()}.`;
+        } else if (lowerCmd.includes('date')) {
+          offlineResponse = `Today is ${new Date().toLocaleDateString()}.`;
+        } else if (lowerCmd.includes('battery') || lowerCmd.includes('status')) {
+          let batteryStr = "Battery status unknown.";
+          try {
+            const nav = navigator as any;
+            if (nav.getBattery) {
+              const b = await nav.getBattery();
+              batteryStr = `Battery is at ${Math.round(b.level * 100)} percent.`;
+            }
+          } catch(e) {}
+          offlineResponse = `Offline mode active. ${batteryStr}`;
+        } else if (lowerCmd.includes('offline') || lowerCmd.includes('internet')) {
+          offlineResponse = "Yes, I am currently operating in local offline mode without cloud connectivity.";
+        }
+        
+        conversationHistoryRef.current.push({ role: 'assistant', content: offlineResponse });
+        if (conversationHistoryRef.current.length > 5) conversationHistoryRef.current.shift();
+        
+        await speak(offlineResponse);
+        return;
+      }
+
       // Collect real device telemetry silently
       let telemetryData = '';
       try {

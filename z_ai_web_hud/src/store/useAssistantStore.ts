@@ -15,6 +15,10 @@ interface AssistantState {
   // Weather Data
   weatherData: { temp: string, condition: string, location: string } | null;
   setWeatherData: (data: { temp: string, condition: string, location: string } | null) => void;
+
+  // Network State
+  isOnline: boolean;
+  setIsOnline: (online: boolean) => void;
 }
 
 export const useAssistantStore = create<AssistantState>((set) => ({
@@ -49,4 +53,8 @@ export const useAssistantStore = create<AssistantState>((set) => ({
   // Weather Data initial state
   weatherData: null,
   setWeatherData: (data) => set({ weatherData: data }),
+
+  // Network State
+  isOnline: typeof navigator !== 'undefined' ? navigator.onLine : true,
+  setIsOnline: (online) => set({ isOnline: online }),
 }));

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAssistantStore } from '@/store/useAssistantStore';
 import { useVoiceInterface } from '@/hooks/useVoiceInterface';
@@ -20,9 +20,22 @@ import { Visualizer } from '@/components/Visualizer';
 import { WeatherWidget } from '@/components/WeatherWidget';
 
 export const JarvisHUD: React.FC = () => {
-  const { status, terminalLog, setStatus, appendLog, clearLog } = useAssistantStore();
+  const { status, terminalLog, setStatus, appendLog, clearLog, isOnline, setIsOnline } = useAssistantStore();
   const { toggleManualListen } = useVoiceInterface();
   
+  useEffect(() => {
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, [setIsOnline]);
+
   // Active HUD Command Center Tab
   const [activeTab, setActiveTab] = useState<'terminal' | 'shield' | 'cpu' | 'activity' | 'network'>('terminal');
   
@@ -71,7 +84,12 @@ export const JarvisHUD: React.FC = () => {
   };
 
   return (
-    <main className="relative h-screen w-full flex items-center justify-center p-8 overflow-hidden transform-gpu select-none">
+    <main className={`relative h-screen w-full flex items-center justify-center p-8 overflow-hidden transform-gpu select-none ${!isOnline ? 'offline-mode' : ''}`}>
+      {!isOnline && (
+        <div className="absolute top-24 left-1/2 -translate-x-1/2 z-[100] border border-[#ffaa00]/40 bg-[#ffaa00]/10 px-8 py-2 rounded-full backdrop-blur-md shadow-[0_0_20px_rgba(255,170,0,0.3)] pointer-events-none">
+          <span className="font-mono text-xs font-extrabold text-[#ffaa00] tracking-[0.4em] animate-pulse">NETWORK OFFLINE - RUNNING LOCAL</span>
+        </div>
+      )}
       <WeatherWidget />
       {/* Header */}
       <header className="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-8 py-4 border-b border-outline/20 bg-background/40 backdrop-blur-md">
@@ -476,8 +494,12 @@ export const JarvisHUD: React.FC = () => {
                 NEURAL_ROUTING [MOD_902]
               </div>
               <button 
-                disabled={isPingActive}
+                disabled={isPingActive || !isOnline}
                 onClick={() => {
+                  if (!isOnline) {
+                    appendLog("NETWORK_ERROR: Nodes unreachable (Offline).");
+                    return;
+                  }
                   setIsPingActive(true);
                   appendLog("NETWORK: Pinging active telemetry nodes...");
                   setTimeout(() => {
