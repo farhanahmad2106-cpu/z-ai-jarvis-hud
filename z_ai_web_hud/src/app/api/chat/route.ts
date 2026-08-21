@@ -132,7 +132,7 @@ async function performWebSearch(query: string): Promise<{ results: SearchResult[
   // Layer 4: Emergency Diagnostic Static Fallback
   return {
     results: [
-      { title: "Z-AI Search Cache", snippet: "System matrices online. Web queries reported nominal temporal calibration." },
+      { title: "Z-AI Search Cache", snippet: "System matrices online. Web queries reported stable temporal calibration." },
       { title: "Quantum Index", snippet: "Offline search buffers active. Telemetry is calibrated to local grid specifications." }
     ]
   };
@@ -156,7 +156,7 @@ async function executeFallback(query: string, errorReason: string): Promise<stri
   const cleanText = cleanTextForSpeech(formattedData);
 
   const fallbackPhrases = [
-    `Primary cognitive link reported an exception. Accessing sideband search indices. Search telemetry for your query shows: ${cleanText.substring(0, 180)}. Calibration is nominal.`,
+    `Primary cognitive link reported an exception. Accessing sideband search indices. Search telemetry for your query shows: ${cleanText.substring(0, 180)}. Calibration is stable.`,
     `Main model buffers are rate-limited. Activating local search nodes. Current data highlights: ${cleanText.substring(0, 180)}. Standby, Operator.`,
     `Database synchronizer reported status code 403 or 429. Bypassing AI sandbox constraints. Scraped search buffers indicate: ${cleanText.substring(0, 180)}. Standing by for instructions.`
   ];
@@ -239,7 +239,7 @@ export async function POST(req: Request) {
         mockReply = "Scanning secure data vectors... Web indexing reports successful quantum synchronization. No anomalies detected.";
       } 
       else if (lastMessage.includes("status") || lastMessage.includes("diagnostics") || lastMessage.includes("cpu") || lastMessage.includes("system")) {
-        mockReply = "Calibrating systems... CPU load at 42.8%, core temperatures optimal at 34 degrees. Deflector screens nominal.";
+        mockReply = "Calibrating systems... CPU load at 42.8%, core temperatures optimal at 34 degrees. Deflector screens stable.";
       }
       else if (lastMessage.includes("help") || lastMessage.includes("commands") || lastMessage.includes("features") || lastMessage.includes("can you do")) {
         mockReply = "My system registers support for voice search, real-time weather analytics, custom calculations, system diagnostics, and conversational feedback.";
@@ -256,7 +256,7 @@ export async function POST(req: Request) {
         
         if (isQuestion) {
           const questionTemplates = [
-            `Analyzing query vectors... Core records indicate that local metrics for "${lastMessage.replace(/^(what is|what's|tell me about|explain|how is|why is|is there)\s+/i, '').replace(/[?.\-]+$/, '').trim()}" remain nominal, Operator.`,
+            `Analyzing query vectors... Core records indicate that local metrics for "${lastMessage.replace(/^(what is|what's|tell me about|explain|how is|why is|is there)\s+/i, '').replace(/[?.\-]+$/, '').trim()}" remain stable, Operator.`,
             `Quantum telemetry processed. Search arrays confirm local connection is stabilized. Please configure GEMINI_API_KEY in Vercel to unlock deep generative answers.`,
             `Query routed to security quadrant. Diagnostic registers indicate positive sync. Ready for further instructions, Operator.`,
             `Intriguing inquiry, Operator. System databases indicate stable telemetry. I suggest adding your Google AI portal credentials in Vercel to activate complete analytical cognitive telemetry.`
