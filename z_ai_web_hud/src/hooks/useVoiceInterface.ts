@@ -211,7 +211,7 @@ export function useVoiceInterface() {
       console.log('[Z-AI] Combined API response:', cleanResponse);
 
       if (!cleanResponse) {
-        cleanResponse = 'Telemetry nominal. Standing by, Operator.';
+        cleanResponse = 'I am unable to process that command right now. Systems on standby.';
         console.warn('[Z-AI] Empty response from API — using fallback.');
       }
 
