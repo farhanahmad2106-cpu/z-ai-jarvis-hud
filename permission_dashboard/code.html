@@ -111,10 +111,16 @@
             z-index: 100;
         }
         .glass-panel {
-            background: rgba(23, 33, 39, 0.7);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(0, 219, 231, 0.2);
-            box-shadow: inset 0 0 10px rgba(0, 219, 231, 0.05);
+            background: linear-gradient(135deg, rgba(23, 33, 39, 0.8) 0%, rgba(10, 21, 27, 0.9) 100%);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid rgba(0, 219, 231, 0.3);
+            border-top: 1px solid rgba(0, 219, 231, 0.5);
+            border-left: 1px solid rgba(0, 219, 231, 0.5);
+            box-shadow: 
+                0 15px 35px rgba(0, 0, 0, 0.5),
+                inset 0 0 20px rgba(0, 219, 231, 0.05),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
         }
         .hud-border-glow {
             box-shadow: 0 0 8px rgba(0, 219, 231, 0.3);

@@ -58,6 +58,21 @@ export default function Home() {
     };
   }, [isLocked, authMethod]);
 
+  const typingAnimation = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.05,
+      }
+    }
+  };
+
+  const letterAnimation = {
+    hidden: { opacity: 0, y: 10 },
+    show: { opacity: 1, y: 0 }
+  };
+
   return (
     <div className="relative h-screen w-full bg-background">
       <AnimatePresence mode="wait">
@@ -69,7 +84,7 @@ export default function Home() {
             exit={{ opacity: 0, scale: 1.1 }}
             className="absolute inset-0 z-[200] flex flex-col items-center justify-center bg-background"
           >
-            <div className="relative flex items-center justify-center mb-8 transform-gpu w-64 h-64 rounded-full overflow-hidden border-2 border-surface-tint shadow-[0_0_30px_rgba(6,182,212,0.3)]">
+            <div className="relative flex items-center justify-center mb-8 transform-gpu w-72 h-72 rounded-full overflow-hidden border-[3px] border-surface-tint shadow-[0_0_50px_rgba(0,219,231,0.4)] backdrop-blur-md bg-background/20">
                
                {/* Live Webcam Feed */}
                {authMethod === 'face' ? (
@@ -79,52 +94,78 @@ export default function Home() {
                      autoPlay 
                      playsInline 
                      muted 
-                     className="absolute w-full h-full object-cover filter grayscale sepia hue-rotate-[180deg] saturate-200 opacity-60"
+                     className="absolute w-full h-full object-cover filter grayscale-[0.8] sepia-[0.3] hue-rotate-[160deg] saturate-200 contrast-125 opacity-70"
                    />
                    <motion.div 
                      animate={{ y: ["-100%", "100%"] }}
-                     transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                     className="absolute w-full h-2 bg-surface-tint shadow-[0_0_15px_#06b6d4] opacity-50 z-10"
+                     transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+                     className="absolute w-full h-3 bg-surface-tint shadow-[0_0_20px_#00dbe7] opacity-60 z-10 mix-blend-screen"
                    />
                  </>
                ) : (
-                 <Fingerprint size={64} className="text-surface-tint glow-sm transform-gpu" />
+                 <Fingerprint size={80} className="text-surface-tint glow-sm transform-gpu drop-shadow-[0_0_15px_rgba(0,219,231,0.8)]" />
                )}
                
                <motion.div 
                 animate={{ rotate: 360 }}
-                transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-                className="absolute w-[105%] h-[105%] border-2 border-dashed border-surface-tint/60 rounded-full transform-gpu will-change-transform z-20 pointer-events-none"
+                transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
+                className="absolute w-[110%] h-[110%] border-[3px] border-dashed border-surface-tint/70 rounded-full transform-gpu will-change-transform z-20 pointer-events-none opacity-80"
+               />
+               <motion.div 
+                animate={{ rotate: -360 }}
+                transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
+                className="absolute w-[118%] h-[118%] border-2 border-dotted border-surface-tint/40 rounded-full transform-gpu will-change-transform z-20 pointer-events-none"
                />
             </div>
             
-            <h1 className="font-sans font-bold text-3xl text-surface-tint mb-2 tracking-widest">
+            <h1 className="font-sans font-bold text-4xl text-surface-tint mb-3 tracking-[0.2em] drop-shadow-[0_0_8px_rgba(0,219,231,0.6)]">
               {authMethod === 'face' ? 'BIOMETRIC_SCAN_ACTIVE' : 'MANUAL_OVERRIDE'}
             </h1>
-            <p className="font-mono text-sm text-foreground/40 mb-12">
-              {authMethod === 'face' ? 'ANALYZING OPERATOR FACIAL TOPOLOGY...' : 'ENTER ENCRYPTION KEY'}
-            </p>
+            
+            <motion.div 
+              variants={typingAnimation}
+              initial="hidden"
+              animate="show"
+              className="font-mono text-sm text-surface-tint/70 mb-12 flex h-6"
+            >
+              {(authMethod === 'face' ? 'ANALYZING OPERATOR FACIAL TOPOLOGY...' : 'ENTER ENCRYPTION KEY').split('').map((char, index) => (
+                <motion.span key={index} variants={letterAnimation}>
+                  {char === ' ' ? '\u00A0' : char}
+                </motion.span>
+              ))}
+            </motion.div>
 
             <button 
               onClick={() => setAuthMethod('password')}
-              className="px-6 py-2 border border-surface-tint/30 rounded-full font-mono text-[10px] text-surface-tint hover:bg-surface-tint/10 transition-all flex items-center gap-2"
+              className="px-8 py-3 border border-surface-tint/40 rounded-full font-mono text-[11px] text-surface-tint hover:bg-surface-tint/20 hover:border-surface-tint transition-all flex items-center gap-2 backdrop-blur-sm shadow-[0_0_15px_rgba(0,219,231,0.1)] hover:shadow-[0_0_20px_rgba(0,219,231,0.4)]"
             >
-              <Lock size={12} /> USE_PASSCODE_FALLBACK
+              <Lock size={14} className="opacity-80" /> USE_PASSCODE_FALLBACK
             </button>
 
             {authMethod === 'password' && (
               <motion.div 
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="mt-8 flex flex-col items-center"
+                className="mt-10 flex flex-col items-center"
               >
-                <input 
-                  type="password" 
-                  placeholder="ENTER_ENCRYPTION_KEY"
-                  className="bg-surface-container/50 border border-outline/20 rounded-lg px-4 py-2 font-mono text-xs text-surface-tint focus:outline-none focus:border-surface-tint/60 w-64 text-center"
-                  onKeyDown={(e) => e.key === 'Enter' && setIsLocked(false)}
-                />
-                <p className="mt-4 text-[9px] font-mono text-error/60">MANUAL_OVERRIDE_REQUIRED</p>
+                <div className="relative group">
+                  <div className="absolute -inset-0.5 bg-gradient-to-r from-surface-tint/30 to-surface-tint/10 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
+                  <input 
+                    type="password" 
+                    placeholder="ENTER_ENCRYPTION_KEY"
+                    className="relative bg-background/60 backdrop-blur-xl border border-surface-tint/50 rounded-lg px-6 py-3 font-mono text-sm text-surface-tint focus:outline-none focus:border-surface-tint focus:ring-1 focus:ring-surface-tint/50 w-72 text-center shadow-[inset_0_0_20px_rgba(0,219,231,0.1)] transition-all placeholder:text-surface-tint/30"
+                    onKeyDown={(e) => e.key === 'Enter' && setIsLocked(false)}
+                  />
+                </div>
+                <motion.p 
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.5 }}
+                  className="mt-5 text-[10px] font-mono text-error/80 tracking-widest uppercase flex items-center gap-2"
+                >
+                  <span className="w-1.5 h-1.5 rounded-full bg-error animate-pulse"></span>
+                  MANUAL_OVERRIDE_REQUIRED
+                </motion.p>
               </motion.div>
             )}
           </motion.div>

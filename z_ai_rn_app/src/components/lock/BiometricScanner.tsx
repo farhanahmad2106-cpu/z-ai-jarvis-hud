@@ -163,9 +163,9 @@ const BiometricScanner: React.FC<BiometricScannerProps> = ({
           overflow:        'hidden',
           shadowColor:     ringColor,
           shadowOffset:    { width: 0, height: 0 },
-          shadowOpacity:   0.2,
-          shadowRadius:    25,
-          elevation:       8,
+          shadowOpacity:   0.4,
+          shadowRadius:    35,
+          elevation:       15,
         },
       ]}>
         {/* Dashed inner ring */}

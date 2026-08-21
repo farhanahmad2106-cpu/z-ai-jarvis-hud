@@ -124,9 +124,9 @@ export const JarvisHUD: React.FC = () => {
           <div className={`flex flex-col gap-6 transition-all duration-500 ${modules.telemetry ? '' : 'opacity-20 blur-sm pointer-events-none'}`}>
             <div 
               onClick={() => appendLog("SYSTEM: Calibrating altimeter core... Zero grid offset calibrated at 1123.4 FT.")}
-              className="border-glow bg-surface-container/60 backdrop-blur-md p-6 rounded-xl w-32 cursor-pointer hover:bg-surface-container/85 transform-gpu transition-colors active:scale-95"
+              className="border-glow bg-surface-container/40 backdrop-blur-xl border border-surface-tint/20 p-6 rounded-2xl w-32 cursor-pointer hover:bg-surface-container/70 hover:shadow-[0_0_20px_rgba(0,219,231,0.25)] hover:border-surface-tint/60 transform-gpu transition-all duration-300 active:scale-95 group"
             >
-              <div className="font-mono text-[10px] text-surface-tint mb-4 tracking-tighter">ALT_METER</div>
+              <div className="font-mono text-[10px] text-surface-tint mb-4 tracking-tighter group-hover:glow-sm transition-all">ALT_METER</div>
               <div className="flex flex-col gap-2">
                 {ALTIMETER_MATRIX.map((w, i) => (
                   <motion.div 
@@ -142,9 +142,9 @@ export const JarvisHUD: React.FC = () => {
 
             <div 
               onClick={() => appendLog("SYSTEM: Recalibrating pitch gyroscopes... Gyro horizon stabilization nominal.")}
-              className="border-glow bg-surface-container/60 backdrop-blur-md p-6 rounded-xl w-32 cursor-pointer hover:bg-surface-container/85 transform-gpu transition-colors active:scale-95"
+              className="border-glow bg-surface-container/40 backdrop-blur-xl border border-surface-tint/20 p-6 rounded-2xl w-32 cursor-pointer hover:bg-surface-container/70 hover:shadow-[0_0_20px_rgba(0,219,231,0.25)] hover:border-surface-tint/60 transform-gpu transition-all duration-300 active:scale-95 group mt-4"
             >
-              <div className="font-mono text-[10px] text-surface-tint mb-2 tracking-tighter">PITCH</div>
+              <div className="font-mono text-[10px] text-surface-tint mb-2 tracking-tighter group-hover:glow-sm transition-all">PITCH</div>
               <div className="relative h-20 w-full flex items-center justify-center overflow-hidden">
                  <div className="absolute w-full h-[1px] bg-surface-tint/30 rotate-12 transform-gpu" />
                  <motion.div 
@@ -201,7 +201,7 @@ export const JarvisHUD: React.FC = () => {
       <aside className="absolute right-8 top-1/2 -translate-y-1/2 flex flex-col gap-4 text-right z-40">
         <div className="relative">
           <div className={`flex flex-col gap-4 transition-all duration-500 ${modules.telemetry ? '' : 'opacity-20 blur-sm pointer-events-none'}`}>
-            <div className="border-glow bg-surface-container/60 backdrop-blur-md p-6 rounded-xl w-48 transform-gpu">
+            <div className="border-glow bg-surface-container/40 backdrop-blur-xl border border-surface-tint/20 p-6 rounded-2xl w-48 transform-gpu hover:shadow-[0_0_20px_rgba(0,219,231,0.15)] transition-all duration-300">
               <div className="flex items-center justify-end gap-2 mb-2">
                 <span className="font-mono text-[10px] text-foreground/60 tracking-tighter">STATUS:</span>
                 <span className="font-mono text-[10px] text-[#00ff9d] glow-sm font-bold animate-pulse">ONLINE</span>
@@ -227,9 +227,9 @@ export const JarvisHUD: React.FC = () => {
                   appendLog("SYSTEM: Voice capture manual override triggered.");
                 }
               }}
-              className="border-glow bg-surface-container/60 backdrop-blur-md p-4 rounded-xl cursor-pointer hover:bg-surface-container/85 transform-gpu transition-all active:scale-95"
+              className="border-glow bg-surface-container/40 backdrop-blur-xl border border-surface-tint/20 p-4 rounded-2xl cursor-pointer hover:bg-surface-container/70 hover:shadow-[0_0_20px_rgba(0,219,231,0.25)] hover:border-surface-tint/60 transform-gpu transition-all duration-300 active:scale-95 group"
             >
-              <div className="font-mono text-[10px] text-surface-tint text-left mb-2 tracking-tighter">V_INPUT</div>
+              <div className="font-mono text-[10px] text-surface-tint text-left mb-2 tracking-tighter group-hover:glow-sm transition-all">V_INPUT</div>
               <svg className="w-full h-12 stroke-surface-tint fill-none stroke-1" viewBox="0 0 100 30">
                 <motion.path 
                   d={WAVEFORM_PATHS.IDLE}
@@ -248,26 +248,26 @@ export const JarvisHUD: React.FC = () => {
               </svg>
             </div>
 
-            <div className="grid grid-cols-2 gap-2 transform-gpu">
+            <div className="grid grid-cols-2 gap-3 transform-gpu">
               <div 
                 onClick={() => {
                   setActiveTab('cpu');
                   appendLog("SYSTEM: Navigating to CPU workloads page.");
                 }}
-                className="border-glow bg-surface-container/40 p-2 rounded-lg transition-all hover:bg-surface-container/65 hover:border-surface-tint/40 cursor-pointer active:scale-95"
+                className="border-glow bg-surface-container/30 backdrop-blur-lg border border-surface-tint/10 p-3 rounded-xl transition-all duration-300 hover:bg-surface-container/60 hover:border-surface-tint/50 hover:shadow-[0_0_15px_rgba(0,219,231,0.2)] cursor-pointer active:scale-95 group"
               >
-                <div className="font-mono text-[9px] text-foreground/60">CPU_LOAD</div>
-                <div className="font-mono text-xs text-surface-tint">{isThinking ? CPU_THINKING_LOAD : CPU_NOMINAL_LOAD}</div>
+                <div className="font-mono text-[9px] text-foreground/60 group-hover:text-surface-tint/80 transition-colors">CPU_LOAD</div>
+                <div className="font-mono text-xs text-surface-tint mt-1 group-hover:glow-sm">{isThinking ? CPU_THINKING_LOAD : CPU_NOMINAL_LOAD}</div>
               </div>
               <div 
                 onClick={() => {
                   setActiveTab('cpu');
                   appendLog("SYSTEM: Navigating to CPU core telemetry page.");
                 }}
-                className="border-glow bg-surface-container/40 p-2 rounded-lg transition-all hover:bg-surface-container/65 hover:border-surface-tint/40 cursor-pointer active:scale-95"
+                className="border-glow bg-surface-container/30 backdrop-blur-lg border border-surface-tint/10 p-3 rounded-xl transition-all duration-300 hover:bg-surface-container/60 hover:border-surface-tint/50 hover:shadow-[0_0_15px_rgba(0,219,231,0.2)] cursor-pointer active:scale-95 group"
               >
-                <div className="font-mono text-[9px] text-foreground/60">TEMP_CR</div>
-                <div className="font-mono text-xs text-surface-tint">{isThinking ? TEMP_THINKING_CELSIUS : TEMP_NOMINAL_CELSIUS}</div>
+                <div className="font-mono text-[9px] text-foreground/60 group-hover:text-surface-tint/80 transition-colors">TEMP_CR</div>
+                <div className="font-mono text-xs text-surface-tint mt-1 group-hover:glow-sm">{isThinking ? TEMP_THINKING_CELSIUS : TEMP_NOMINAL_CELSIUS}</div>
               </div>
             </div>
           </div>

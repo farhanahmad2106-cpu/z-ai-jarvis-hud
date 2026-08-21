@@ -197,12 +197,12 @@ const HologramCore: React.FC<HologramCoreProps> = ({
           borderRadius:    innerSize / 2,
           borderWidth:     2,
           borderColor:     innerBorderColor,
-          backgroundColor: ringColor + '1A', // ~10% fill
+          backgroundColor: ringColor + '26', // ~15% fill
           // Glow
           shadowColor:     ringColor,
           shadowOffset:    { width: 0, height: 0 },
-          shadowRadius:    20,
-          elevation:       10,
+          shadowRadius:    30,
+          elevation:       15,
         },
       ]}>
         <View style={styles.coreContent}>
@@ -236,7 +236,7 @@ const styles = StyleSheet.create({
   coreLabel: {
     ...Typography.displayLg,
     textShadowOffset: { width: 0, height: 0 },
-    textShadowRadius: 8,
+    textShadowRadius: 15,
   },
   coreStatus: {
     ...Typography.labelCaps,
