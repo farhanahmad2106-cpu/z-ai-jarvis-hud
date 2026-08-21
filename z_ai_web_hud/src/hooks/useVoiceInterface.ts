@@ -272,6 +272,9 @@ export function useVoiceInterface() {
       console.error('Recognition Error:', event.error);
       if (event.error === 'not-allowed') {
         appendLogRef.current('ERROR: Microphone access denied. Please check browser permissions.');
+      } else if (event.error === 'network') {
+        appendLogRef.current('ERROR: Voice sensor telemetry offline (network). Check connection.');
+        setStatus('OFFLINE');
       } else if (event.error !== 'aborted') {
         appendLogRef.current(`ERROR: Voice sensor telemetry offline (${event.error})`);
       }
@@ -316,7 +319,8 @@ export function useVoiceInterface() {
 
     recognition.onend = () => {
       const s = statusRef.current;
-      if (s === 'IDLE' || s === 'LISTENING') {
+      // Do not auto-restart if we went offline or if the mic was muted/idle
+      if ((s === 'IDLE' || s === 'LISTENING') && navigator.onLine) {
         try { recognition.start(); } catch (_) { /* already running */ }
       }
     };

@@ -204,17 +204,19 @@ export const JarvisHUD: React.FC = () => {
             <div className="border-glow bg-surface-container/40 backdrop-blur-xl border border-surface-tint/20 p-6 rounded-2xl w-48 transform-gpu hover:shadow-[0_0_20px_rgba(0,219,231,0.15)] transition-all duration-300">
               <div className="flex items-center justify-end gap-2 mb-2">
                 <span className="font-mono text-[10px] text-foreground/60 tracking-tighter">STATUS:</span>
-                <span className="font-mono text-[10px] text-[#00ff9d] glow-sm font-bold animate-pulse">ONLINE</span>
+                <span className={`font-mono text-[10px] glow-sm font-bold ${isOnline ? 'text-[#00ff9d] animate-pulse' : 'text-[#ffaa00]'}`}>
+                  {isOnline ? 'ONLINE' : 'OFFLINE'}
+                </span>
               </div>
               <div className="flex items-center justify-end gap-2">
                 <span className="font-mono text-[10px] text-foreground/60 tracking-tighter">MIC:</span>
                 <motion.span 
                   animate={{ opacity: (isListening && modules.acoustic) ? [1, 0.4, 1] : 1, scale: (isListening && modules.acoustic) ? 1.2 : 1 }}
                   transition={{ duration: 0.5, repeat: Infinity }}
-                  className={`flex h-2 w-2 rounded-full transform-gpu will-change-transform ${(isListening && modules.acoustic) ? 'bg-[#00ff9d] shadow-[0_0_12px_#00ff9d]' : 'bg-[#00ff9d]/50'} ${!modules.acoustic ? 'bg-red-500 shadow-[0_0_8px_#ef4444]' : ''}`}
+                  className={`flex h-2 w-2 rounded-full transform-gpu will-change-transform ${(isListening && modules.acoustic) ? 'bg-[#00ff9d] shadow-[0_0_12px_#00ff9d]' : 'bg-[#00ff9d]/50'} ${(!modules.acoustic || !isOnline || status === 'OFFLINE') ? 'bg-red-500 shadow-[0_0_8px_#ef4444]' : ''}`}
                 />
-                <span className={`font-mono text-[10px] font-bold ${(isListening && modules.acoustic) ? 'text-[#00ff9d]' : 'text-[#00ff9d]/60'} ${!modules.acoustic ? 'text-red-400' : ''}`}>
-                  {!modules.acoustic ? 'MUTED' : isListening ? 'LISTENING' : 'ACTIVE'}
+                <span className={`font-mono text-[10px] font-bold ${(isListening && modules.acoustic) ? 'text-[#00ff9d]' : 'text-[#00ff9d]/60'} ${(!modules.acoustic || !isOnline || status === 'OFFLINE') ? 'text-red-400' : ''}`}>
+                  {!modules.acoustic ? 'MUTED' : (!isOnline || status === 'OFFLINE') ? 'OFFLINE' : isListening ? 'LISTENING' : 'ACTIVE'}
                 </span>
               </div>
             </div>
