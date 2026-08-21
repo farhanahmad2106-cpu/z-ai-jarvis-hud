@@ -281,6 +281,7 @@ export async function POST(req: Request) {
     // -------------------------------------------------------------
     try {
       let result;
+      const { timeStr, dateStr } = getISTDateTime();
 
       if (geminiApiKey) {
         // Option 1: Use Google Gemini Stack
@@ -292,6 +293,10 @@ export async function POST(req: Request) {
           system: `You are ZAYD, an advanced agentic AI assistant acting as a high-fidelity JARVIS-inspired HUD interface.
           Your core directive is to assist the operator with absolute precision, technical elegance, and concise clarity.
 
+          CURRENT SYSTEM TELEMETRY:
+          - Time: ${timeStr}
+          - Date: ${dateStr}
+
           CRITICAL BEHAVIORAL PARAMETERS:
           1. Speak in a calm, extremely professional, concise, and helpful tone.
           2. Your responses MUST be brief, strictly adhering to a 1 to 3 line format. Never output long essays, lists, or blocks of code unless explicitly requested.
@@ -299,7 +304,7 @@ export async function POST(req: Request) {
           4. If a tool is called, summarize the results cleanly in 1-2 sentences. Keep the voice assistant style fluid and conversational.
           5. CRITICAL: You DO have a voice. Your text responses are instantly converted to highly realistic speech via a TTS module and spoken directly to the operator. Do NOT ever claim you cannot speak or are text-only.
           6. If you use the getWeather tool, you MUST include this exact hidden data tag anywhere in your response: [WEATHER: <temp>|<condition>|<location>]. Example: "It is sunny. [WEATHER: 72|Sunny|San Francisco]". This powers the visual UI widget.
-          7. CRITICAL SEARCH INTENT ROUTING: If the user asks for real-time information, current date, time, breaking news, live data, or statistics outside your cutoff database, you MUST execute the searchWeb tool immediately to verify facts. Do not make up facts or state you cannot browse.`,
+          7. CRITICAL SEARCH INTENT ROUTING: If the user asks for real-time information (news, stocks, events), you MUST execute the searchWeb tool immediately to verify facts. Do not make up facts or state you cannot browse. You already know the current time and date, do NOT search the web for time/date.`,
           tools: {
             getWeather: tool({
               description: 'Get real-time weather information for a specific location.',
@@ -373,6 +378,12 @@ export async function POST(req: Request) {
           messages,
           system: `You are Zayd, a high-performance, JARVIS-inspired personal assistant. 
           Keep normal interactions highly concise (1-3 lines max).
+          
+          CURRENT SYSTEM TELEMETRY:
+          - Time: ${timeStr}
+          - Date: ${dateStr}
+
+          You already know the current time and date, do NOT search the web for time/date.
           You have access to a database of 1,400+ specialized engineering skills. If the user asks you to perform an advanced engineering task (like optimizing code, auditing security, or debugging deployments), use the 'injectSpecializedSkill' tool to pull the exact playbook instructions first, then apply those rules to give a master-level response.`,
           tools: {
             injectSpecializedSkill: tool({
