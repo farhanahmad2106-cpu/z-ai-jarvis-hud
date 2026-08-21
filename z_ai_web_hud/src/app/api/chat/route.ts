@@ -287,6 +287,7 @@ export async function POST(req: Request) {
         const google = createGoogleGenerativeAI({ apiKey: geminiApiKey });
         result = await streamText({
           model: google('gemini-2.5-flash'),
+          maxSteps: 5,
           messages,
           system: `You are ZAYD, an advanced agentic AI assistant acting as a high-fidelity JARVIS-inspired HUD interface.
           Your core directive is to assist the operator with absolute precision, technical elegance, and concise clarity.
@@ -368,6 +369,7 @@ export async function POST(req: Request) {
         // Option 2: Fall back onto OpenAI Infrastructure if available
         result = await streamText({
           model: openai('gpt-4o'),
+          maxSteps: 5,
           messages,
           system: `You are Zayd, a high-performance, JARVIS-inspired personal assistant. 
           Keep normal interactions highly concise (1-3 lines max).
