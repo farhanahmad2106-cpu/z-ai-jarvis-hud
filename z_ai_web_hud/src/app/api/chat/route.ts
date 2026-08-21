@@ -368,7 +368,7 @@ export async function POST(req: Request) {
               execute: async ({ query }: { query: string }) => await performWebSearch(query)
             }) as any
           } as any
-        });
+        } as any);
         return result.toTextStreamResponse();
       } else {
         // Option 2: Fall back onto OpenAI Infrastructure if available
@@ -420,7 +420,7 @@ export async function POST(req: Request) {
               },
             }) as any,
           } as any,
-        });
+        } as any);
         return result.toTextStreamResponse();
       }
     } catch (primaryModelErr: any) {
