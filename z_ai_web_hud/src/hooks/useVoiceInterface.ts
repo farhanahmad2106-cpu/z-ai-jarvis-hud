@@ -181,10 +181,15 @@ export function useVoiceInterface() {
 
       const response = await fetch('/api/chat', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'x-z-ai-auth': process.env.NEXT_PUBLIC_Z_AI_HUD_SECRET || ''
+        },
         body: JSON.stringify({ messages: newMessages }),
       });
 
+      if (response.status === 401) throw new Error('Unauthorized - System Access Denied.');
+      if (response.status === 429) throw new Error('Rate Limit Exceeded - System cooling down.');
       if (!response.ok) throw new Error(`Chat API HTTP ${response.status}`);
 
       // Accumulate streaming tokens chunk-by-chunk to keep connection active and eliminate Edge Runtime timeouts
@@ -233,9 +238,17 @@ export function useVoiceInterface() {
       if (conversationHistoryRef.current.length > 5) conversationHistoryRef.current.shift();
 
       await speak(cleanResponse);
-    } catch (error) {
+    } catch (error: any) {
       console.error('[Z-AI] processCommand error:', error);
-      appendLog('ERROR: Command processing failed. Resetting sensors.');
+      if (error.message.includes('Unauthorized')) {
+        appendLog('CRITICAL: Access Denied. Verify Security Token.');
+        await speak('Access Denied. Please verify your security token.');
+      } else if (error.message.includes('Rate Limit')) {
+        appendLog('WARNING: Rate limit exceeded. Core cooling down.');
+        await speak('Rate limit exceeded. System cooling down.');
+      } else {
+        appendLog('ERROR: Command processing failed. Resetting sensors.');
+      }
       setStatus('IDLE');
       startContinuousListening();
     }

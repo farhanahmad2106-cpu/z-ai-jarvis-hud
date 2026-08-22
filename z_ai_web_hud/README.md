@@ -49,3 +49,10 @@ All system architectural upgrades, diagnostics, and incremental modifications ar
 Add these variables to your Vercel/Local configuration for enhanced web queries:
 *   `SEARCHAPI_API_KEY` *(Optional)*: Google organic search API key from [SearchAPI.io](https://www.searchapi.io/).
 *   `TAVILY_API_KEY` *(Optional)*: Real-time internet search key from Tavily.
+*   `Z_AI_HUD_SECRET` *(Recommended)*: A shared secret password to secure your backend API from unauthorized access.
+*   `NEXT_PUBLIC_Z_AI_HUD_SECRET` *(Recommended)*: Must match the secret above so the front-end can pass authorization.
+
+---
+
+## 🚀 Phase Plan (Future Architecture)
+- **Full User Authentication**: Integrate NextAuth or Clerk to handle individual user sessions, save user preferences, and securely manage individual API keys and quotas per operator.
