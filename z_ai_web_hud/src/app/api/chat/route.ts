@@ -321,6 +321,7 @@ export async function POST(req: Request) {
               parameters: z.object({
                 location: z.string().describe('The city and state/country (e.g., San Francisco, CA)'),
               }),
+              // @ts-expect-error - AI SDK Tool type inference issue
               execute: async ({ location }: { location: string }) => {
                 try {
                   const geoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(location)}&count=1&language=en&format=json`);
@@ -367,16 +368,17 @@ export async function POST(req: Request) {
                   };
                 }
               },
-            }),
+            }) as any,
             searchWeb: tool({
               description: 'Search the web for up-to-date real-time query information (news, stocks, events, time, dates).',
               parameters: z.object({
                 query: z.string().describe('The web search query'),
               }),
+              // @ts-expect-error - AI SDK Tool type inference issue
               execute: async ({ query }: { query: string }) => await performWebSearch(query)
-            })
-          }
-        });
+            }) as any
+          } as any
+        } as any);
         return result.toTextStreamResponse();
       } else {
         // Option 2: Fall back onto OpenAI Infrastructure if available
@@ -399,6 +401,7 @@ export async function POST(req: Request) {
               parameters: z.object({
                 skillFilename: z.string().describe('The filename matching the skill needed (e.g., "typescript-expert", "api-security", "vercel-deployment")'),
               }),
+              // @ts-expect-error - AI SDK Tool type inference issue
               execute: async ({ skillFilename }: { skillFilename: string }) => {
                 try {
                   const targetId = skillFilename.replace('.md', '');
@@ -425,9 +428,9 @@ export async function POST(req: Request) {
                   return { error: `Failed parsing prompt framework: ${message}` };
                 }
               },
-            }),
-          },
-        });
+            }) as any,
+          } as any,
+        } as any);
         return result.toTextStreamResponse();
       }
     } catch (primaryModelErr: any) {
