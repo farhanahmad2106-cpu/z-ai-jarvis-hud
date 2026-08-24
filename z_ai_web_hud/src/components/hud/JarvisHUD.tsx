@@ -5,8 +5,9 @@ import { useVoiceInterface } from '@/hooks/useVoiceInterface';
 import { 
   Terminal as TerminalIcon, Shield, Cpu, Activity, Network, 
   Settings2, Menu, X, Check, RotateCcw, Volume2, 
-  SlidersHorizontal, RefreshCw, Power, Radio, Layers, Wifi
+  SlidersHorizontal, RefreshCw, Power, Radio, Layers, Wifi, Sparkles
 } from 'lucide-react';
+import Link from 'next/link';
 import { 
   ALTIMETER_MATRIX, 
   CPU_NOMINAL_LOAD, 
@@ -18,6 +19,7 @@ import {
 } from '@/utils/hudConfig';
 import { Visualizer } from '@/components/Visualizer';
 import { WeatherWidget } from '@/components/WeatherWidget';
+import BrokenByDesign from '@/components/ui/broken-by-design';
 
 export const JarvisHUD: React.FC = () => {
   const { status, terminalLog, setStatus, appendLog, clearLog, isOnline, setIsOnline } = useAssistantStore();
@@ -53,6 +55,7 @@ export const JarvisHUD: React.FC = () => {
   // Interactive UI panel states
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isGlassHeroOpen, setIsGlassHeroOpen] = useState(false);
   
   // Configuration Settings State
   const [settings, setSettings] = useState({
@@ -104,7 +107,16 @@ export const JarvisHUD: React.FC = () => {
           />
           <div className="font-sans font-extrabold text-2xl tracking-[0.3em] text-surface-tint glow-sm cursor-default">ZAYD</div>
         </div>
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-4">
+          <button
+            onClick={() => {
+              setIsGlassHeroOpen(true);
+              appendLog("SYSTEM: 3D BrokenByDesign glass visualizer initialized.");
+            }}
+            className="font-mono text-[10px] text-surface-tint border border-surface-tint/30 bg-surface-tint/10 hover:bg-surface-tint/20 px-3 py-1 rounded-full flex items-center gap-1.5 transition-all shadow-[0_0_10px_rgba(0,219,231,0.2)]"
+          >
+            <Sparkles size={12} className="animate-pulse" /> 3D_HERO
+          </button>
           <span className="font-mono text-[9px] text-surface-tint opacity-40 px-2 py-0.5 border border-surface-tint/20 rounded-md">V1.0.8</span>
           <span className="font-mono text-[10px] text-surface-tint opacity-70 tracking-widest uppercase">{status}</span>
           <Settings2 
@@ -831,6 +843,26 @@ export const JarvisHUD: React.FC = () => {
               </button>
             </motion.div>
           </div>
+        )}
+      </AnimatePresence>
+
+      {/* BrokenByDesign 3D Glass Hero Modal */}
+      <AnimatePresence>
+        {isGlassHeroOpen && (
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            className="fixed inset-0 z-[300] bg-[#030407]"
+          >
+            <button 
+              onClick={() => setIsGlassHeroOpen(false)}
+              className="absolute top-6 right-6 z-[350] p-3 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 text-white backdrop-blur-md transition-all shadow-xl cursor-pointer"
+            >
+              <X size={20} />
+            </button>
+            <BrokenByDesign title="broken by design." height="100vh" />
+          </motion.div>
         )}
       </AnimatePresence>
 
