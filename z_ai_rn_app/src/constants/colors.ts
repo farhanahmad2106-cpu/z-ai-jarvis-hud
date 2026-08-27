@@ -14,9 +14,11 @@ export const Colors = {
   surfaceVariant:         '#2c363d',
 
   // ── Primary (Cyan) ───────────────────────────────────────
-  surfaceTint:            '#00dbe7', // primary cyan — all glow effects
+  surfaceTint:            '#00f2ff', // primary Aether cyan — all glow effects
+  cyan:                   '#00f2ff',
   primary:                '#e1fdff', // near-white tinted cyan
   primaryFixed:           '#74f5ff',
+  electricBlue:           '#568dff',
 
   // ── On-surface Text ──────────────────────────────────────
   onSurface:              '#d9e4ed',
