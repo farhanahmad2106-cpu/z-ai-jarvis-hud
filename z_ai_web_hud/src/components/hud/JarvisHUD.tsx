@@ -745,15 +745,15 @@ export const JarvisHUD: React.FC = () => {
               initial={{ scale: 0.9, y: 20, opacity: 0 }}
               animate={{ scale: 1, y: 0, opacity: 1 }}
               exit={{ scale: 0.9, y: 20, opacity: 0 }}
-              className="relative w-full max-w-md bg-surface-container/90 border border-surface-tint/30 rounded-3xl p-8 shadow-2xl backdrop-blur-2xl flex flex-col gap-6 z-10 transform-gpu"
+              className="relative w-full max-w-md chamfer-card light-pipe-cyan bg-surface-container-low/95 p-8 shadow-2xl backdrop-blur-2xl flex flex-col gap-6 z-10 transform-gpu text-left"
             >
-              <div className="flex justify-between items-center border-b border-surface-tint/20 pb-4">
+              <div className="flex justify-between items-center border-b border-cyan/20 pb-4">
                 <div className="flex items-center gap-2">
-                  <Settings2 className="text-surface-tint shadow-[0_0_10px_#00dbe7]" size={18} />
-                  <span className="font-mono text-xs text-surface-tint tracking-widest font-extrabold">CORE_CONFIG</span>
+                  <Settings2 className="text-cyan glow-cyan" size={18} />
+                  <span className="font-mono text-xs text-cyan tracking-widest font-extrabold glow-cyan">[CORE_CONFIG_SYS]</span>
                 </div>
                 <X 
-                  className="text-surface-tint hover:text-white cursor-pointer transition-colors active:scale-90" 
+                  className="text-cyan hover:text-white cursor-pointer transition-colors active:scale-90" 
                   size={18} 
                   onClick={() => setIsSettingsOpen(false)}
                 />
@@ -763,12 +763,12 @@ export const JarvisHUD: React.FC = () => {
               <div className="flex flex-col gap-4 font-mono text-[10px]">
                 {/* Volume Slider */}
                 <div className="flex flex-col gap-2">
-                  <div className="flex justify-between text-foreground/70">
+                  <div className="flex justify-between text-foreground/80">
                     <span>AUDIO_OUTPUT_VOLUME:</span>
-                    <span className="text-surface-tint font-bold">{settings.volume}%</span>
+                    <span className="text-cyan font-extrabold glow-cyan">{settings.volume}%</span>
                   </div>
                   <div className="flex items-center gap-3">
-                    <Volume2 size={14} className="text-surface-tint" />
+                    <Volume2 size={14} className="text-cyan" />
                     <input 
                       type="range" 
                       min="0" 
@@ -779,16 +779,16 @@ export const JarvisHUD: React.FC = () => {
                         setSettings(prev => ({ ...prev, volume: vol }));
                       }}
                       onMouseUp={() => appendLog(`SYSTEM: Output volume adjusted to ${settings.volume}%.`)}
-                      className="w-full h-1 bg-surface-tint/20 rounded-lg appearance-none cursor-pointer accent-surface-tint outline-none"
+                      className="w-full h-1 bg-cyan/20 rounded-lg appearance-none cursor-pointer accent-cyan outline-none"
                     />
                   </div>
                 </div>
 
                 {/* Sensitivity Slider */}
                 <div className="flex flex-col gap-2">
-                  <div className="flex justify-between text-foreground/70">
+                  <div className="flex justify-between text-foreground/80">
                     <span>MIC_SENSITIVITY_THRESHOLD:</span>
-                    <span className="text-[#00ff9d] font-bold">{settings.sensitivity}%</span>
+                    <span className="text-[#00ff9d] font-extrabold">{settings.sensitivity}%</span>
                   </div>
                   <div className="flex items-center gap-3">
                     <SlidersHorizontal size={14} className="text-[#00ff9d]" />
@@ -812,7 +812,7 @@ export const JarvisHUD: React.FC = () => {
               <div className="flex flex-col gap-4 font-mono text-[10px] text-left">
                 {/* Voice Presets */}
                 <div className="flex flex-col gap-2 text-left">
-                  <span className="text-foreground/70">ELEVENLABS_VOICE_PRESET:</span>
+                  <span className="text-foreground/80 font-bold">ELEVENLABS_VOICE_PRESET:</span>
                   <select 
                     value={settings.voiceId}
                     onChange={(e) => {
@@ -820,7 +820,7 @@ export const JarvisHUD: React.FC = () => {
                       setSettings(prev => ({ ...prev, voiceId: id }));
                       appendLog(`SYSTEM: Voice telemetry set to custom model index [${id.substring(0, 5)}...].`);
                     }}
-                    className="w-full bg-background/50 border border-surface-tint/20 rounded-xl px-4 py-3 text-foreground focus:outline-none focus:border-surface-tint cursor-pointer"
+                    className="w-full bg-surface-container-lowest/90 border border-cyan/30 chamfer-card-sm px-4 py-3 text-cyan font-bold focus:outline-none focus:border-cyan cursor-pointer"
                   >
                     <option value="jsCq9DZjX4fWj9S7y9XN">ZAYD Standard (Low-Latency Male)</option>
                     <option value="jsCq9DZjX4fWj9S7y9XN_rachel">Rachel Preset (Edge Optimized Female)</option>
@@ -829,10 +829,10 @@ export const JarvisHUD: React.FC = () => {
                 </div>
 
                 {/* Local Fallback Toggle */}
-                <div className="flex justify-between items-center p-4 bg-surface-container/30 border border-surface-tint/10 rounded-2xl">
+                <div className="flex justify-between items-center p-4 bg-surface-container-lowest/80 border border-cyan/20 chamfer-card-sm">
                   <div className="text-left">
-                    <span className="block font-bold text-foreground">LOCAL_WEBSPEECH_FALLBACK</span>
-                    <span className="block text-[8px] text-foreground/40 mt-0.5">Use browser synthesis if ElevenLabs goes offline</span>
+                    <span className="block font-bold text-cyan">LOCAL_WEBSPEECH_FALLBACK</span>
+                    <span className="block text-[8px] text-foreground/50 mt-0.5">Use browser synthesis if ElevenLabs goes offline</span>
                   </div>
                   <button 
                     onClick={() => {
@@ -840,7 +840,7 @@ export const JarvisHUD: React.FC = () => {
                       setSettings(prev => ({ ...prev, fallbackEnabled: nextVal }));
                       appendLog(`SYSTEM: Local WebSpeech fallback set to ${nextVal ? 'ENABLED' : 'DISABLED'}.`);
                     }}
-                    className={`relative w-8 h-4 rounded-full p-0.5 transition-colors duration-300 ${settings.fallbackEnabled ? 'bg-surface-tint' : 'bg-foreground/20'}`}
+                    className={`relative w-8 h-4 rounded-full p-0.5 transition-colors duration-300 ${settings.fallbackEnabled ? 'bg-cyan' : 'bg-foreground/30'}`}
                   >
                     <motion.div 
                       layout 
@@ -857,10 +857,10 @@ export const JarvisHUD: React.FC = () => {
                   setIsSettingsOpen(false);
                   appendLog("SYSTEM: Configuration settings saved.");
                 }}
-                className="w-full py-3 bg-surface-tint text-background font-mono text-[10px] font-bold rounded-xl active:scale-95 transition-all hover:bg-surface-tint/90 flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(0,219,231,0.3)] cursor-pointer"
+                className="w-full py-3 bg-cyan text-background font-mono text-[10px] font-extrabold chamfer-btn active:scale-95 transition-all hover:bg-cyan/90 flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(0,242,255,0.4)] cursor-pointer uppercase tracking-wider"
               >
                 <Check size={14} />
-                APPLY_CHANGES
+                APPLY_CONFIG_CHANGES
               </button>
             </motion.div>
           </div>
