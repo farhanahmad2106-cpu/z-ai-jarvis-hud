@@ -34,10 +34,10 @@ const BBD2_CSS = `/* broken by design. -----------------------------------------
   z-index: 0;
   background:
     radial-gradient(ellipse 62% 50% at 50% 42%,
-      rgba(125, 150, 200, 0.08), transparent 62%),
+      rgba(0, 242, 255, 0.12), transparent 62%),
     radial-gradient(ellipse 100% 80% at 50% 118%,
-      rgba(45, 55, 90, 0.18), transparent 60%),
-    #030407;
+      rgba(86, 141, 255, 0.15), transparent 60%),
+    #0a151b;
 }
 
 /* The composition sits inset: smaller pane, bigger word across it.
