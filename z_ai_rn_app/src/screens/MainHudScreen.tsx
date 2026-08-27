@@ -50,7 +50,7 @@ const MainHudScreen: React.FC = () => {
 
       {/* Top bar */}
       <HudTopBar
-        statusLabel={isOffline ? 'LOCAL_MODE_ACTIVE' : 'SEC_LEVEL_09'}
+        statusLabel={isOffline ? '[LOCAL_OFFLINE_MODE]' : '[ZAYD_JARVIS_HUD_v1.1]'}
         errorMode={isOffline}
       />
 
@@ -87,7 +87,7 @@ const MainHudScreen: React.FC = () => {
           <TerminalLog
             lines={termLog}
             theme={isOffline ? 'error' : 'default'}
-            footer={{ latency: '4ms', buffer: '1024KB' }}
+            footer={{ latency: '14ms', buffer: '2048KB' }}
           />
         </View>
       </View>
