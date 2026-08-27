@@ -99,11 +99,11 @@ const SecurityLockScreen: React.FC = () => {
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
         {/* System label */}
-        <LabelCaps color={Colors.onSurfaceVariant} style={styles.systemLabel}>
-          SYSTEM_ADMINISTRATION_OVERRIDE
+        <LabelCaps color={Colors.surfaceTint} style={styles.systemLabel}>
+          ZAYD // BIOMETRIC_AUTHENTICATION_V1.1
         </LabelCaps>
         <MonoText size="sm" color={Colors.primary} style={styles.idLabel}>
-          IDENTIFICATION REQUIRED
+          [OPERATOR_IDENTIFICATION_REQUIRED]
         </MonoText>
 
         {/* Biometric scanner */}
@@ -138,8 +138,8 @@ const SecurityLockScreen: React.FC = () => {
               onPress={() => { setViewState('biometric'); setPasscode(''); }}
               style={styles.backButton}
             >
-              <Ionicons name="arrow-back" size={16} color={Colors.onSurfaceVariant} />
-              <LabelCaps color={Colors.onSurfaceVariant}>USE BIOMETRIC</LabelCaps>
+              <Ionicons name="arrow-back" size={16} color={Colors.surfaceTint} />
+              <LabelCaps color={Colors.surfaceTint}>USE BIOMETRIC SCAN</LabelCaps>
             </TouchableOpacity>
           )}
         </View>
@@ -150,15 +150,15 @@ const SecurityLockScreen: React.FC = () => {
         <View style={styles.logSection}>
           <Ionicons name="terminal-outline" size={18} color={Colors.surfaceTint} />
           <View>
-            <LabelCaps size="xs" color={Colors.onSurfaceVariant}>LOG_ACTIVITY</LabelCaps>
+            <LabelCaps size="xs" color={Colors.surfaceTint}>LOG_ACTIVITY [MOD_082]</LabelCaps>
             <MonoText size="xs" color={Colors.surfaceTint}>
-              MOD_082: ATTEMPTING HANDSHAKE...
+              &gt; HANDSHAKE NOMINAL. SYSTEM READY.
             </MonoText>
           </View>
         </View>
         <View style={styles.activeChip}>
           <GlowDot color="cyan" size={8} />
-          <LabelCaps size="xs" color={Colors.surfaceTint}>ACTIVE</LabelCaps>
+          <LabelCaps size="xs" color={Colors.surfaceTint}>[SYS_ACTIVE]</LabelCaps>
         </View>
       </View>
 
