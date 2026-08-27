@@ -598,11 +598,11 @@ export const JarvisHUD: React.FC = () => {
             >
               <div className="flex justify-between items-center border-b border-surface-tint/20 pb-4">
                 <div className="flex items-center gap-2">
-                  <Layers className="text-surface-tint shadow-[0_0_10px_#00dbe7]" size={18} />
-                  <span className="font-mono text-xs text-surface-tint tracking-widest font-extrabold">ZAYD_DASHBOARD</span>
+                  <Layers className="text-cyan glow-cyan" size={18} />
+                  <span className="font-mono text-xs text-cyan tracking-widest font-extrabold glow-cyan">[ZAYD_DASHBOARD_SYS]</span>
                 </div>
                 <X 
-                  className="text-surface-tint hover:text-white cursor-pointer transition-colors active:scale-90" 
+                  className="text-cyan hover:text-white cursor-pointer transition-colors active:scale-90" 
                   size={18} 
                   onClick={() => setIsSidebarOpen(false)}
                 />
@@ -610,42 +610,42 @@ export const JarvisHUD: React.FC = () => {
 
               {/* Network Status Modules */}
               <div className="flex flex-col gap-3">
-                <div className="font-mono text-[9px] text-foreground/40 uppercase tracking-widest">NETWORK_METRICS</div>
-                <div className="flex flex-col gap-2 bg-surface-container/40 p-4 rounded-xl border border-surface-tint/10 font-mono text-[10px] space-y-1 text-left">
+                <div className="font-mono text-[9px] text-cyan/70 uppercase tracking-widest font-bold">[NETWORK_METRICS_01]</div>
+                <div className="flex flex-col gap-2 bg-surface-container-lowest/80 p-4 chamfer-card-sm border border-cyan/30 font-mono text-[10px] space-y-1 text-left">
                   <div className="flex justify-between items-center">
-                    <span className="text-foreground/70">WEATHER_INDEX:</span>
-                    <span className="text-[#00ff9d] font-bold">NOMINAL</span>
+                    <span className="text-foreground/80">WEATHER_INDEX:</span>
+                    <span className="text-[#00ff9d] font-bold">[NOMINAL]</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-foreground/70">TAVILY_SEARCH:</span>
-                    <span className="text-[#00ff9d] font-bold">ACTIVE</span>
+                    <span className="text-foreground/80">TAVILY_SEARCH:</span>
+                    <span className="text-[#00ff9d] font-bold">[ACTIVE]</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-foreground/70">ELEVENLABS_TTS:</span>
-                    <span className="text-[#00ff9d] font-bold">SECURED</span>
+                    <span className="text-foreground/80">ELEVENLABS_TTS:</span>
+                    <span className="text-[#00ff9d] font-bold">[SECURED]</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="text-foreground/70">SPEECH_API_LOCAL:</span>
-                    <span className="text-[#00ff9d] font-bold">READY</span>
+                    <span className="text-foreground/80">SPEECH_API_LOCAL:</span>
+                    <span className="text-[#00ff9d] font-bold">[READY]</span>
                   </div>
                 </div>
               </div>
 
               {/* Active Modules Switches */}
               <div className="flex flex-col gap-3 text-left">
-                <div className="font-mono text-[9px] text-foreground/40 uppercase tracking-widest">CORE_MODULES</div>
+                <div className="font-mono text-[9px] text-cyan/70 uppercase tracking-widest font-bold">[CORE_MODULES_TOGGLE]</div>
                 <div className="flex flex-col gap-3">
-                  <div className="flex justify-between items-center p-3 bg-surface-container/30 border border-surface-tint/10 rounded-xl">
+                  <div className="flex justify-between items-center p-3 bg-surface-container-lowest/80 border border-cyan/20 chamfer-card-sm">
                     <div className="flex items-center gap-3">
-                      <Radio size={16} className={modules.acoustic ? "text-surface-tint" : "text-foreground/30"} />
+                      <Radio size={16} className={modules.acoustic ? "text-cyan glow-cyan" : "text-foreground/30"} />
                       <div className="text-left">
-                        <div className="font-mono text-[10px] font-bold text-foreground">ACOUSTIC_SENSORS</div>
-                        <div className="font-mono text-[8px] text-foreground/40">Real-time voice capture</div>
+                        <div className="font-mono text-[10px] font-bold text-cyan">ACOUSTIC_SENSORS</div>
+                        <div className="font-mono text-[8px] text-foreground/50">Real-time voice capture</div>
                       </div>
                     </div>
                     <button 
                       onClick={() => toggleModule('acoustic')}
-                      className={`relative w-8 h-4 rounded-full p-0.5 transition-colors duration-300 ${modules.acoustic ? 'bg-surface-tint' : 'bg-foreground/20'}`}
+                      className={`relative w-8 h-4 rounded-full p-0.5 transition-colors duration-300 ${modules.acoustic ? 'bg-cyan' : 'bg-foreground/30'}`}
                     >
                       <motion.div 
                         layout 
@@ -655,17 +655,17 @@ export const JarvisHUD: React.FC = () => {
                     </button>
                   </div>
 
-                  <div className="flex justify-between items-center p-3 bg-surface-container/30 border border-surface-tint/10 rounded-xl">
+                  <div className="flex justify-between items-center p-3 bg-surface-container-lowest/80 border border-cyan/20 chamfer-card-sm">
                     <div className="flex items-center gap-3">
-                      <Activity size={16} className={modules.telemetry ? "text-surface-tint" : "text-foreground/30"} />
+                      <Activity size={16} className={modules.telemetry ? "text-cyan glow-cyan" : "text-foreground/30"} />
                       <div className="text-left">
-                        <div className="font-mono text-[10px] font-bold text-foreground">TELEMETRY_OVERRIDE</div>
-                        <div className="font-mono text-[8px] text-foreground/40">CPU/Thermal sensors active</div>
+                        <div className="font-mono text-[10px] font-bold text-cyan">TELEMETRY_OVERRIDE</div>
+                        <div className="font-mono text-[8px] text-foreground/50">CPU/Thermal sensors active</div>
                       </div>
                     </div>
                     <button 
                       onClick={() => toggleModule('telemetry')}
-                      className={`relative w-8 h-4 rounded-full p-0.5 transition-colors duration-300 ${modules.telemetry ? 'bg-surface-tint' : 'bg-foreground/20'}`}
+                      className={`relative w-8 h-4 rounded-full p-0.5 transition-colors duration-300 ${modules.telemetry ? 'bg-cyan' : 'bg-foreground/30'}`}
                     >
                       <motion.div 
                         layout 
@@ -675,17 +675,17 @@ export const JarvisHUD: React.FC = () => {
                     </button>
                   </div>
 
-                  <div className="flex justify-between items-center p-3 bg-surface-container/30 border border-surface-tint/10 rounded-xl">
+                  <div className="flex justify-between items-center p-3 bg-surface-container-lowest/80 border border-cyan/20 chamfer-card-sm">
                     <div className="flex items-center gap-3">
-                      <Wifi size={16} className={modules.hologram ? "text-surface-tint" : "text-foreground/30"} />
+                      <Wifi size={16} className={modules.hologram ? "text-cyan glow-cyan" : "text-foreground/30"} />
                       <div className="text-left">
-                        <div className="font-mono text-[10px] font-bold text-foreground">HOLOGRAPHIC_MATRIX</div>
-                        <div className="font-mono text-[8px] text-foreground/40">3D HUD visual rendering</div>
+                        <div className="font-mono text-[10px] font-bold text-cyan">HOLOGRAPHIC_MATRIX</div>
+                        <div className="font-mono text-[8px] text-foreground/50">3D HUD visual rendering</div>
                       </div>
                     </div>
                     <button 
                       onClick={() => toggleModule('hologram')}
-                      className={`relative w-8 h-4 rounded-full p-0.5 transition-colors duration-300 ${modules.hologram ? 'bg-surface-tint' : 'bg-foreground/20'}`}
+                      className={`relative w-8 h-4 rounded-full p-0.5 transition-colors duration-300 ${modules.hologram ? 'bg-cyan' : 'bg-foreground/30'}`}
                     >
                       <motion.div 
                         layout 
@@ -704,7 +704,7 @@ export const JarvisHUD: React.FC = () => {
                     clearLog();
                     appendLog("SYSTEM: Log cleared. Telemetry flushed.");
                   }}
-                  className="w-full py-2 bg-red-500/10 border border-red-500/30 hover:bg-red-500/20 text-red-400 rounded-lg flex items-center justify-center gap-2 active:scale-95 transition-transform cursor-pointer"
+                  className="w-full py-2.5 bg-red-500/10 border border-red-500/40 hover:bg-red-500/25 text-red-400 chamfer-btn flex items-center justify-center gap-2 active:scale-95 transition-all cursor-pointer font-bold uppercase tracking-wider"
                 >
                   <RotateCcw size={12} />
                   PURGE_LOG_CACHE
@@ -717,7 +717,7 @@ export const JarvisHUD: React.FC = () => {
                       setTimeout(() => appendLog(msg), idx * 150);
                     });
                   }}
-                  className="w-full py-2 bg-surface-tint/10 border border-surface-tint/30 hover:bg-surface-tint/20 text-surface-tint rounded-lg flex items-center justify-center gap-2 active:scale-95 transition-transform cursor-pointer"
+                  className="w-full py-2.5 bg-cyan/10 border border-cyan/40 hover:bg-cyan/25 text-cyan chamfer-btn flex items-center justify-center gap-2 active:scale-95 transition-all cursor-pointer font-bold uppercase tracking-wider shadow-[0_0_15px_rgba(0,242,255,0.2)]"
                 >
                   <RefreshCw size={12} className="animate-spin-slow" />
                   RECALIBRATE_SYSTEM
