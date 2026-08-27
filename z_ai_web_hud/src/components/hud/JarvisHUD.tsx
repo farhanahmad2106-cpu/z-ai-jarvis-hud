@@ -95,17 +95,20 @@ export const JarvisHUD: React.FC = () => {
       )}
       <WeatherWidget />
       {/* Header */}
-      <header className="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-8 py-4 border-b border-outline/20 bg-background/40 backdrop-blur-md">
+      <header className="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-8 py-4 border-b border-cyan/30 bg-surface-container-lowest/80 backdrop-blur-xl">
         <div className="flex items-center gap-4">
           <Menu 
-            className="text-surface-tint hover:glow-sm cursor-pointer transition-all active:scale-95 hover:text-surface-tint/80" 
+            className="text-cyan hover:glow-cyan cursor-pointer transition-all active:scale-95 hover:text-white" 
             size={20} 
             onClick={() => {
               setIsSidebarOpen(true);
               appendLog("SYSTEM: Dashboard interface loaded.");
             }}
           />
-          <div className="font-sans font-extrabold text-2xl tracking-[0.3em] text-surface-tint glow-sm cursor-default">ZAYD</div>
+          <div className="font-sans font-black text-2xl tracking-[0.35em] text-cyan glow-cyan cursor-default">ZAYD</div>
+          <span className="font-mono text-[9px] text-cyan/60 px-2.5 py-0.5 border border-cyan/30 chamfer-card-sm bg-cyan/5">
+            [SYS_ACTIVE]
+          </span>
         </div>
         <div className="flex items-center gap-4">
           <button
@@ -113,14 +116,14 @@ export const JarvisHUD: React.FC = () => {
               setIsGlassHeroOpen(true);
               appendLog("SYSTEM: 3D BrokenByDesign glass visualizer initialized.");
             }}
-            className="font-mono text-[10px] text-surface-tint border border-surface-tint/30 bg-surface-tint/10 hover:bg-surface-tint/20 px-3 py-1 rounded-full flex items-center gap-1.5 transition-all shadow-[0_0_10px_rgba(0,219,231,0.2)]"
+            className="font-mono text-[10px] text-cyan light-pipe-cyan bg-cyan/10 hover:bg-cyan/25 px-4 py-1.5 chamfer-btn flex items-center gap-1.5 transition-all shadow-[0_0_15px_rgba(0,242,255,0.25)] cursor-pointer"
           >
             <Sparkles size={12} className="animate-pulse" /> 3D_HERO
           </button>
-          <span className="font-mono text-[9px] text-surface-tint opacity-40 px-2 py-0.5 border border-surface-tint/20 rounded-md">V1.0.8</span>
-          <span className="font-mono text-[10px] text-surface-tint opacity-70 tracking-widest uppercase">{status}</span>
+          <span className="font-mono text-[9px] text-cyan/50 px-2 py-0.5 border border-cyan/20 chamfer-card-sm">V1.1.0</span>
+          <span className="font-mono text-[10px] text-cyan font-bold tracking-widest uppercase glow-cyan">[{status}]</span>
           <Settings2 
-            className="text-surface-tint hover:glow-sm cursor-pointer transition-all active:scale-95 hover:text-surface-tint/80" 
+            className="text-cyan hover:glow-cyan cursor-pointer transition-all active:scale-95 hover:text-white" 
             size={20} 
             onClick={() => {
               setIsSettingsOpen(true);
@@ -136,40 +139,50 @@ export const JarvisHUD: React.FC = () => {
           <div className={`flex flex-col gap-6 transition-all duration-500 ${modules.telemetry ? '' : 'opacity-20 blur-sm pointer-events-none'}`}>
             <div 
               onClick={() => appendLog("SYSTEM: Calibrating altimeter core... Zero grid offset calibrated at 1123.4 FT.")}
-              className="border-glow bg-surface-container/40 backdrop-blur-xl border border-surface-tint/20 p-6 rounded-2xl w-32 cursor-pointer hover:bg-surface-container/70 hover:shadow-[0_0_20px_rgba(0,219,231,0.25)] hover:border-surface-tint/60 transform-gpu transition-all duration-300 active:scale-95 group"
+              className="chamfer-card light-pipe-cyan bg-surface-container-low/80 backdrop-blur-xl p-5 w-36 cursor-pointer hover:bg-surface-container/90 hover:shadow-[0_0_25px_rgba(0,242,255,0.3)] transition-all duration-300 active:scale-95 group"
             >
-              <div className="font-mono text-[10px] text-surface-tint mb-4 tracking-tighter group-hover:glow-sm transition-all">ALT_METER</div>
-              <div className="flex flex-col gap-2">
+              <div className="font-mono text-[9px] text-cyan/70 mb-1 tracking-[0.2em] uppercase">
+                [MOD_014]
+              </div>
+              <div className="font-mono text-[10px] text-cyan mb-3 tracking-wider group-hover:glow-cyan transition-all font-bold">
+                ALT_METER
+              </div>
+              <div className="flex flex-col gap-1.5">
                 {ALTIMETER_MATRIX.map((w, i) => (
                   <motion.div 
                     key={i}
                     initial={{ width: 0 }}
                     animate={{ width: isThinking ? `${Math.random() * 100}%` : `${w}%` }}
-                    className={`h-1 transform-gpu will-change-transform ${i === 0 ? 'bg-surface-tint shadow-[0_0_10px_#00dbe7]' : 'bg-surface-tint/60'}`}
+                    className={`h-1 transform-gpu will-change-transform ${i === 0 ? 'bg-cyan shadow-[0_0_10px_#00f2ff]' : 'bg-cyan/50'}`}
                   />
                 ))}
               </div>
-              <div className="mt-4 font-mono text-xs text-surface-tint">1123.4 FT</div>
+              <div className="mt-3 font-mono text-xs text-cyan font-bold glow-cyan">1123.4 FT</div>
             </div>
 
             <div 
               onClick={() => appendLog("SYSTEM: Recalibrating pitch gyroscopes... Gyro horizon stabilization nominal.")}
-              className="border-glow bg-surface-container/40 backdrop-blur-xl border border-surface-tint/20 p-6 rounded-2xl w-32 cursor-pointer hover:bg-surface-container/70 hover:shadow-[0_0_20px_rgba(0,219,231,0.25)] hover:border-surface-tint/60 transform-gpu transition-all duration-300 active:scale-95 group mt-4"
+              className="chamfer-card light-pipe-cyan bg-surface-container-low/80 backdrop-blur-xl p-5 w-36 cursor-pointer hover:bg-surface-container/90 hover:shadow-[0_0_25px_rgba(0,242,255,0.3)] transition-all duration-300 active:scale-95 group"
             >
-              <div className="font-mono text-[10px] text-surface-tint mb-2 tracking-tighter group-hover:glow-sm transition-all">PITCH</div>
-              <div className="relative h-20 w-full flex items-center justify-center overflow-hidden">
-                 <div className="absolute w-full h-[1px] bg-surface-tint/30 rotate-12 transform-gpu" />
+              <div className="font-mono text-[9px] text-cyan/70 mb-1 tracking-[0.2em] uppercase">
+                [MOD_082]
+              </div>
+              <div className="font-mono text-[10px] text-cyan mb-2 tracking-wider group-hover:glow-cyan transition-all font-bold">
+                PITCH_GYRO
+              </div>
+              <div className="relative h-16 w-full flex items-center justify-center overflow-hidden border border-cyan/20 bg-surface-container-lowest/50">
+                 <div className="absolute w-full h-[1px] bg-cyan/30 rotate-12 transform-gpu" />
                  <motion.div 
                   animate={{ rotate: isThinking ? [0, 360] : [12, -12, 12] }}
                   transition={{ duration: isThinking ? 1 : 4, repeat: Infinity, ease: "easeInOut" }}
-                  className="absolute w-1/2 h-[1px] bg-surface-tint shadow-[0_0_5px_#00dbe7] transform-gpu will-change-transform" 
+                  className="absolute w-3/4 h-[1px] bg-cyan shadow-[0_0_8px_#00f2ff] transform-gpu will-change-transform" 
                  />
               </div>
             </div>
           </div>
           {!modules.telemetry && (
-            <div className="absolute inset-0 bg-background/70 backdrop-blur-md flex items-center justify-center rounded-xl border border-red-500/20 shadow-[inset_0_0_12px_rgba(239,68,68,0.1)]">
-              <span className="font-mono text-[9px] text-red-400 font-extrabold tracking-widest uppercase animate-pulse">STANDBY</span>
+            <div className="absolute inset-0 bg-background/80 backdrop-blur-md flex items-center justify-center chamfer-card light-pipe-amber">
+              <span className="font-mono text-[9px] text-amber font-extrabold tracking-widest uppercase animate-pulse">[STANDBY]</span>
             </div>
           )}
         </div>

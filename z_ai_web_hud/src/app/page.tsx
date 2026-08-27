@@ -118,7 +118,7 @@ export default function Home() {
                />
             </div>
             
-            <h1 className="font-sans font-bold text-4xl text-surface-tint mb-3 tracking-[0.2em] drop-shadow-[0_0_8px_rgba(0,219,231,0.6)]">
+            <h1 className="font-sans font-black text-4xl text-cyan mb-3 tracking-[0.2em] glow-cyan">
               {authMethod === 'face' ? 'BIOMETRIC_SCAN_ACTIVE' : 'MANUAL_OVERRIDE'}
             </h1>
             
@@ -126,9 +126,9 @@ export default function Home() {
               variants={typingAnimation}
               initial="hidden"
               animate="show"
-              className="font-mono text-sm text-surface-tint/70 mb-12 flex h-6"
+              className="font-mono text-sm text-cyan/70 mb-12 flex h-6 tracking-wider"
             >
-              {(authMethod === 'face' ? 'ANALYZING OPERATOR FACIAL TOPOLOGY...' : 'ENTER ENCRYPTION KEY').split('').map((char, index) => (
+              {(authMethod === 'face' ? '[ANALYZING OPERATOR FACIAL TOPOLOGY...]' : '[ENTER AUTHORIZATION PASSCODE]').split('').map((char, index) => (
                 <motion.span key={index} variants={letterAnimation}>
                   {char === ' ' ? '\u00A0' : char}
                 </motion.span>
@@ -137,9 +137,9 @@ export default function Home() {
 
             <button 
               onClick={() => setAuthMethod('password')}
-              className="px-8 py-3 border border-surface-tint/40 rounded-full font-mono text-[11px] text-surface-tint hover:bg-surface-tint/20 hover:border-surface-tint transition-all flex items-center gap-2 backdrop-blur-sm shadow-[0_0_15px_rgba(0,219,231,0.1)] hover:shadow-[0_0_20px_rgba(0,219,231,0.4)]"
+              className="px-8 py-3 chamfer-btn light-pipe-cyan bg-surface-container-low/80 font-mono text-[11px] text-cyan hover:bg-cyan/20 hover:text-white transition-all flex items-center gap-2 backdrop-blur-md shadow-[0_0_20px_rgba(0,242,255,0.25)] uppercase tracking-widest cursor-pointer"
             >
-              <Lock size={14} className="opacity-80" /> USE_PASSCODE_FALLBACK
+              <Lock size={14} className="opacity-90" /> USE_PASSCODE_FALLBACK
             </button>
 
             {authMethod === 'password' && (
@@ -149,11 +149,11 @@ export default function Home() {
                 className="mt-10 flex flex-col items-center"
               >
                 <div className="relative group">
-                  <div className="absolute -inset-0.5 bg-gradient-to-r from-surface-tint/30 to-surface-tint/10 rounded-lg blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
+                  <div className="absolute -inset-0.5 bg-gradient-to-r from-cyan/40 to-electric-blue/40 blur opacity-75 group-hover:opacity-100 transition duration-500"></div>
                   <input 
                     type="password" 
-                    placeholder="ENTER_ENCRYPTION_KEY"
-                    className="relative bg-background/60 backdrop-blur-xl border border-surface-tint/50 rounded-lg px-6 py-3 font-mono text-sm text-surface-tint focus:outline-none focus:border-surface-tint focus:ring-1 focus:ring-surface-tint/50 w-72 text-center shadow-[inset_0_0_20px_rgba(0,219,231,0.1)] transition-all placeholder:text-surface-tint/30"
+                    placeholder="ENTER_KEY"
+                    className="relative bg-surface-container-lowest/80 backdrop-blur-xl border border-cyan/60 chamfer-card-sm px-6 py-3 font-mono text-sm text-cyan focus:outline-none focus:border-cyan focus:ring-1 focus:ring-cyan/50 w-72 text-center shadow-[inset_0_0_20px_rgba(0,242,255,0.15)] transition-all placeholder:text-cyan/30"
                     onKeyDown={(e) => e.key === 'Enter' && setIsLocked(false)}
                   />
                 </div>
@@ -161,7 +161,7 @@ export default function Home() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.5 }}
-                  className="mt-5 text-[10px] font-mono text-error/80 tracking-widest uppercase flex items-center gap-2"
+                  className="mt-5 text-[10px] font-mono text-error tracking-[0.2em] uppercase flex items-center gap-2 font-bold"
                 >
                   <span className="w-1.5 h-1.5 rounded-full bg-error animate-pulse"></span>
                   MANUAL_OVERRIDE_REQUIRED
