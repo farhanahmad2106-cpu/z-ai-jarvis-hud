@@ -53,7 +53,7 @@ const PermissionDashboardScreen: React.FC = () => {
     <View style={styles.root}>
       <HudBackground />
       <ScanlineOverlay />
-      <HudTopBar statusLabel="UPLINK_STABLE" />
+      <HudTopBar statusLabel="[ZAYD_SECURITY_CONTROL_CENTER]" />
 
       <View style={[styles.layout, {
         paddingTop:    insets.top + 56,
@@ -78,7 +78,7 @@ const PermissionDashboardScreen: React.FC = () => {
           <View style={styles.dashHeader}>
             <View>
               <LabelCaps color={Colors.surfaceTint}>
-                SECURITY_MODULE // 002
+                [ZAYD_PERMISSIONS_MODULE_002]
               </LabelCaps>
               <Text style={styles.dashTitle}>Authorized{'\n'}Applications</Text>
             </View>
