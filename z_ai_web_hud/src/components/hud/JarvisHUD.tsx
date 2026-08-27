@@ -226,23 +226,28 @@ export const JarvisHUD: React.FC = () => {
       <aside className="absolute right-8 top-1/2 -translate-y-1/2 flex flex-col gap-4 text-right z-40">
         <div className="relative">
           <div className={`flex flex-col gap-4 transition-all duration-500 ${modules.telemetry ? '' : 'opacity-20 blur-sm pointer-events-none'}`}>
-            <div className="border-glow bg-surface-container/40 backdrop-blur-xl border border-surface-tint/20 p-6 rounded-2xl w-48 transform-gpu hover:shadow-[0_0_20px_rgba(0,219,231,0.15)] transition-all duration-300">
-              <div className="flex items-center justify-end gap-2 mb-2">
-                <span className="font-mono text-[10px] text-foreground/60 tracking-tighter">STATUS:</span>
-                <span className={`font-mono text-[10px] glow-sm font-bold ${isOnline ? 'text-[#00ff9d] animate-pulse' : 'text-[#ffaa00]'}`}>
-                  {isOnline ? 'ONLINE' : 'OFFLINE'}
+            <div className="chamfer-card light-pipe-cyan bg-surface-container-low/80 backdrop-blur-xl p-5 w-52 text-left hover:shadow-[0_0_25px_rgba(0,242,255,0.25)] transition-all duration-300">
+              <div className="font-mono text-[9px] text-cyan/70 tracking-[0.2em] uppercase mb-2">
+                [MOD_SYS_004]
+              </div>
+              <div className="flex items-center justify-between mb-2">
+                <span className="font-mono text-[10px] text-foreground/70 tracking-wider">STATUS:</span>
+                <span className={`font-mono text-[10px] glow-cyan font-bold ${isOnline ? 'text-[#00ff9d] animate-pulse' : 'text-amber'}`}>
+                  {isOnline ? '[ONLINE]' : '[OFFLINE]'}
                 </span>
               </div>
-              <div className="flex items-center justify-end gap-2">
-                <span className="font-mono text-[10px] text-foreground/60 tracking-tighter">MIC:</span>
-                <motion.span 
-                  animate={{ opacity: (isListening && modules.acoustic) ? [1, 0.4, 1] : 1, scale: (isListening && modules.acoustic) ? 1.2 : 1 }}
-                  transition={{ duration: 0.5, repeat: Infinity }}
-                  className={`flex h-2 w-2 rounded-full transform-gpu will-change-transform ${(isListening && modules.acoustic) ? 'bg-[#00ff9d] shadow-[0_0_12px_#00ff9d]' : 'bg-[#00ff9d]/50'} ${(!modules.acoustic || !isOnline || status === 'OFFLINE') ? 'bg-red-500 shadow-[0_0_8px_#ef4444]' : ''}`}
-                />
-                <span className={`font-mono text-[10px] font-bold ${(isListening && modules.acoustic) ? 'text-[#00ff9d]' : 'text-[#00ff9d]/60'} ${(!modules.acoustic || !isOnline || status === 'OFFLINE') ? 'text-red-400' : ''}`}>
-                  {!modules.acoustic ? 'MUTED' : (!isOnline || status === 'OFFLINE') ? 'OFFLINE' : isListening ? 'LISTENING' : 'ACTIVE'}
-                </span>
+              <div className="flex items-center justify-between">
+                <span className="font-mono text-[10px] text-foreground/70 tracking-wider">MIC_CAPT:</span>
+                <div className="flex items-center gap-1.5">
+                  <motion.span 
+                    animate={{ opacity: (isListening && modules.acoustic) ? [1, 0.4, 1] : 1, scale: (isListening && modules.acoustic) ? 1.2 : 1 }}
+                    transition={{ duration: 0.5, repeat: Infinity }}
+                    className={`flex h-2 w-2 rounded-full transform-gpu will-change-transform ${(isListening && modules.acoustic) ? 'bg-[#00ff9d] shadow-[0_0_12px_#00ff9d]' : 'bg-[#00ff9d]/50'} ${(!modules.acoustic || !isOnline || status === 'OFFLINE') ? 'bg-red-500 shadow-[0_0_8px_#ef4444]' : ''}`}
+                  />
+                  <span className={`font-mono text-[10px] font-bold ${(isListening && modules.acoustic) ? 'text-[#00ff9d]' : 'text-[#00ff9d]/60'} ${(!modules.acoustic || !isOnline || status === 'OFFLINE') ? 'text-red-400' : ''}`}>
+                    {!modules.acoustic ? 'MUTED' : (!isOnline || status === 'OFFLINE') ? 'OFFLINE' : isListening ? 'LISTENING' : 'ACTIVE'}
+                  </span>
+                </div>
               </div>
             </div>
 
@@ -254,10 +259,13 @@ export const JarvisHUD: React.FC = () => {
                   appendLog("SYSTEM: Voice capture manual override triggered.");
                 }
               }}
-              className="border-glow bg-surface-container/40 backdrop-blur-xl border border-surface-tint/20 p-4 rounded-2xl cursor-pointer hover:bg-surface-container/70 hover:shadow-[0_0_20px_rgba(0,219,231,0.25)] hover:border-surface-tint/60 transform-gpu transition-all duration-300 active:scale-95 group"
+              className="chamfer-card light-pipe-cyan bg-surface-container-low/80 backdrop-blur-xl p-4 cursor-pointer hover:bg-surface-container/90 hover:shadow-[0_0_25px_rgba(0,242,255,0.3)] transition-all duration-300 active:scale-95 group text-left"
             >
-              <div className="font-mono text-[10px] text-surface-tint text-left mb-2 tracking-tighter group-hover:glow-sm transition-all">V_INPUT</div>
-              <svg className="w-full h-12 stroke-surface-tint fill-none stroke-1" viewBox="0 0 100 30">
+              <div className="flex justify-between items-center mb-1">
+                <div className="font-mono text-[10px] text-cyan tracking-wider font-bold group-hover:glow-cyan transition-all">V_INPUT_FREQ</div>
+                <div className="font-mono text-[9px] text-cyan/60">[MOD_ACOU_01]</div>
+              </div>
+              <svg className="w-full h-12 stroke-cyan fill-none stroke-1" viewBox="0 0 100 30">
                 <motion.path 
                   d={WAVEFORM_PATHS.IDLE}
                   animate={{ 
@@ -270,31 +278,31 @@ export const JarvisHUD: React.FC = () => {
                       : WAVEFORM_PATHS.IDLE 
                   }}
                   transition={{ duration: 0.3 }}
-                  className="opacity-50 transform-gpu will-change-transform" 
+                  className="opacity-70 transform-gpu will-change-transform drop-shadow-[0_0_8px_#00f2ff]" 
                 />
               </svg>
             </div>
 
-            <div className="grid grid-cols-2 gap-3 transform-gpu">
+            <div className="grid grid-cols-2 gap-3 transform-gpu text-left">
               <div 
                 onClick={() => {
                   setActiveTab('cpu');
                   appendLog("SYSTEM: Navigating to CPU workloads page.");
                 }}
-                className="border-glow bg-surface-container/30 backdrop-blur-lg border border-surface-tint/10 p-3 rounded-xl transition-all duration-300 hover:bg-surface-container/60 hover:border-surface-tint/50 hover:shadow-[0_0_15px_rgba(0,219,231,0.2)] cursor-pointer active:scale-95 group"
+                className="chamfer-card-sm border border-cyan/30 bg-surface-container-lowest/80 p-3 transition-all duration-300 hover:bg-cyan/15 hover:border-cyan hover:shadow-[0_0_18px_rgba(0,242,255,0.25)] cursor-pointer active:scale-95 group"
               >
-                <div className="font-mono text-[9px] text-foreground/60 group-hover:text-surface-tint/80 transition-colors">CPU_LOAD</div>
-                <div className="font-mono text-xs text-surface-tint mt-1 group-hover:glow-sm">{isThinking ? CPU_THINKING_LOAD : CPU_NOMINAL_LOAD}</div>
+                <div className="font-mono text-[9px] text-cyan/70 font-bold group-hover:text-cyan transition-colors">CPU_LOAD</div>
+                <div className="font-mono text-xs text-cyan mt-1 group-hover:glow-cyan font-extrabold">{isThinking ? CPU_THINKING_LOAD : CPU_NOMINAL_LOAD}</div>
               </div>
               <div 
                 onClick={() => {
                   setActiveTab('cpu');
                   appendLog("SYSTEM: Navigating to CPU core telemetry page.");
                 }}
-                className="border-glow bg-surface-container/30 backdrop-blur-lg border border-surface-tint/10 p-3 rounded-xl transition-all duration-300 hover:bg-surface-container/60 hover:border-surface-tint/50 hover:shadow-[0_0_15px_rgba(0,219,231,0.2)] cursor-pointer active:scale-95 group"
+                className="chamfer-card-sm border border-cyan/30 bg-surface-container-lowest/80 p-3 transition-all duration-300 hover:bg-cyan/15 hover:border-cyan hover:shadow-[0_0_18px_rgba(0,242,255,0.25)] cursor-pointer active:scale-95 group"
               >
-                <div className="font-mono text-[9px] text-foreground/60 group-hover:text-surface-tint/80 transition-colors">TEMP_CR</div>
-                <div className="font-mono text-xs text-surface-tint mt-1 group-hover:glow-sm">{isThinking ? TEMP_THINKING_CELSIUS : TEMP_NOMINAL_CELSIUS}</div>
+                <div className="font-mono text-[9px] text-cyan/70 font-bold group-hover:text-cyan transition-colors">TEMP_CORE</div>
+                <div className="font-mono text-xs text-cyan mt-1 group-hover:glow-cyan font-extrabold">{isThinking ? TEMP_THINKING_CELSIUS : TEMP_NOMINAL_CELSIUS}</div>
               </div>
             </div>
           </div>
@@ -307,14 +315,14 @@ export const JarvisHUD: React.FC = () => {
       </aside>
 
       {/* Bottom: Multi-Tab Command Center Panel */}
-      <section className="absolute bottom-24 left-8 w-[28rem] border-t-2 border-surface-tint/50 bg-background/85 backdrop-blur-2xl p-6 shadow-2xl rounded-tr-3xl min-h-64 max-h-72 overflow-hidden z-[100] transform-gpu border border-surface-tint/10 text-left">
+      <section className="absolute bottom-24 left-8 w-[28rem] chamfer-card light-pipe-cyan bg-surface-container-low/90 backdrop-blur-2xl p-6 shadow-2xl min-h-64 max-h-72 overflow-hidden z-[100] transform-gpu text-left">
         
         {/* Tab 1: Terminal Logs */}
         {activeTab === 'terminal' && (
           <div className="flex flex-col h-full">
-            <div className="flex justify-between items-center mb-3 border-b border-outline/10 pb-2">
-              <div className="font-mono text-[10px] text-surface-tint tracking-widest font-extrabold flex items-center gap-1.5">
-                <TerminalIcon size={12} className="animate-pulse text-surface-tint" />
+            <div className="flex justify-between items-center mb-3 border-b border-cyan/20 pb-2">
+              <div className="font-mono text-[10px] text-cyan tracking-widest font-extrabold flex items-center gap-1.5 glow-cyan">
+                <TerminalIcon size={12} className="animate-pulse text-cyan" />
                 SYSTEM_LOG [MOD_082]
               </div>
               <button 
@@ -324,15 +332,15 @@ export const JarvisHUD: React.FC = () => {
                     setTimeout(() => appendLog(msg), idx * 150);
                   });
                 }}
-                className="text-[9px] font-mono text-surface-tint border border-surface-tint/30 px-2 py-0.5 rounded hover:bg-surface-tint/10 transition-colors cursor-pointer active:scale-95"
+                className="text-[9px] font-mono text-cyan border border-cyan/40 px-2.5 py-1 chamfer-btn hover:bg-cyan/20 transition-all cursor-pointer active:scale-95 font-bold uppercase tracking-wider"
               >
                 RUN_DIAGNOSTICS
               </button>
             </div>
-            <div className="font-mono text-[10px] text-foreground/70 space-y-1 h-[9.5rem] overflow-y-auto scrollbar-hide flex flex-col-reverse">
+            <div className="font-mono text-[10px] text-foreground/80 space-y-1 h-[9.5rem] overflow-y-auto scrollbar-hide flex flex-col-reverse">
               {terminalLog.slice().reverse().map((log, i) => (
                 <div key={i} className="flex gap-2">
-                  <span className="text-surface-tint shrink-0">&gt;</span> 
+                  <span className="text-cyan shrink-0 font-bold">&gt;</span> 
                   <span className="break-all text-left">{log}</span>
                 </div>
               ))}
@@ -343,9 +351,9 @@ export const JarvisHUD: React.FC = () => {
         {/* Tab 2: Deflector Shield */}
         {activeTab === 'shield' && (
           <div className="flex flex-col h-full">
-            <div className="flex justify-between items-center mb-3 border-b border-outline/10 pb-2">
-              <div className="font-mono text-[10px] text-surface-tint tracking-widest font-extrabold flex items-center gap-1.5">
-                <Shield size={12} className="text-surface-tint" />
+            <div className="flex justify-between items-center mb-3 border-b border-cyan/20 pb-2">
+              <div className="font-mono text-[10px] text-cyan tracking-widest font-extrabold flex items-center gap-1.5 glow-cyan">
+                <Shield size={12} className="text-cyan" />
                 DEFLECTOR_SHIELD [MOD_301]
               </div>
               <button 
@@ -364,7 +372,7 @@ export const JarvisHUD: React.FC = () => {
                     }
                   }, 50);
                 }}
-                className={`text-[9px] font-mono border px-2 py-0.5 rounded transition-all cursor-pointer active:scale-95 ${isCharging ? 'text-[#00ff9d] border-[#00ff9d]/30 bg-[#00ff9d]/5 animate-pulse' : 'text-surface-tint border-surface-tint/30 hover:bg-surface-tint/10'}`}
+                className={`text-[9px] font-mono border px-2.5 py-1 chamfer-btn transition-all cursor-pointer active:scale-95 uppercase tracking-wider font-bold ${isCharging ? 'text-[#00ff9d] border-[#00ff9d]/50 bg-[#00ff9d]/15 animate-pulse' : 'text-cyan border-cyan/40 hover:bg-cyan/20'}`}
               >
                 {isCharging ? 'CHARGING...' : 'RECHARGE_SHIELD'}
               </button>
