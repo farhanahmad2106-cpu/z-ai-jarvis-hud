@@ -265,13 +265,29 @@ export async function POST(req: Request) {
                             lastMessage.startsWith("is");
         
         if (isQuestion) {
-          const questionTemplates = [
-            `Analyzing query vectors... Core records indicate that local metrics for "${lastMessage.replace(/^(what is|what's|tell me about|explain|how is|why is|is there)\s+/i, '').replace(/[?.\-]+$/, '').trim()}" remain stable, Operator.`,
-            `Quantum telemetry processed. Search arrays confirm local connection is stabilized. Please configure GEMINI_API_KEY in Vercel to unlock deep generative answers.`,
-            `Query routed to security quadrant. Diagnostic registers indicate positive sync. Ready for further instructions, Operator.`,
-            `Intriguing inquiry, Operator. System databases indicate stable telemetry. I suggest adding your Google AI portal credentials in Vercel to activate complete analytical cognitive telemetry.`
-          ];
-          mockReply = questionTemplates[Math.floor(Math.random() * questionTemplates.length)];
+          const query = lastMessage.replace(/^(what is|what's|tell me about|explain|how is|why is|is there|who is|who are)\s+/i, '').replace(/[?.\-]+$/, '').trim();
+          let searchData = "";
+          
+          try {
+            const searchTelemetry = await performWebSearch(query);
+            if (searchTelemetry && searchTelemetry.results && searchTelemetry.results.length > 0) {
+              searchData = searchTelemetry.results.map((r, i) => r.snippet).join(" ");
+            }
+          } catch (e) {
+            console.error("[Z-AI Mock Search] Failed to retrieve data", e);
+          }
+
+          if (searchData) {
+            mockReply = `Analyzing query. Retrieving real-time data on ${query}: ${cleanTextForSpeech(searchData).substring(0, 200)}... Operator, please add GEMINI_API_KEY for deeper generative analysis.`;
+          } else {
+            const questionTemplates = [
+              `Analyzing query vectors... Core records indicate that local metrics for "${query}" remain stable, Operator.`,
+              `Quantum telemetry processed. Search arrays confirm local connection is stabilized. Please configure GEMINI_API_KEY in Vercel to unlock deep generative answers.`,
+              `Query routed to security quadrant. Diagnostic registers indicate positive sync. Ready for further instructions, Operator.`,
+              `Intriguing inquiry, Operator. System databases indicate stable telemetry. I suggest adding your Google AI portal credentials in Vercel to activate complete analytical cognitive telemetry.`
+            ];
+            mockReply = questionTemplates[Math.floor(Math.random() * questionTemplates.length)];
+          }
         } else {
           const statementTemplates = [
             `Command registered in HUD buffer. Calibrating system matrices... all channels clear.`,
