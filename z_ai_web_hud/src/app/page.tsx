@@ -24,6 +24,7 @@ export default function Home() {
   const [passcodeError, setPasscodeError] = useState(false);
   const [failedAttempts, setFailedAttempts] = useState(0);
   const [isLockdown, setIsLockdown] = useState(false);
+  const [lockdownTimer, setLockdownTimer] = useState(0);
   const [bootLogs, setBootLogs] = useState<string[]>([]);
 
   // Preload the heavy HUD component chunk in the background as soon as the page mounts
@@ -155,6 +156,21 @@ export default function Home() {
     }
   }, [isLocked]);
 
+  // Lockdown Timer effect
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (isLockdown && lockdownTimer > 0) {
+      timer = setInterval(() => {
+        setLockdownTimer((prev) => prev - 1);
+      }, 1000);
+    } else if (isLockdown && lockdownTimer <= 0) {
+      setIsLockdown(false);
+      setFailedAttempts(0);
+      setPasscodeError(false);
+    }
+    return () => clearInterval(timer);
+  }, [isLockdown, lockdownTimer]);
+
   const typingAnimation = {
     hidden: { opacity: 0 },
     show: {
@@ -258,7 +274,7 @@ export default function Home() {
             </div>
             
             <h1 className={`font-sans font-black text-4xl mb-3 tracking-[0.2em] ${isLockdown ? 'text-error glow-error animate-pulse' : (scanStatus === 'granted' && authMethod === 'face' ? 'text-green-400 glow-green' : 'text-cyan glow-cyan')}`}>
-              {isLockdown ? 'SYSTEM LOCKDOWN' : (authMethod === 'face' ? (scanStatus === 'granted' ? 'IDENTITY CONFIRMED' : 'BIOMETRIC_SCAN_ACTIVE') : 'MANUAL_OVERRIDE')}
+              {isLockdown ? `LOCKDOWN: ${lockdownTimer}s` : (authMethod === 'face' ? (scanStatus === 'granted' ? 'IDENTITY CONFIRMED' : 'BIOMETRIC_SCAN_ACTIVE') : 'MANUAL_OVERRIDE')}
             </h1>
             
             <motion.div 
@@ -306,6 +322,7 @@ export default function Home() {
                           setFailedAttempts(newAttempts);
                           if (newAttempts >= 3) {
                             setIsLockdown(true);
+                            setLockdownTimer(15);
                           } else {
                             setPasscodeError(true);
                           }
@@ -323,7 +340,7 @@ export default function Home() {
                   className={`mt-5 text-[10px] font-mono tracking-[0.2em] uppercase flex items-center gap-2 font-bold ${isLockdown || passcodeError ? 'text-error' : 'text-cyan/50'}`}
                 >
                   <span className={`w-1.5 h-1.5 rounded-full ${isLockdown || passcodeError ? 'bg-error animate-pulse' : 'bg-cyan/50'}`}></span>
-                  {isLockdown ? 'SYSTEM_LOCKED' : (passcodeError ? `ACCESS DENIED - ${3 - failedAttempts} ATTEMPTS REMAINING` : 'MANUAL_OVERRIDE_REQUIRED')}
+                  {isLockdown ? `SYSTEM_LOCKED - REBOOTING IN ${lockdownTimer}s` : (passcodeError ? `ACCESS DENIED - ${3 - failedAttempts} ATTEMPTS REMAINING` : 'MANUAL_OVERRIDE_REQUIRED')}
                 </motion.p>
               </motion.div>
             )}
