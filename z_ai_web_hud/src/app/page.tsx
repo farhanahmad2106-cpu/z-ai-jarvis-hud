@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Lock, Fingerprint } from "lucide-react";
+import { Lock, Fingerprint, Unlock } from "lucide-react";
 import dynamic from "next/dynamic";
 
 // Dynamically import the heavy HUD component with no SSR to reduce initial bundle size and avoid hydration issues
@@ -20,6 +20,7 @@ const JarvisHUD = dynamic(() => import('@/components/hud/JarvisHUD').then(mod =>
 export default function Home() {
   const [isLocked, setIsLocked] = useState(true);
   const [authMethod, setAuthMethod] = useState<'face' | 'password'>('face');
+  const [scanStatus, setScanStatus] = useState<'scanning' | 'granted'>('scanning');
 
   // Preload the heavy HUD component chunk in the background as soon as the page mounts
   useEffect(() => {
@@ -30,8 +31,59 @@ export default function Home() {
   // Handle Webcam feed and simulated biometric scan
   const videoRef = useRef<HTMLVideoElement>(null);
   
+  // Audio Context utility for synthetic sounds
+  const playSound = (type: 'scan' | 'granted') => {
+    try {
+      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+      if (!AudioContextClass) return;
+      const ctx = new AudioContextClass();
+      
+      if (type === 'scan') {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(150, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(300, ctx.currentTime + 0.1);
+        
+        gain.gain.setValueAtTime(0, ctx.currentTime);
+        gain.gain.linearRampToValueAtTime(0.02, ctx.currentTime + 0.05);
+        gain.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.2);
+        
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        
+        osc.start();
+        osc.stop(ctx.currentTime + 0.2);
+      } else if (type === 'granted') {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(800, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(1200, ctx.currentTime + 0.1);
+        osc.frequency.setValueAtTime(1200, ctx.currentTime + 0.1);
+        osc.frequency.exponentialRampToValueAtTime(2000, ctx.currentTime + 0.2);
+        
+        gain.gain.setValueAtTime(0, ctx.currentTime);
+        gain.gain.linearRampToValueAtTime(0.1, ctx.currentTime + 0.05);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
+        
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        
+        osc.start();
+        osc.stop(ctx.currentTime + 0.5);
+      }
+    } catch (e) {
+      console.log('Audio not supported or blocked');
+    }
+  };
+
   useEffect(() => {
     let stream: MediaStream | null = null;
+    let scanInterval: NodeJS.Timeout;
+    let grantTimeout: NodeJS.Timeout;
+    let unlockTimeout: NodeJS.Timeout;
+
     if (isLocked && authMethod === 'face') {
       navigator.mediaDevices.getUserMedia({ video: true })
         .then((mediaStream) => {
@@ -39,10 +91,23 @@ export default function Home() {
           if (videoRef.current) {
             videoRef.current.srcObject = mediaStream;
           }
+          
+          setScanStatus('scanning');
+          
+          // Play scanning sound periodically
+          scanInterval = setInterval(() => playSound('scan'), 400);
+
           // Simulate the ML facial recognition processing delay
-          setTimeout(() => {
-            setIsLocked(false);
-          }, 800);
+          grantTimeout = setTimeout(() => {
+            clearInterval(scanInterval);
+            setScanStatus('granted');
+            playSound('granted');
+            
+            // Wait for granted animation before unlocking
+            unlockTimeout = setTimeout(() => {
+              setIsLocked(false);
+            }, 800);
+          }, 2000);
         })
         .catch((err) => {
           console.error("Camera access denied", err);
@@ -55,6 +120,9 @@ export default function Home() {
       if (stream) {
         stream.getTracks().forEach(track => track.stop());
       }
+      clearInterval(scanInterval);
+      clearTimeout(grantTimeout);
+      clearTimeout(unlockTimeout);
     };
   }, [isLocked, authMethod]);
 
@@ -102,20 +170,30 @@ export default function Home() {
                      className="absolute w-full h-3 bg-surface-tint shadow-[0_0_20px_#00dbe7] opacity-60 z-10 mix-blend-screen"
                    />
                    <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
-                     <motion.div
-                       animate={{ 
-                         scale: [1, 1.1, 1],
-                         opacity: [0.7, 1, 0.7]
-                       }}
-                       transition={{ 
-                         duration: 2, 
-                         repeat: Infinity, 
-                         ease: "easeInOut" 
-                       }}
-                       className="bg-background/40 p-4 rounded-full backdrop-blur-sm border border-cyan/30"
-                     >
-                       <Lock size={48} className="text-cyan drop-shadow-[0_0_10px_rgba(0,219,231,1)]" />
-                     </motion.div>
+                     {scanStatus === 'scanning' ? (
+                       <motion.div
+                         animate={{ 
+                           scale: [1, 1.1, 1],
+                           opacity: [0.7, 1, 0.7]
+                         }}
+                         transition={{ 
+                           duration: 2, 
+                           repeat: Infinity, 
+                           ease: "easeInOut" 
+                         }}
+                         className="bg-background/40 p-4 rounded-full backdrop-blur-sm border border-cyan/30"
+                       >
+                         <Lock size={48} className="text-cyan drop-shadow-[0_0_10px_rgba(0,219,231,1)]" />
+                       </motion.div>
+                     ) : (
+                       <motion.div
+                         initial={{ scale: 0.8, opacity: 0 }}
+                         animate={{ scale: 1.2, opacity: 1 }}
+                         className="bg-green-500/20 p-4 rounded-full backdrop-blur-sm border border-green-400 shadow-[0_0_30px_rgba(74,222,128,0.6)]"
+                       >
+                         <Unlock size={56} className="text-green-400 drop-shadow-[0_0_15px_rgba(74,222,128,1)]" />
+                       </motion.div>
+                     )}
                    </div>
                  </>
                ) : (
