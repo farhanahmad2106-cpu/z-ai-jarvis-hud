@@ -421,7 +421,7 @@ export async function POST(req: Request) {
                 type: z.enum(['naat', 'quran', 'youtube']),
                 youtubeQuery: z.string().optional().describe('Search query for YouTube if type is youtube'),
               }),
-              // @ts-expect-error
+              // @ts-expect-error - AI SDK Tool type inference issue
               execute: async ({ type, youtubeQuery }: { type: string, youtubeQuery?: string }) => {
                 try {
                   if (type === 'naat') {
@@ -498,7 +498,7 @@ export async function POST(req: Request) {
                 type: z.enum(['naat', 'quran', 'youtube']),
                 youtubeQuery: z.string().optional().describe('Search query for YouTube if type is youtube'),
               }),
-              // @ts-expect-error
+              // @ts-expect-error - AI SDK Tool type inference issue
               execute: async ({ type, youtubeQuery }: { type: string, youtubeQuery?: string }) => {
                 try {
                   if (type === 'naat') {
