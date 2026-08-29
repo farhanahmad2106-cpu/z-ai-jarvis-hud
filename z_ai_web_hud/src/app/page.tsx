@@ -25,7 +25,40 @@ export default function Home() {
   const [failedAttempts, setFailedAttempts] = useState(0);
   const [isLockdown, setIsLockdown] = useState(false);
   const [lockdownTimer, setLockdownTimer] = useState(0);
+  const [lockdownLevel, setLockdownLevel] = useState(0);
   const [bootLogs, setBootLogs] = useState<string[]>([]);
+
+  const LOCKDOWN_PENALTIES = [
+    15, // 15s
+    60, // 1m
+    360, // 6m
+    2160, // 36m
+    3600, // 1h
+    21600, // 6h
+    64800, // 18h
+    129600, // 36h
+    518400, // 6d
+    1555200, // 18d
+    3110400, // 36d
+    7776000, // 3mo (90d)
+    15552000 // 6mo (180d)
+  ];
+
+  const formatLockdownTime = (totalSeconds: number) => {
+    if (totalSeconds < 60) return `${totalSeconds}s`;
+    const d = Math.floor(totalSeconds / 86400);
+    const h = Math.floor((totalSeconds % 86400) / 3600);
+    const m = Math.floor((totalSeconds % 3600) / 60);
+    const s = totalSeconds % 60;
+    
+    const parts = [];
+    if (d > 0) parts.push(`${d}d`);
+    if (h > 0) parts.push(`${h}h`);
+    if (m > 0) parts.push(`${m}m`);
+    if (s > 0 && d === 0) parts.push(`${s}s`);
+    
+    return parts.join(' ');
+  };
 
   // Preload the heavy HUD component chunk in the background as soon as the page mounts
   useEffect(() => {
@@ -274,7 +307,7 @@ export default function Home() {
             </div>
             
             <h1 className={`font-sans font-black text-4xl mb-3 tracking-[0.2em] ${isLockdown ? 'text-error glow-error animate-pulse' : (scanStatus === 'granted' && authMethod === 'face' ? 'text-green-400 glow-green' : 'text-cyan glow-cyan')}`}>
-              {isLockdown ? `LOCKDOWN: ${lockdownTimer}s` : (authMethod === 'face' ? (scanStatus === 'granted' ? 'IDENTITY CONFIRMED' : 'BIOMETRIC_SCAN_ACTIVE') : 'MANUAL_OVERRIDE')}
+              {isLockdown ? `LOCKDOWN: ${formatLockdownTime(lockdownTimer)}` : (authMethod === 'face' ? (scanStatus === 'granted' ? 'IDENTITY CONFIRMED' : 'BIOMETRIC_SCAN_ACTIVE') : 'MANUAL_OVERRIDE')}
             </h1>
             
             <motion.div 
@@ -317,12 +350,15 @@ export default function Home() {
                         if (e.currentTarget.value === '003666') {
                           setIsLocked(false);
                           setFailedAttempts(0);
+                          setLockdownLevel(0);
                         } else {
                           const newAttempts = failedAttempts + 1;
                           setFailedAttempts(newAttempts);
                           if (newAttempts >= 3) {
                             setIsLockdown(true);
-                            setLockdownTimer(15);
+                            const penalty = LOCKDOWN_PENALTIES[Math.min(lockdownLevel, LOCKDOWN_PENALTIES.length - 1)];
+                            setLockdownTimer(penalty);
+                            setLockdownLevel(prev => prev + 1);
                           } else {
                             setPasscodeError(true);
                           }
@@ -340,7 +376,7 @@ export default function Home() {
                   className={`mt-5 text-[10px] font-mono tracking-[0.2em] uppercase flex items-center gap-2 font-bold ${isLockdown || passcodeError ? 'text-error' : 'text-cyan/50'}`}
                 >
                   <span className={`w-1.5 h-1.5 rounded-full ${isLockdown || passcodeError ? 'bg-error animate-pulse' : 'bg-cyan/50'}`}></span>
-                  {isLockdown ? `SYSTEM_LOCKED - REBOOTING IN ${lockdownTimer}s` : (passcodeError ? `ACCESS DENIED - ${3 - failedAttempts} ATTEMPTS REMAINING` : 'MANUAL_OVERRIDE_REQUIRED')}
+                  {isLockdown ? `SYSTEM_LOCKED - REBOOTING IN ${formatLockdownTime(lockdownTimer)}` : (passcodeError ? `ACCESS DENIED - ${3 - failedAttempts} ATTEMPTS REMAINING` : 'MANUAL_OVERRIDE_REQUIRED')}
                 </motion.p>
               </motion.div>
             )}
