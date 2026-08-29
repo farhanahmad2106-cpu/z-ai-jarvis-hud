@@ -870,6 +870,7 @@ export default function BrokenByDesign({
         }}
       >
         {ready && (
+          // eslint-disable-next-line @next/next/no-img-element
           <img
             src={`${assetsBase}/${soundOn ? 'sound-on' : 'sound-off'}.png`}
             alt=""
