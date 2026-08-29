@@ -22,6 +22,9 @@ export default function Home() {
   const [authMethod, setAuthMethod] = useState<'face' | 'password'>('face');
   const [scanStatus, setScanStatus] = useState<'scanning' | 'granted'>('scanning');
   const [passcodeError, setPasscodeError] = useState(false);
+  const [failedAttempts, setFailedAttempts] = useState(0);
+  const [isLockdown, setIsLockdown] = useState(false);
+  const [bootLogs, setBootLogs] = useState<string[]>([]);
 
   // Preload the heavy HUD component chunk in the background as soon as the page mounts
   useEffect(() => {
@@ -127,6 +130,31 @@ export default function Home() {
     };
   }, [isLocked, authMethod]);
 
+  useEffect(() => {
+    if (isLocked) {
+      const logs = [
+        "> INITIALIZING CORE SYSTEMS...",
+        "> CONNECTING TO MAINFRAME...",
+        "> ESTABLISHING SECURE CONNECTION...",
+        "> LOADING NEURAL NET MODULES...",
+        "> VERIFYING ENCRYPTION KEYS...",
+        "> CALIBRATING BIOMETRIC SENSORS...",
+        "> SYSTEM READY. AWAITING AUTHORIZATION."
+      ];
+      let i = 0;
+      setBootLogs([]);
+      const logInterval = setInterval(() => {
+        if (i < logs.length) {
+          setBootLogs(prev => [...prev, logs[i]]);
+          i++;
+        } else {
+          clearInterval(logInterval);
+        }
+      }, 500);
+      return () => clearInterval(logInterval);
+    }
+  }, [isLocked]);
+
   const typingAnimation = {
     hidden: { opacity: 0 },
     show: {
@@ -151,9 +179,25 @@ export default function Home() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0, scale: 1.1 }}
-            className="absolute inset-0 z-[200] flex flex-col items-center justify-center bg-background"
+            className={`absolute inset-0 z-[200] flex flex-col items-center justify-center transition-colors duration-1000 ${isLockdown ? 'bg-error/10' : 'bg-background'}`}
           >
-            <div className="relative flex items-center justify-center mb-8 transform-gpu w-72 h-72 rounded-full overflow-hidden border-[3px] border-surface-tint shadow-[0_0_50px_rgba(0,219,231,0.4)] backdrop-blur-md bg-background/20">
+            {/* Terminal Logs Overlay */}
+            <div className="absolute top-8 left-8 w-80 font-mono text-[10px] text-cyan/50 tracking-widest leading-relaxed pointer-events-none text-left z-10 flex flex-col gap-1">
+              <AnimatePresence>
+                {bootLogs.map((log, i) => (
+                  <motion.div 
+                    key={i} 
+                    initial={{ opacity: 0, x: -10 }} 
+                    animate={{ opacity: 1, x: 0 }}
+                    className={log.includes("READY") ? "text-green-400/80 font-bold" : ""}
+                  >
+                    {log}
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </div>
+            
+            <div className={`relative flex items-center justify-center mb-8 transform-gpu w-72 h-72 rounded-full overflow-hidden border-[3px] ${isLockdown ? 'border-error shadow-[0_0_50px_rgba(255,0,0,0.4)]' : 'border-surface-tint shadow-[0_0_50px_rgba(0,219,231,0.4)]'} backdrop-blur-md bg-background/20 transition-all duration-500`}>
                
                {/* Live Webcam Feed */}
                {authMethod === 'face' ? (
@@ -213,18 +257,18 @@ export default function Home() {
                />
             </div>
             
-            <h1 className={`font-sans font-black text-4xl mb-3 tracking-[0.2em] ${scanStatus === 'granted' && authMethod === 'face' ? 'text-green-400 glow-green' : 'text-cyan glow-cyan'}`}>
-              {authMethod === 'face' ? (scanStatus === 'granted' ? 'IDENTITY CONFIRMED' : 'BIOMETRIC_SCAN_ACTIVE') : 'MANUAL_OVERRIDE'}
+            <h1 className={`font-sans font-black text-4xl mb-3 tracking-[0.2em] ${isLockdown ? 'text-error glow-error animate-pulse' : (scanStatus === 'granted' && authMethod === 'face' ? 'text-green-400 glow-green' : 'text-cyan glow-cyan')}`}>
+              {isLockdown ? 'SYSTEM LOCKDOWN' : (authMethod === 'face' ? (scanStatus === 'granted' ? 'IDENTITY CONFIRMED' : 'BIOMETRIC_SCAN_ACTIVE') : 'MANUAL_OVERRIDE')}
             </h1>
             
             <motion.div 
-              key={authMethod + scanStatus}
+              key={authMethod + scanStatus + isLockdown}
               variants={typingAnimation}
               initial="hidden"
               animate="show"
-              className={`font-mono text-sm mb-12 flex h-6 tracking-wider ${scanStatus === 'granted' && authMethod === 'face' ? 'text-green-400 font-bold' : 'text-cyan/70'}`}
+              className={`font-mono text-sm mb-12 flex h-6 tracking-wider ${isLockdown ? 'text-error font-bold' : (scanStatus === 'granted' && authMethod === 'face' ? 'text-green-400 font-bold' : 'text-cyan/70')}`}
             >
-              {(authMethod === 'face' ? (scanStatus === 'granted' ? '[MATCH FOUND: FARHAN AHMAD - ACCESS GRANTED]' : '[ANALYZING OPERATOR FACIAL TOPOLOGY...]') : '[ENTER AUTHORIZATION PASSCODE]').split('').map((char, index) => (
+              {(isLockdown ? '[MAXIMUM ATTEMPTS REACHED. SECURITY PROTOCOL INITIATED.]' : (authMethod === 'face' ? (scanStatus === 'granted' ? '[MATCH FOUND: FARHAN AHMAD - ACCESS GRANTED]' : '[ANALYZING OPERATOR FACIAL TOPOLOGY...]') : '[ENTER AUTHORIZATION PASSCODE]')).split('').map((char, index) => (
                 <motion.span key={index} variants={letterAnimation}>
                   {char === ' ' ? '\u00A0' : char}
                 </motion.span>
@@ -245,18 +289,26 @@ export default function Home() {
                 className="mt-10 flex flex-col items-center"
               >
                 <div className="relative group">
-                  <div className="absolute -inset-0.5 bg-gradient-to-r from-cyan/40 to-electric-blue/40 blur opacity-75 group-hover:opacity-100 transition duration-500"></div>
+                  <div className={`absolute -inset-0.5 bg-gradient-to-r ${isLockdown ? 'from-error/40 to-red-500/40' : 'from-cyan/40 to-electric-blue/40'} blur opacity-75 group-hover:opacity-100 transition duration-500`}></div>
                   <input 
                     type="password" 
-                    placeholder="ENTER_KEY"
-                    className={`relative bg-surface-container-lowest/80 backdrop-blur-xl border ${passcodeError ? 'border-error focus:border-error focus:ring-error/50 text-error shadow-[inset_0_0_20px_rgba(255,0,0,0.2)]' : 'border-cyan/60 focus:border-cyan focus:ring-cyan/50 text-cyan shadow-[inset_0_0_20px_rgba(0,242,255,0.15)]'} chamfer-card-sm px-6 py-3 font-mono text-sm focus:outline-none focus:ring-1 w-72 text-center transition-all placeholder:text-current opacity-70`}
+                    placeholder={isLockdown ? "LOCKED_OUT" : "ENTER_KEY"}
+                    disabled={isLockdown}
+                    className={`relative bg-surface-container-lowest/80 backdrop-blur-xl border ${isLockdown ? 'border-error text-error placeholder:text-error cursor-not-allowed' : (passcodeError ? 'border-error focus:border-error focus:ring-error/50 text-error shadow-[inset_0_0_20px_rgba(255,0,0,0.2)]' : 'border-cyan/60 focus:border-cyan focus:ring-cyan/50 text-cyan shadow-[inset_0_0_20px_rgba(0,242,255,0.15)]')} chamfer-card-sm px-6 py-3 font-mono text-sm focus:outline-none focus:ring-1 w-72 text-center transition-all placeholder:text-current opacity-70`}
                     onChange={() => setPasscodeError(false)}
                     onKeyDown={(e) => {
-                      if (e.key === 'Enter') {
+                      if (e.key === 'Enter' && !isLockdown) {
                         if (e.currentTarget.value === '003666') {
                           setIsLocked(false);
+                          setFailedAttempts(0);
                         } else {
-                          setPasscodeError(true);
+                          const newAttempts = failedAttempts + 1;
+                          setFailedAttempts(newAttempts);
+                          if (newAttempts >= 3) {
+                            setIsLockdown(true);
+                          } else {
+                            setPasscodeError(true);
+                          }
                           e.currentTarget.value = '';
                         }
                       }
@@ -268,10 +320,10 @@ export default function Home() {
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.1 }}
                   key={passcodeError ? "error" : "normal"}
-                  className={`mt-5 text-[10px] font-mono tracking-[0.2em] uppercase flex items-center gap-2 font-bold ${passcodeError ? 'text-error' : 'text-cyan/50'}`}
+                  className={`mt-5 text-[10px] font-mono tracking-[0.2em] uppercase flex items-center gap-2 font-bold ${isLockdown || passcodeError ? 'text-error' : 'text-cyan/50'}`}
                 >
-                  <span className={`w-1.5 h-1.5 rounded-full ${passcodeError ? 'bg-error animate-pulse' : 'bg-cyan/50'}`}></span>
-                  {passcodeError ? 'ACCESS DENIED - INCORRECT PASSCODE' : 'MANUAL_OVERRIDE_REQUIRED'}
+                  <span className={`w-1.5 h-1.5 rounded-full ${isLockdown || passcodeError ? 'bg-error animate-pulse' : 'bg-cyan/50'}`}></span>
+                  {isLockdown ? 'SYSTEM_LOCKED' : (passcodeError ? `ACCESS DENIED - ${3 - failedAttempts} ATTEMPTS REMAINING` : 'MANUAL_OVERRIDE_REQUIRED')}
                 </motion.p>
               </motion.div>
             )}
