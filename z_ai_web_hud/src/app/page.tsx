@@ -21,6 +21,7 @@ export default function Home() {
   const [isLocked, setIsLocked] = useState(true);
   const [authMethod, setAuthMethod] = useState<'face' | 'password'>('face');
   const [scanStatus, setScanStatus] = useState<'scanning' | 'granted'>('scanning');
+  const [passcodeError, setPasscodeError] = useState(false);
 
   // Preload the heavy HUD component chunk in the background as soon as the page mounts
   useEffect(() => {
@@ -212,17 +213,18 @@ export default function Home() {
                />
             </div>
             
-            <h1 className="font-sans font-black text-4xl text-cyan mb-3 tracking-[0.2em] glow-cyan">
-              {authMethod === 'face' ? 'BIOMETRIC_SCAN_ACTIVE' : 'MANUAL_OVERRIDE'}
+            <h1 className={`font-sans font-black text-4xl mb-3 tracking-[0.2em] ${scanStatus === 'granted' && authMethod === 'face' ? 'text-green-400 glow-green' : 'text-cyan glow-cyan'}`}>
+              {authMethod === 'face' ? (scanStatus === 'granted' ? 'IDENTITY CONFIRMED' : 'BIOMETRIC_SCAN_ACTIVE') : 'MANUAL_OVERRIDE'}
             </h1>
             
             <motion.div 
+              key={authMethod + scanStatus}
               variants={typingAnimation}
               initial="hidden"
               animate="show"
-              className="font-mono text-sm text-cyan/70 mb-12 flex h-6 tracking-wider"
+              className={`font-mono text-sm mb-12 flex h-6 tracking-wider ${scanStatus === 'granted' && authMethod === 'face' ? 'text-green-400 font-bold' : 'text-cyan/70'}`}
             >
-              {(authMethod === 'face' ? '[ANALYZING OPERATOR FACIAL TOPOLOGY...]' : '[ENTER AUTHORIZATION PASSCODE]').split('').map((char, index) => (
+              {(authMethod === 'face' ? (scanStatus === 'granted' ? '[MATCH FOUND: FARHAN AHMAD - ACCESS GRANTED]' : '[ANALYZING OPERATOR FACIAL TOPOLOGY...]') : '[ENTER AUTHORIZATION PASSCODE]').split('').map((char, index) => (
                 <motion.span key={index} variants={letterAnimation}>
                   {char === ' ' ? '\u00A0' : char}
                 </motion.span>
@@ -247,18 +249,29 @@ export default function Home() {
                   <input 
                     type="password" 
                     placeholder="ENTER_KEY"
-                    className="relative bg-surface-container-lowest/80 backdrop-blur-xl border border-cyan/60 chamfer-card-sm px-6 py-3 font-mono text-sm text-cyan focus:outline-none focus:border-cyan focus:ring-1 focus:ring-cyan/50 w-72 text-center shadow-[inset_0_0_20px_rgba(0,242,255,0.15)] transition-all placeholder:text-cyan/30"
-                    onKeyDown={(e) => e.key === 'Enter' && setIsLocked(false)}
+                    className={`relative bg-surface-container-lowest/80 backdrop-blur-xl border ${passcodeError ? 'border-error focus:border-error focus:ring-error/50 text-error shadow-[inset_0_0_20px_rgba(255,0,0,0.2)]' : 'border-cyan/60 focus:border-cyan focus:ring-cyan/50 text-cyan shadow-[inset_0_0_20px_rgba(0,242,255,0.15)]'} chamfer-card-sm px-6 py-3 font-mono text-sm focus:outline-none focus:ring-1 w-72 text-center transition-all placeholder:text-current opacity-70`}
+                    onChange={() => setPasscodeError(false)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        if (e.currentTarget.value === '003666') {
+                          setIsLocked(false);
+                        } else {
+                          setPasscodeError(true);
+                          e.currentTarget.value = '';
+                        }
+                      }
+                    }}
                   />
                 </div>
                 <motion.p 
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  transition={{ delay: 0.5 }}
-                  className="mt-5 text-[10px] font-mono text-error tracking-[0.2em] uppercase flex items-center gap-2 font-bold"
+                  transition={{ delay: 0.1 }}
+                  key={passcodeError ? "error" : "normal"}
+                  className={`mt-5 text-[10px] font-mono tracking-[0.2em] uppercase flex items-center gap-2 font-bold ${passcodeError ? 'text-error' : 'text-cyan/50'}`}
                 >
-                  <span className="w-1.5 h-1.5 rounded-full bg-error animate-pulse"></span>
-                  MANUAL_OVERRIDE_REQUIRED
+                  <span className={`w-1.5 h-1.5 rounded-full ${passcodeError ? 'bg-error animate-pulse' : 'bg-cyan/50'}`}></span>
+                  {passcodeError ? 'ACCESS DENIED - INCORRECT PASSCODE' : 'MANUAL_OVERRIDE_REQUIRED'}
                 </motion.p>
               </motion.div>
             )}
