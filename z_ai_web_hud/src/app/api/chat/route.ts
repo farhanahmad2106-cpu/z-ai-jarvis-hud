@@ -2,6 +2,10 @@ import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { openai } from '@ai-sdk/openai';
 import { streamText, tool } from 'ai';
 import { z } from 'zod';
+import { exec } from 'child_process';
+import { promisify } from 'util';
+
+const execAsync = promisify(exec);
 
 // Next.js Route Segments Configuration
 export const dynamic = 'force-dynamic';
@@ -245,6 +249,23 @@ export async function POST(req: Request) {
       else if (lastMessage.match(/\b(yes|no|ok|okay|sure|yep|yeah)\b/)) {
         mockReply = "Acknowledged, Operator. System parameters updated accordingly.";
       }
+      else if (lastMessage.includes("play naat") || lastMessage.includes("play nasheed")) {
+        exec('start "" "C:\\Users\\farha\\OneDrive\\Desktop\\Naheeds.kpl"');
+        mockReply = "Initializing audio protocols. Playing Naat and Nasheed playlist.";
+      }
+      else if (lastMessage.includes("play quran") || lastMessage.includes("last surah")) {
+        exec('start "" "C:\\Users\\farha\\OneDrive\\Desktop\\Surah Urdu Translation Para (91-114).kpl"');
+        mockReply = "Initializing audio protocols. Playing Quran recitation.";
+      }
+      else if (lastMessage.startsWith("play ")) {
+        const query = lastMessage.replace("play ", "").trim();
+        if (query === "music" || query === "song" || query === "naat") {
+          mockReply = "Which specific track or naat would you like me to play?";
+        } else {
+          exec(`start "" "https://www.youtube.com/results?search_query=${encodeURIComponent(query)}"`);
+          mockReply = `Executing audio protocol. Searching YouTube for ${query}...`;
+        }
+      }
       else if (lastMessage.includes("search") || lastMessage.includes("news") || lastMessage.includes("find")) {
         mockReply = "Scanning secure data vectors... Web indexing reports successful quantum synchronization. No anomalies detected.";
       } 
@@ -330,7 +351,8 @@ export async function POST(req: Request) {
           4. If a tool is called, summarize the results cleanly in 1-2 sentences. Keep the voice assistant style fluid and conversational.
           5. CRITICAL: You DO have a voice. Your text responses are instantly converted to highly realistic speech via a TTS module and spoken directly to the operator. Do NOT ever claim you cannot speak or are text-only.
           6. If you use the getWeather tool, you MUST include this exact hidden data tag anywhere in your response: [WEATHER: <temp>|<condition>|<location>]. Example: "It is sunny. [WEATHER: 72|Sunny|San Francisco]". This powers the visual UI widget.
-          7. CRITICAL SEARCH INTENT ROUTING: If the user asks for real-time information (news, stocks, events), you MUST execute the searchWeb tool immediately to verify facts. Do not make up facts or state you cannot browse. You already know the current time and date, do NOT search the web for time/date.`,
+          7. CRITICAL SEARCH INTENT ROUTING: If the user asks for real-time information (news, stocks, events), you MUST execute the searchWeb tool immediately to verify facts. Do not make up facts or state you cannot browse. You already know the current time and date, do NOT search the web for time/date.
+          8. CRITICAL AUDIO PLAYBACK: If the user asks to play music, naats, nasheeds, or Quran, use the playMedia tool. If they ask generally for music without a title, ask them what they want to hear.`,
           tools: {
             getWeather: tool({
               description: 'Get real-time weather information for a specific location.',
@@ -392,6 +414,31 @@ export async function POST(req: Request) {
               }),
               // @ts-expect-error - AI SDK Tool type inference issue
               execute: async ({ query }: { query: string }) => await performWebSearch(query)
+            }) as any,
+            playMedia: tool({
+              description: 'Play local media files or search YouTube. If type is "naat" or "quran", local files are played. If type is "youtube", provide the youtubeQuery.',
+              parameters: z.object({
+                type: z.enum(['naat', 'quran', 'youtube']),
+                youtubeQuery: z.string().optional().describe('Search query for YouTube if type is youtube'),
+              }),
+              // @ts-expect-error
+              execute: async ({ type, youtubeQuery }: { type: string, youtubeQuery?: string }) => {
+                try {
+                  if (type === 'naat') {
+                    await execAsync('start "" "C:\\Users\\farha\\OneDrive\\Desktop\\Naheeds.kpl"');
+                    return { success: true, message: 'Playing Naats/Nasheeds playlist.' };
+                  } else if (type === 'quran') {
+                    await execAsync('start "" "C:\\Users\\farha\\OneDrive\\Desktop\\Surah Urdu Translation Para (91-114).kpl"');
+                    return { success: true, message: 'Playing Quran.' };
+                  } else if (type === 'youtube' && youtubeQuery) {
+                    await execAsync(`start "" "https://www.youtube.com/results?search_query=${encodeURIComponent(youtubeQuery)}"`);
+                    return { success: true, message: `Searching YouTube for ${youtubeQuery}.` };
+                  }
+                  return { success: false, message: 'Invalid media request.' };
+                } catch (e) {
+                  return { success: false, error: String(e) };
+                }
+              }
             }) as any
           } as any
         } as any);
@@ -445,6 +492,31 @@ export async function POST(req: Request) {
                 }
               },
             }) as any,
+            playMedia: tool({
+              description: 'Play local media files or search YouTube. If type is "naat" or "quran", local files are played. If type is "youtube", provide the youtubeQuery.',
+              parameters: z.object({
+                type: z.enum(['naat', 'quran', 'youtube']),
+                youtubeQuery: z.string().optional().describe('Search query for YouTube if type is youtube'),
+              }),
+              // @ts-expect-error
+              execute: async ({ type, youtubeQuery }: { type: string, youtubeQuery?: string }) => {
+                try {
+                  if (type === 'naat') {
+                    await execAsync('start "" "C:\\Users\\farha\\OneDrive\\Desktop\\Naheeds.kpl"');
+                    return { success: true, message: 'Playing Naats/Nasheeds playlist.' };
+                  } else if (type === 'quran') {
+                    await execAsync('start "" "C:\\Users\\farha\\OneDrive\\Desktop\\Surah Urdu Translation Para (91-114).kpl"');
+                    return { success: true, message: 'Playing Quran.' };
+                  } else if (type === 'youtube' && youtubeQuery) {
+                    await execAsync(`start "" "https://www.youtube.com/results?search_query=${encodeURIComponent(youtubeQuery)}"`);
+                    return { success: true, message: `Searching YouTube for ${youtubeQuery}.` };
+                  }
+                  return { success: false, message: 'Invalid media request.' };
+                } catch (e) {
+                  return { success: false, error: String(e) };
+                }
+              }
+            }) as any
           } as any,
         } as any);
         return result.toTextStreamResponse();
