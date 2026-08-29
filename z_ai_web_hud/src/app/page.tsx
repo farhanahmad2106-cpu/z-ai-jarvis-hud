@@ -101,6 +101,22 @@ export default function Home() {
                      transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
                      className="absolute w-full h-3 bg-surface-tint shadow-[0_0_20px_#00dbe7] opacity-60 z-10 mix-blend-screen"
                    />
+                   <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
+                     <motion.div
+                       animate={{ 
+                         scale: [1, 1.1, 1],
+                         opacity: [0.7, 1, 0.7]
+                       }}
+                       transition={{ 
+                         duration: 2, 
+                         repeat: Infinity, 
+                         ease: "easeInOut" 
+                       }}
+                       className="bg-background/40 p-4 rounded-full backdrop-blur-sm border border-cyan/30"
+                     >
+                       <Lock size={48} className="text-cyan drop-shadow-[0_0_10px_rgba(0,219,231,1)]" />
+                     </motion.div>
+                   </div>
                  </>
                ) : (
                  <Fingerprint size={80} className="text-surface-tint glow-sm transform-gpu drop-shadow-[0_0_15px_rgba(0,219,231,0.8)]" />
