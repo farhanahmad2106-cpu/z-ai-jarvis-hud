@@ -233,6 +233,19 @@ export function useVoiceInterface() {
         useAssistantStore.getState().setWeatherData(null);
       }
 
+      // Extract desktop daemon command tag if present
+      const commandMatch = cleanResponse.match(/\[COMMAND:\s*([^\]]+)\]/i);
+      if (commandMatch) {
+        const cmd = commandMatch[1].trim();
+        useAssistantStore.getState().setPendingCommand(cmd);
+        cleanResponse = cleanResponse.replace(commandMatch[0], '').trim();
+      }
+
+      // If the entire response was just a tag, fallback speech
+      if (!cleanResponse) {
+        cleanResponse = "Executing command sequence.";
+      }
+
       // Update conversation memory with assistant reply
       conversationHistoryRef.current.push({ role: 'assistant', content: cleanResponse });
       if (conversationHistoryRef.current.length > 5) conversationHistoryRef.current.shift();

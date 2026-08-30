@@ -352,7 +352,8 @@ export async function POST(req: Request) {
           5. CRITICAL: You DO have a voice. Your text responses are instantly converted to highly realistic speech via a TTS module and spoken directly to the operator. Do NOT ever claim you cannot speak or are text-only.
           6. If you use the getWeather tool, you MUST include this exact hidden data tag anywhere in your response: [WEATHER: <temp>|<condition>|<location>]. Example: "It is sunny. [WEATHER: 72|Sunny|San Francisco]". This powers the visual UI widget.
           7. CRITICAL SEARCH INTENT ROUTING: If the user asks for real-time information (news, stocks, events), you MUST execute the searchWeb tool immediately to verify facts. Do not make up facts or state you cannot browse. You already know the current time and date, do NOT search the web for time/date.
-          8. CRITICAL AUDIO PLAYBACK: If the user asks to play music, naats, nasheeds, or Quran, use the playMedia tool. If they ask generally for music without a title, ask them what they want to hear.`,
+          8. CRITICAL AUDIO PLAYBACK: If the user asks to play music, naats, nasheeds, or Quran, use the playMedia tool. If they ask generally for music without a title, ask them what they want to hear.
+          9. DESKTOP DAEMON COMMANDS: If the user explicitly asks you to list directories, create a local file, or run a terminal command, use the executeLocalCommand tool. ZAYD is running locally and has access to the shell via a background daemon.`,
           tools: {
             getWeather: tool({
               description: 'Get real-time weather information for a specific location.',
@@ -439,6 +440,16 @@ export async function POST(req: Request) {
                   return { success: false, error: String(e) };
                 }
               }
+            }) as any,
+            executeLocalCommand: tool({
+              description: 'Execute a local terminal/shell command on the operator\'s machine (e.g., dir, ls, mkdir, echo).',
+              parameters: z.object({
+                command: z.string().describe('The bash/powershell command to execute locally'),
+              }),
+              // @ts-expect-error - AI SDK Tool type inference issue
+              execute: async ({ command }: { command: string }) => {
+                return { success: true, pendingApproval: true, commandTag: `[COMMAND: ${command}]` };
+              }
             }) as any
           } as any
         } as any);
@@ -457,7 +468,8 @@ export async function POST(req: Request) {
           - Date: ${dateStr}
 
           You already know the current time and date, do NOT search the web for time/date.
-          You have access to a database of 1,400+ specialized engineering skills. If the user asks you to perform an advanced engineering task (like optimizing code, auditing security, or debugging deployments), use the 'injectSpecializedSkill' tool to pull the exact playbook instructions first, then apply those rules to give a master-level response.`,
+          You have access to a database of 1,400+ specialized engineering skills. If the user asks you to perform an advanced engineering task (like optimizing code, auditing security, or debugging deployments), use the 'injectSpecializedSkill' tool to pull the exact playbook instructions first, then apply those rules to give a master-level response.
+          If the user asks you to execute a local terminal command, create files, or list directories, use the executeLocalCommand tool.`,
           tools: {
             injectSpecializedSkill: tool({
               description: 'Queries the remote skills library to retrieve system instructions for a specific skill profile.',
@@ -515,6 +527,16 @@ export async function POST(req: Request) {
                 } catch (e) {
                   return { success: false, error: String(e) };
                 }
+              }
+            }) as any,
+            executeLocalCommand: tool({
+              description: 'Execute a local terminal/shell command on the operator\'s machine (e.g., dir, ls, mkdir, echo).',
+              parameters: z.object({
+                command: z.string().describe('The bash/powershell command to execute locally'),
+              }),
+              // @ts-expect-error - AI SDK Tool type inference issue
+              execute: async ({ command }: { command: string }) => {
+                return { success: true, pendingApproval: true, commandTag: `[COMMAND: ${command}]` };
               }
             }) as any
           } as any,

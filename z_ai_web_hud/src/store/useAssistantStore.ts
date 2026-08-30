@@ -19,6 +19,12 @@ interface AssistantState {
   // Network State
   isOnline: boolean;
   setIsOnline: (online: boolean) => void;
+
+  // HITL / Daemon State
+  pendingCommand: string | null;
+  setPendingCommand: (cmd: string | null) => void;
+  commandOutput: string | null;
+  setCommandOutput: (output: string | null) => void;
 }
 
 export const useAssistantStore = create<AssistantState>((set) => ({
@@ -57,4 +63,10 @@ export const useAssistantStore = create<AssistantState>((set) => ({
   // Network State
   isOnline: typeof navigator !== 'undefined' ? navigator.onLine : true,
   setIsOnline: (online) => set({ isOnline: online }),
+
+  // HITL State
+  pendingCommand: null,
+  setPendingCommand: (cmd) => set({ pendingCommand: cmd }),
+  commandOutput: null,
+  setCommandOutput: (output) => set({ commandOutput: output }),
 }));
