@@ -238,7 +238,7 @@ export default function Home() {
                     key={i} 
                     initial={{ opacity: 0, x: -10 }} 
                     animate={{ opacity: 1, x: 0 }}
-                    className={log.includes("READY") ? "text-green-400/80 font-bold" : ""}
+                    className={log?.includes("READY") ? "text-green-400/80 font-bold" : ""}
                   >
                     {log}
                   </motion.div>
