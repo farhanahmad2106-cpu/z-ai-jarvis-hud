@@ -44,7 +44,7 @@ export const JarvisHUD: React.FC = () => {
 
   // Connect to Desktop Daemon via WebSocket
   useEffect(() => {
-    let socket = new WebSocket('ws://localhost:8080');
+    const socket = new WebSocket('ws://localhost:8080');
 
     socket.onopen = () => {
       appendLog("SYSTEM: Local desktop daemon connected via WS.");
@@ -76,7 +76,7 @@ export const JarvisHUD: React.FC = () => {
     return () => {
       socket.close();
     };
-  }, []);
+  }, [appendLog, setCommandOutput]);
 
   // Active HUD Command Center Tab
   const [activeTab, setActiveTab] = useState<'terminal' | 'shield' | 'cpu' | 'activity' | 'network'>('terminal');
