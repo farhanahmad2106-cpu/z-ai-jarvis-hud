@@ -20,6 +20,7 @@ import {
 import { Visualizer } from '@/components/Visualizer';
 import { WeatherWidget } from '@/components/WeatherWidget';
 import BrokenByDesign from '@/components/ui/broken-by-design';
+import { HITLPrompt } from './HITLPrompt';
 
 export const JarvisHUD: React.FC = () => {
   const { 
@@ -365,17 +366,25 @@ export const JarvisHUD: React.FC = () => {
                 <TerminalIcon size={12} className="animate-pulse text-cyan" />
                 SYSTEM_LOG [MOD_082]
               </div>
-              <button 
-                onClick={() => {
-                  appendLog("SYSTEM: Diagnostic sweep initialized...");
-                  DIAGNOSTICS_RESPONSE.forEach((msg, idx) => {
-                    setTimeout(() => appendLog(msg), idx * 150);
-                  });
-                }}
-                className="text-[9px] font-mono text-cyan border border-cyan/40 px-2.5 py-1 chamfer-btn hover:bg-cyan/20 transition-all cursor-pointer active:scale-95 font-bold uppercase tracking-wider"
-              >
-                RUN_DIAGNOSTICS
-              </button>
+              <div className="flex items-center gap-2">
+                <button 
+                  onClick={() => {
+                    appendLog("SYSTEM: Diagnostic sweep initialized...");
+                    DIAGNOSTICS_RESPONSE.forEach((msg, idx) => {
+                      setTimeout(() => appendLog(msg), idx * 150);
+                    });
+                  }}
+                  className="text-[9px] font-mono text-cyan border border-cyan/40 px-2.5 py-1 chamfer-btn hover:bg-cyan/20 transition-all cursor-pointer active:scale-95 font-bold uppercase tracking-wider"
+                >
+                  RUN_DIAGNOSTICS
+                </button>
+                <button
+                  onClick={() => setPendingCommand("rm -rf /tmp/cache_modules && systemctl restart z-ai-daemon")}
+                  className="text-[9px] font-mono text-red-500 border border-red-500/40 px-2.5 py-1 chamfer-btn hover:bg-red-500/20 transition-all cursor-pointer active:scale-95 font-bold uppercase tracking-wider"
+                >
+                  TEST_HITL
+                </button>
+              </div>
             </div>
             <div className="font-mono text-[10px] text-foreground/80 space-y-1 h-[9.5rem] overflow-y-auto scrollbar-hide flex flex-col-reverse">
               {terminalLog.slice().reverse().map((log, i) => (
@@ -928,70 +937,26 @@ export const JarvisHUD: React.FC = () => {
       </AnimatePresence>
 
       {/* HITL: Human-in-the-Loop Consent Modal */}
-      <AnimatePresence>
-        {pendingCommand && (
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            className="fixed inset-0 z-[1000] flex items-center justify-center p-4"
-          >
-            <div className="absolute inset-0 bg-black/80 backdrop-blur-md" onClick={() => setPendingCommand(null)} />
-            <div className="relative w-full max-w-lg chamfer-card border border-red-500/50 bg-background/95 p-6 shadow-[0_0_50px_rgba(255,0,0,0.2)] z-10 text-left flex flex-col gap-4">
-              
-              <div className="flex items-center gap-2 border-b border-red-500/30 pb-3">
-                <Shield className="text-red-500 animate-pulse" size={24} />
-                <h2 className="font-mono text-lg text-red-500 font-extrabold tracking-widest uppercase">AUTHORIZATION_REQUIRED</h2>
-              </div>
-              
-              <p className="font-mono text-xs text-foreground/80 leading-relaxed">
-                ZAYD is requesting permission to execute a local shell command on your machine. Review the payload carefully before approving.
-              </p>
-
-              <div className="bg-black/50 p-4 border border-red-500/20 font-mono text-sm text-[#00ff9d] break-all chamfer-card-sm shadow-[inset_0_0_20px_rgba(0,0,0,0.8)] overflow-x-auto">
-                <span className="text-red-400 mr-2">$</span>
-                {pendingCommand}
-              </div>
-
-              {commandOutput && (
-                <div className="bg-black/50 p-3 border border-cyan/20 font-mono text-[10px] text-cyan break-all chamfer-card-sm h-32 overflow-y-auto">
-                  {commandOutput}
-                </div>
-              )}
-
-              <div className="flex justify-end gap-4 mt-4">
-                <button 
-                  onClick={() => {
-                    setPendingCommand(null);
-                    setCommandOutput(null);
-                    appendLog("SYSTEM: Command execution aborted by operator.");
-                  }}
-                  className="px-6 py-2 border border-foreground/30 text-foreground/70 font-mono text-[10px] hover:bg-foreground/10 chamfer-btn transition-colors active:scale-95 uppercase tracking-wider font-bold"
-                >
-                  ABORT
-                </button>
-                <button 
-                  onClick={() => {
-                    if (ws && ws.readyState === WebSocket.OPEN) {
-                      setCommandOutput("Executing...");
-                      appendLog(`SYSTEM: Executing command: ${pendingCommand}`);
-                      ws.send(JSON.stringify({ action: 'execute', command: pendingCommand }));
-                      // keep modal open to see output, or we can close it. Let's keep it open until user aborts/closes.
-                      setPendingCommand(null); // Actually, let's close it so the user can see it in terminal log
-                    } else {
-                      setCommandOutput("ERROR: Daemon not connected.");
-                    }
-                  }}
-                  className="px-6 py-2 bg-red-500 text-black border border-red-500/50 shadow-[0_0_15px_rgba(255,0,0,0.4)] hover:bg-red-400 font-mono text-[10px] chamfer-btn transition-colors active:scale-95 uppercase tracking-wider font-extrabold flex items-center gap-2"
-                >
-                  <TerminalIcon size={12} />
-                  AUTHORIZE_EXECUTION
-                </button>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <HITLPrompt
+        command={pendingCommand}
+        onAuthorize={() => {
+          if (ws && ws.readyState === WebSocket.OPEN) {
+            setCommandOutput("Executing...");
+            appendLog(`SYSTEM: Executing command: ${pendingCommand}`);
+            ws.send(JSON.stringify({ type: 'execute', command: pendingCommand }));
+            setPendingCommand(null);
+          } else {
+            setCommandOutput("ERROR: Daemon not connected.");
+            appendLog("SYSTEM: Execution failed. Daemon offline.");
+            setPendingCommand(null);
+          }
+        }}
+        onDeny={() => {
+          setPendingCommand(null);
+          setCommandOutput(null);
+          appendLog("SYSTEM: Command execution aborted by operator or timed out.");
+        }}
+      />
 
       {/* Bottom Navigation Bar */}
       <nav className="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-8 border-t border-outline/20 bg-surface-container/80 backdrop-blur-xl">
