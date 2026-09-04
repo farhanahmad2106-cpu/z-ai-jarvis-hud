@@ -19,6 +19,7 @@ export const metadata: Metadata = {
 
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { AuthProvider } from "@/components/providers/AuthProvider";
 
 export default function RootLayout({
   children,
@@ -30,7 +31,9 @@ export default function RootLayout({
       <body className={`${inter.variable} ${jetbrainsMono.variable} antialiased font-sans bg-background text-foreground overflow-hidden`}>
         <div className="crt-overlay" />
         <div className="crt-scan" />
-        {children}
+        <AuthProvider>
+          {children}
+        </AuthProvider>
         <Analytics />
         <SpeedInsights />
       </body>
