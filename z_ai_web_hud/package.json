@@ -54,6 +54,7 @@
   },
   "allowScripts": {
     "sharp": true,
-    "unrs-resolver": true
+    "unrs-resolver": true,
+    "bcrypt": true
   }
 }
