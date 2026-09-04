@@ -21,8 +21,12 @@ import { Visualizer } from '@/components/Visualizer';
 import { WeatherWidget } from '@/components/WeatherWidget';
 import BrokenByDesign from '@/components/ui/broken-by-design';
 import { HITLPrompt } from './HITLPrompt';
+import { useSession, signOut } from "next-auth/react";
+import { LoginModal } from "./LoginModal";
 
 export const JarvisHUD: React.FC = () => {
+  const { data: session, status: sessionStatus } = useSession();
+  
   const { 
     status, terminalLog, setStatus, appendLog, clearLog, isOnline, setIsOnline,
     pendingCommand, setPendingCommand, commandOutput, setCommandOutput 
@@ -129,6 +133,7 @@ export const JarvisHUD: React.FC = () => {
 
   return (
     <main className={`relative h-screen w-full flex items-center justify-center p-8 overflow-hidden transform-gpu select-none ${!isOnline ? 'offline-mode' : ''}`}>
+      {sessionStatus === "unauthenticated" && <LoginModal />}
       {!isOnline && (
         <div className="absolute top-24 left-1/2 -translate-x-1/2 z-[100] border border-[#ffaa00]/40 bg-[#ffaa00]/10 px-8 py-2 rounded-full backdrop-blur-md shadow-[0_0_20px_rgba(255,170,0,0.3)] pointer-events-none">
           <span className="font-mono text-xs font-extrabold text-[#ffaa00] tracking-[0.4em] animate-pulse">NETWORK OFFLINE - RUNNING LOCAL</span>
@@ -163,6 +168,21 @@ export const JarvisHUD: React.FC = () => {
           </button>
           <span className="font-mono text-[9px] text-cyan/50 px-2 py-0.5 border border-cyan/20 chamfer-card-sm">V1.1.0</span>
           <span className="font-mono text-[10px] text-cyan font-bold tracking-widest uppercase glow-cyan">[{status}]</span>
+          
+          {session?.user && (
+            <div className="flex items-center gap-2 border-l border-cyan/30 pl-4 ml-2">
+              <span className="font-mono text-[10px] text-emerald-400 tracking-widest uppercase">
+                {session.user.name || "OPERATOR"}
+              </span>
+              <button 
+                onClick={() => signOut()}
+                className="text-[9px] font-mono text-cyan/60 hover:text-red-400 px-2 py-0.5 border border-cyan/20 hover:border-red-400/50 chamfer-btn transition-colors"
+              >
+                LOGOUT
+              </button>
+            </div>
+          )}
+
           <Settings2 
             className="text-cyan hover:glow-cyan cursor-pointer transition-all active:scale-95 hover:text-white" 
             size={20} 
