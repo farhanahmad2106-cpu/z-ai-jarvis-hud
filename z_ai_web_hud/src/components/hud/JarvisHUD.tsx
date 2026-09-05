@@ -5,7 +5,7 @@ import { useVoiceInterface } from '@/hooks/useVoiceInterface';
 import { 
   Terminal as TerminalIcon, Shield, Cpu, Activity, Network, 
   Settings2, Menu, X, Check, RotateCcw, Volume2, 
-  SlidersHorizontal, RefreshCw, Power, Radio, Layers, Wifi, Sparkles, Zap, Database
+  SlidersHorizontal, RefreshCw, Power, Radio, Layers, Wifi, Sparkles, Zap, Database, Thermometer
 } from 'lucide-react';
 import Link from 'next/link';
 import { 
@@ -893,6 +893,25 @@ export const JarvisHUD: React.FC = () => {
                     <Database size={12} />
                     FLUSH_MEMORY_BANKS
                   </button>
+                </div>
+              </div>
+
+              {/* Environmental Sensors (Phase 5) */}
+              <div className="flex flex-col gap-3 mt-4">
+                <div className="font-mono text-[9px] text-cyan/70 uppercase tracking-widest font-bold">[ENV_SENSORS_04]</div>
+                <div className="flex flex-col gap-2 bg-surface-container-lowest/80 p-4 chamfer-card-sm border border-cyan/30 font-mono text-[10px] space-y-1 text-left">
+                  <div className="flex justify-between items-center">
+                    <span className="text-foreground/80 flex items-center gap-1.5"><Thermometer size={10} className="text-amber-400" /> AMBIENT_TEMP:</span>
+                    <span className="text-amber-400 font-bold">22.4°C</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-foreground/80 flex items-center gap-1.5 pl-4">HUMIDITY:</span>
+                    <span className="text-cyan font-bold">45%</span>
+                  </div>
+                  <div className="flex justify-between items-center pt-2 border-t border-cyan/20">
+                    <span className="text-foreground/80">LOCATION:</span>
+                    <span className="text-[#00ff9d] font-bold">37.7749° N, 122.4194° W</span>
+                  </div>
                 </div>
               </div>
 
