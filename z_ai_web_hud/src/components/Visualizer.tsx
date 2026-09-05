@@ -120,7 +120,13 @@ export function Visualizer() {
         }}
       />
 
-      <div className="absolute inset-0 z-10">
+      <div 
+        className="absolute inset-0 z-10"
+        style={{
+          maskImage: 'radial-gradient(circle at center, black 45%, transparent 70%)',
+          WebkitMaskImage: 'radial-gradient(circle at center, black 45%, transparent 70%)'
+        }}
+      >
         <Canvas camera={{ position: [0, 0, 5], fov: 60 }}>
           <OrbitControls 
             enableZoom={false} 
