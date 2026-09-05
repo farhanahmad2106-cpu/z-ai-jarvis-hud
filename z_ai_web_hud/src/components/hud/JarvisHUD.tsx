@@ -5,7 +5,7 @@ import { useVoiceInterface } from '@/hooks/useVoiceInterface';
 import { 
   Terminal as TerminalIcon, Shield, Cpu, Activity, Network, 
   Settings2, Menu, X, Check, RotateCcw, Volume2, 
-  SlidersHorizontal, RefreshCw, Power, Radio, Layers, Wifi, Sparkles
+  SlidersHorizontal, RefreshCw, Power, Radio, Layers, Wifi, Sparkles, Zap
 } from 'lucide-react';
 import Link from 'next/link';
 import { 
@@ -29,7 +29,8 @@ export const JarvisHUD: React.FC = () => {
   
   const { 
     status, terminalLog, setStatus, appendLog, clearLog, isOnline, setIsOnline,
-    pendingCommand, setPendingCommand, commandOutput, setCommandOutput 
+    pendingCommand, setPendingCommand, commandOutput, setCommandOutput,
+    isAgenticMode, setIsAgenticMode
   } = useAssistantStore();
   const { toggleManualListen } = useVoiceInterface();
   const [ws, setWs] = useState<WebSocket | null>(null);
@@ -740,6 +741,31 @@ export const JarvisHUD: React.FC = () => {
                         layout 
                         className="w-3 h-3 bg-background rounded-full shadow" 
                         animate={{ x: modules.telemetry ? 16 : 0 }} 
+                      />
+                    </button>
+                  </div>
+
+                  {/* Agentic Mode (Phase 2) */}
+                  <div className="flex justify-between items-center p-3 bg-surface-container-lowest/80 border border-cyan/20 chamfer-card-sm">
+                    <div className="flex items-center gap-3">
+                      <Zap size={16} className={isAgenticMode ? "text-amber-400 drop-shadow-[0_0_8px_rgba(251,191,36,0.8)]" : "text-foreground/30"} />
+                      <div className="text-left">
+                        <div className={`font-mono text-[10px] font-bold ${isAgenticMode ? 'text-amber-400' : 'text-cyan'}`}>AGENTIC_OVERRIDE</div>
+                        <div className="font-mono text-[8px] text-foreground/50">Autonomous action execution</div>
+                      </div>
+                    </div>
+                    <button 
+                      onClick={() => {
+                        const nextState = !isAgenticMode;
+                        setIsAgenticMode(nextState);
+                        appendLog(`SYSTEM: AGENTIC_OVERRIDE ${nextState ? 'ENGAGED. AI autonomy active.' : 'DISABLED. Manual control restored.'}`);
+                      }}
+                      className={`relative w-8 h-4 rounded-full p-0.5 transition-colors duration-300 ${isAgenticMode ? 'bg-amber-400' : 'bg-foreground/30'}`}
+                    >
+                      <motion.div 
+                        layout 
+                        className="w-3 h-3 bg-background rounded-full shadow" 
+                        animate={{ x: isAgenticMode ? 16 : 0 }} 
                       />
                     </button>
                   </div>

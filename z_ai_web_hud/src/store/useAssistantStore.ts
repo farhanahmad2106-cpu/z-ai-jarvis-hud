@@ -25,6 +25,10 @@ interface AssistantState {
   setPendingCommand: (cmd: string | null) => void;
   commandOutput: string | null;
   setCommandOutput: (output: string | null) => void;
+
+  // Agentic Override State
+  isAgenticMode: boolean;
+  setIsAgenticMode: (enabled: boolean) => void;
 }
 
 export const useAssistantStore = create<AssistantState>((set) => ({
@@ -69,4 +73,8 @@ export const useAssistantStore = create<AssistantState>((set) => ({
   setPendingCommand: (cmd) => set({ pendingCommand: cmd }),
   commandOutput: null,
   setCommandOutput: (output) => set({ commandOutput: output }),
+
+  // Agentic Override Initial State
+  isAgenticMode: false,
+  setIsAgenticMode: (enabled) => set({ isAgenticMode: enabled }),
 }));
