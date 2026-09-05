@@ -663,7 +663,7 @@ export const JarvisHUD: React.FC = () => {
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: '-100%', opacity: 0 }}
               transition={{ type: 'spring', damping: 25, stiffness: 220 }}
-              className="fixed inset-y-0 left-0 w-80 bg-background/70 border-r border-surface-tint/20 z-[999] p-8 flex flex-col gap-6 backdrop-blur-3xl shadow-2xl transform-gpu"
+              className="fixed inset-y-0 left-0 w-80 bg-background/70 border-r border-surface-tint/20 z-[999] p-8 flex flex-col gap-6 backdrop-blur-3xl shadow-2xl transform-gpu overflow-y-auto scrollbar-hide"
             >
               <div className="flex justify-between items-center border-b border-surface-tint/20 pb-4">
                 <div className="flex items-center gap-2">
@@ -791,6 +791,33 @@ export const JarvisHUD: React.FC = () => {
                   <RefreshCw size={12} className="animate-spin-slow" />
                   RECALIBRATE_SYSTEM
                 </button>
+              </div>
+
+              {/* Security & Access Control (Phase 1) */}
+              <div className="flex flex-col gap-3 mt-4">
+                <div className="font-mono text-[9px] text-cyan/70 uppercase tracking-widest font-bold">[SECURITY_ACCESS]</div>
+                <div className="flex flex-col gap-3 p-4 bg-surface-container-lowest/80 border border-cyan/30 chamfer-card-sm text-left">
+                  <div className="flex flex-col gap-1 border-b border-cyan/20 pb-3">
+                    <span className="font-mono text-[8px] text-foreground/50 tracking-widest uppercase">OPERATOR_ID</span>
+                    <span className="font-mono text-[10px] text-cyan font-bold tracking-wider break-all">
+                      {session?.user?.email || session?.user?.name || "SYS_ADMIN"}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center pb-2">
+                    <span className="font-mono text-[8px] text-foreground/50 tracking-widest uppercase">AUTH_STATE</span>
+                    <span className="font-mono text-[9px] text-[#00ff9d] font-bold animate-pulse">VERIFIED</span>
+                  </div>
+                  <button 
+                    onClick={() => {
+                      appendLog("SECURITY: Force lock initiated. Terminating session...");
+                      setTimeout(() => signOut(), 800);
+                    }}
+                    className="w-full py-2 bg-red-500/10 border border-red-500/50 hover:bg-red-500/30 text-red-400 chamfer-btn flex items-center justify-center gap-2 active:scale-95 transition-all cursor-pointer font-bold uppercase tracking-widest text-[9px] mt-1"
+                  >
+                    <Shield size={12} />
+                    FORCE_LOCK
+                  </button>
+                </div>
               </div>
             </motion.div>
           </>
