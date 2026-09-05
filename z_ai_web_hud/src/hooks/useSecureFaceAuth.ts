@@ -37,8 +37,29 @@ export const useSecureFaceAuth = (
 
         clearTimeout(timeoutId);
         
-        // Mock success for demonstration
-        setTimeout(onSuccess, 2000);
+        // Poll for face detection instead of mocking
+        const detectFace = async () => {
+          if (!currentVideoRef || !currentVideoRef.srcObject) {
+            timeoutId = setTimeout(detectFace, 1000);
+            return;
+          }
+
+          try {
+            const detection = await faceapi.detectSingleFace(currentVideoRef, new faceapi.TinyFaceDetectorOptions());
+            if (detection) {
+              console.log('[Z-AI Security] Face detected successfully.');
+              onSuccess();
+            } else {
+              timeoutId = setTimeout(detectFace, 500); // Check every 500ms
+            }
+          } catch (err) {
+            console.warn('[Z-AI Security] Detection error:', err);
+            timeoutId = setTimeout(detectFace, 1000);
+          }
+        };
+
+        // Start polling once models are loaded and stream is ready
+        detectFace();
 
       } catch (error) {
         console.warn('[Z-AI Security] FaceID failed or timed out. Falling back.', error);
