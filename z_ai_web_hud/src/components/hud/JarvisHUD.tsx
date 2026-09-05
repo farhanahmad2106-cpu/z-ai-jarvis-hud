@@ -367,6 +367,16 @@ export const JarvisHUD: React.FC = () => {
                 <div className="font-mono text-[9px] text-cyan/70 font-bold group-hover:text-cyan transition-colors">TEMP_CORE</div>
                 <div className="font-mono text-xs text-cyan mt-1 group-hover:glow-cyan font-extrabold">{isThinking ? TEMP_THINKING_CELSIUS : TEMP_NOMINAL_CELSIUS}</div>
               </div>
+              <div 
+                onClick={() => {
+                  setActiveTab('cpu');
+                  appendLog("SYSTEM: Navigating to System Performance Metrics.");
+                }}
+                className="chamfer-card-sm border border-cyan/30 bg-surface-container-lowest/80 p-3 transition-all duration-300 hover:bg-cyan/15 hover:border-cyan hover:shadow-[0_0_18px_rgba(0,242,255,0.25)] cursor-pointer active:scale-95 group col-span-2 text-center"
+              >
+                <div className="font-mono text-[9px] text-cyan/70 font-bold group-hover:text-cyan transition-colors">SYS_PERFORMANCE</div>
+                <div className="font-mono text-[8px] text-cyan/50 mt-0.5 uppercase tracking-widest">CPU / RAM / NET</div>
+              </div>
             </div>
           </div>
           {!modules.telemetry && (
@@ -501,34 +511,70 @@ export const JarvisHUD: React.FC = () => {
             <div className="flex justify-between items-center mb-3 border-b border-outline/10 pb-2">
               <div className="font-mono text-[10px] text-surface-tint tracking-widest font-extrabold flex items-center gap-1.5">
                 <Cpu size={12} className="text-surface-tint" />
-                CPU_WORKLOAD [MOD_504]
+                SYS_PERFORMANCE [MOD_504]
               </div>
               <span className="text-[9px] font-mono text-[#00ff9d] bg-[#00ff9d]/5 px-2 py-0.5 border border-[#00ff9d]/20 rounded animate-pulse font-bold">
                 {isThinking ? 'THINKING_BOOST' : 'BALANCED_STATE'}
               </span>
             </div>
             
-            <div className="flex flex-col gap-2.5 h-[9.5rem] justify-center text-left">
-              {[0, 1, 2, 3].map((core) => {
-                const loadVal = isThinking 
-                  ? Math.floor(75 + Math.random() * 20) 
-                  : Math.floor(15 + Math.random() * 15);
-                return (
-                  <div key={core} className="flex flex-col gap-1 font-mono text-[9px]">
-                    <div className="flex justify-between">
-                      <span className="text-foreground/50">CORE_{core} TELEMETRY</span>
-                      <span className="text-surface-tint font-bold">{loadVal}% LOAD</span>
+              <div className="flex flex-col gap-2.5 h-[9.5rem] justify-center text-left">
+                <div className="grid grid-cols-2 gap-4 h-full">
+                  {/* Left col: CPU */}
+                  <div className="flex flex-col justify-center gap-3">
+                    {[0, 1].map((core) => {
+                      const loadVal = isThinking 
+                        ? Math.floor(75 + Math.random() * 20) 
+                        : Math.floor(15 + Math.random() * 15);
+                      return (
+                        <div key={core} className="flex flex-col gap-1 font-mono text-[9px]">
+                          <div className="flex justify-between">
+                            <span className="text-foreground/50">CORE_{core}</span>
+                            <span className="text-surface-tint font-bold">{loadVal}%</span>
+                          </div>
+                          <div className="h-1 bg-surface-tint/10 rounded-full overflow-hidden">
+                            <motion.div 
+                              animate={{ width: `${loadVal}%` }} 
+                              className="h-full bg-surface-tint shadow-[0_0_8px_#00dbe7]"
+                            />
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  {/* Right col: RAM & NET */}
+                  <div className="flex flex-col justify-center gap-4 border-l border-outline/10 pl-4">
+                    {/* RAM */}
+                    <div className="flex flex-col gap-1 font-mono text-[9px]">
+                      <div className="flex justify-between">
+                         <span className="text-foreground/50">RAM_ALLOC</span>
+                         <span className="text-amber-400 font-bold">{isThinking ? '8.4GB' : '2.1GB'}</span>
+                      </div>
+                      <div className="h-1 bg-surface-tint/10 rounded-full overflow-hidden">
+                        <motion.div 
+                          animate={{ width: isThinking ? '75%' : '35%' }} 
+                          className="h-full bg-amber-400 shadow-[0_0_8px_#fbbf24]" 
+                        />
+                      </div>
                     </div>
-                    <div className="h-1 bg-surface-tint/10 rounded-full overflow-hidden">
-                      <motion.div 
-                        animate={{ width: `${loadVal}%` }} 
-                        className="h-full bg-surface-tint shadow-[0_0_8px_#00dbe7]"
-                      />
+                    {/* Network Graph */}
+                    <div className="flex flex-col gap-1 font-mono text-[9px]">
+                      <div className="flex justify-between">
+                         <span className="text-foreground/50">NET_LATENCY</span>
+                         <span className="text-[#00ff9d] font-bold">14ms</span>
+                      </div>
+                      <svg className="w-full h-5 stroke-[#00ff9d] fill-none stroke-[1.5] mt-1 drop-shadow-[0_0_5px_#00ff9d]" viewBox="0 0 100 20">
+                         <motion.path 
+                           d="M 0 10 L 20 10 L 30 5 L 40 15 L 50 10 L 80 10 L 90 2 L 100 10" 
+                           animate={{ d: isThinking ? "M 0 10 L 10 2 L 20 18 L 30 5 L 40 15 L 50 2 L 60 18 L 70 5 L 80 15 L 90 2 L 100 10" : "M 0 10 L 20 10 L 30 5 L 40 15 L 50 10 L 80 10 L 90 2 L 100 10" }}
+                           transition={{ repeat: Infinity, duration: isThinking ? 0.5 : 2, ease: 'linear' }}
+                           className="transform-gpu will-change-transform"
+                         />
+                      </svg>
                     </div>
                   </div>
-                );
-              })}
-            </div>
+                </div>
+              </div>
           </div>
         )}
 
