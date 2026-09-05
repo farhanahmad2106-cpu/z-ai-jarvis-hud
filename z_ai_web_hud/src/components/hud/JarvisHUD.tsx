@@ -5,7 +5,7 @@ import { useVoiceInterface } from '@/hooks/useVoiceInterface';
 import { 
   Terminal as TerminalIcon, Shield, Cpu, Activity, Network, 
   Settings2, Menu, X, Check, RotateCcw, Volume2, 
-  SlidersHorizontal, RefreshCw, Power, Radio, Layers, Wifi, Sparkles, Zap
+  SlidersHorizontal, RefreshCw, Power, Radio, Layers, Wifi, Sparkles, Zap, Database
 } from 'lucide-react';
 import Link from 'next/link';
 import { 
@@ -30,7 +30,8 @@ export const JarvisHUD: React.FC = () => {
   const { 
     status, terminalLog, setStatus, appendLog, clearLog, isOnline, setIsOnline,
     pendingCommand, setPendingCommand, commandOutput, setCommandOutput,
-    isAgenticMode, setIsAgenticMode
+    isAgenticMode, setIsAgenticMode,
+    contextMemory, flushContextMemory
   } = useAssistantStore();
   const { toggleManualListen } = useVoiceInterface();
   const [ws, setWs] = useState<WebSocket | null>(null);
@@ -817,6 +818,36 @@ export const JarvisHUD: React.FC = () => {
                   <RefreshCw size={12} className="animate-spin-slow" />
                   RECALIBRATE_SYSTEM
                 </button>
+              </div>
+
+              {/* Context & Memory Manager (Phase 3) */}
+              <div className="flex flex-col gap-3 mt-4">
+                <div className="font-mono text-[9px] text-cyan/70 uppercase tracking-widest font-bold">[MEMORY_CONTEXT]</div>
+                <div className="flex flex-col gap-3 p-4 bg-surface-container-lowest/80 border border-cyan/30 chamfer-card-sm text-left">
+                  <div className="flex flex-col gap-1 border-b border-cyan/20 pb-3">
+                    <span className="font-mono text-[8px] text-foreground/50 tracking-widest uppercase">ACTIVE_TURNS</span>
+                    <span className="font-mono text-[10px] text-cyan font-bold tracking-wider">{contextMemory.length} NODES</span>
+                  </div>
+                  <div className="flex justify-between items-center pb-2">
+                    <span className="font-mono text-[8px] text-foreground/50 tracking-widest uppercase">MEMORY_STATE</span>
+                    <span className={`font-mono text-[9px] font-bold ${contextMemory.length > 0 ? 'text-[#00ff9d] animate-pulse' : 'text-amber-400'}`}>
+                      {contextMemory.length > 0 ? 'STORING' : 'CLEARED'}
+                    </span>
+                  </div>
+                  <button 
+                    onClick={() => {
+                      appendLog("MEMORY: Initiating complete context wipe...");
+                      setTimeout(() => {
+                        flushContextMemory();
+                        appendLog("MEMORY: Context arrays successfully flushed.");
+                      }, 500);
+                    }}
+                    className="w-full py-2 bg-amber-500/10 border border-amber-500/50 hover:bg-amber-500/30 text-amber-400 chamfer-btn flex items-center justify-center gap-2 active:scale-95 transition-all cursor-pointer font-bold uppercase tracking-widest text-[9px] mt-1"
+                  >
+                    <Database size={12} />
+                    FLUSH_MEMORY_BANKS
+                  </button>
+                </div>
               </div>
 
               {/* Security & Access Control (Phase 1) */}

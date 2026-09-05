@@ -29,6 +29,10 @@ interface AssistantState {
   // Agentic Override State
   isAgenticMode: boolean;
   setIsAgenticMode: (enabled: boolean) => void;
+
+  // Context & Memory State
+  contextMemory: any[];
+  flushContextMemory: () => void;
 }
 
 export const useAssistantStore = create<AssistantState>((set) => ({
@@ -77,4 +81,11 @@ export const useAssistantStore = create<AssistantState>((set) => ({
   // Agentic Override Initial State
   isAgenticMode: false,
   setIsAgenticMode: (enabled) => set({ isAgenticMode: enabled }),
+
+  // Context & Memory Initial State
+  contextMemory: [
+    { role: 'system', content: 'SYSTEM: Core modules loaded.' },
+    { role: 'assistant', content: 'ZAYD is ready.' }
+  ],
+  flushContextMemory: () => set({ contextMemory: [] }),
 }));
