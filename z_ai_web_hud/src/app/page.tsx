@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Lock, Fingerprint, Unlock } from "lucide-react";
 import dynamic from "next/dynamic";
+import { useSession } from "next-auth/react";
 
 // Dynamically import the heavy HUD component with no SSR to reduce initial bundle size and avoid hydration issues
 const JarvisHUD = dynamic(() => import('@/components/hud/JarvisHUD').then(mod => mod.JarvisHUD), { 
@@ -18,6 +19,7 @@ const JarvisHUD = dynamic(() => import('@/components/hud/JarvisHUD').then(mod =>
 });
 
 export default function Home() {
+  const { status } = useSession();
   const [isLocked, setIsLocked] = useState(true);
   const [authMethod, setAuthMethod] = useState<'face' | 'password'>('face');
   const [scanStatus, setScanStatus] = useState<'scanning' | 'granted'>('scanning');
@@ -65,6 +67,13 @@ export default function Home() {
     const preloadHUD = () => import('@/components/hud/JarvisHUD');
     preloadHUD();
   }, []);
+
+  // Bypass lock screen if user is already authenticated
+  useEffect(() => {
+    if (status === 'authenticated') {
+      setIsLocked(false);
+    }
+  }, [status]);
 
   // Handle Webcam feed and simulated biometric scan
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -122,7 +131,7 @@ export default function Home() {
     let grantTimeout: NodeJS.Timeout;
     let unlockTimeout: NodeJS.Timeout;
 
-    if (isLocked && authMethod === 'face') {
+    if (isLocked && authMethod === 'face' && status === 'unauthenticated') {
       navigator.mediaDevices.getUserMedia({ video: true })
         .then((mediaStream) => {
           stream = mediaStream;
@@ -162,7 +171,7 @@ export default function Home() {
       clearTimeout(grantTimeout);
       clearTimeout(unlockTimeout);
     };
-  }, [isLocked, authMethod]);
+  }, [isLocked, authMethod, status]);
 
   useEffect(() => {
     if (isLocked) {

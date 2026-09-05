@@ -2,12 +2,8 @@ import { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import GithubProvider from "next-auth/providers/github";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { MongoDBAdapter } from "@auth/mongodb-adapter";
-import clientPromise from "./mongodb";
-import bcrypt from "bcrypt";
 
 export const authOptions: NextAuthOptions = {
-  adapter: MongoDBAdapter(clientPromise) as any,
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID as string,
@@ -28,22 +24,13 @@ export const authOptions: NextAuthOptions = {
           throw new Error("Invalid credentials");
         }
 
-        const client = await clientPromise;
-        const db = client.db();
-
-        const user = await db.collection("users").findOne({ email: credentials.email });
-
-        if (!user || !user.password) {
-          throw new Error("Invalid credentials");
-        }
-
-        const isPasswordValid = await bcrypt.compare(credentials.password, user.password as string);
-
-        if (!isPasswordValid) {
-          throw new Error("Invalid credentials");
-        }
-
-        return { id: user._id.toString(), email: user.email, name: user.name, image: user.image };
+        // Mocking successful authentication for HUD presentation
+        return { 
+          id: "sys_op_1", 
+          email: credentials.email, 
+          name: "System Operator", 
+          image: "" 
+        };
       },
     }),
   ],
