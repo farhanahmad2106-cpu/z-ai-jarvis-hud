@@ -2,9 +2,10 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Lock, Fingerprint, Unlock } from "lucide-react";
+import { Lock, Fingerprint, Unlock, LogOut } from "lucide-react";
 import dynamic from "next/dynamic";
-import { useSession } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
+import { OAuthGate } from "@/components/auth/OAuthGate";
 
 // Dynamically import the heavy HUD component with no SSR to reduce initial bundle size and avoid hydration issues
 const JarvisHUD = dynamic(() => import('@/components/hud/JarvisHUD').then(mod => mod.JarvisHUD), { 
@@ -19,7 +20,8 @@ const JarvisHUD = dynamic(() => import('@/components/hud/JarvisHUD').then(mod =>
 });
 
 export default function Home() {
-  const { status } = useSession();
+  const { data: session, status } = useSession();
+  const [faceVerified, setFaceVerified] = useState(false);
   const [isLocked, setIsLocked] = useState(true);
   const [authMethod, setAuthMethod] = useState<'face' | 'password'>('face');
   const [scanStatus, setScanStatus] = useState<'scanning' | 'granted'>('scanning');
@@ -68,12 +70,12 @@ export default function Home() {
     preloadHUD();
   }, []);
 
-  // Bypass lock screen if user is already authenticated
+  // When lock screen unlocks (face ID or passcode), mark face as verified
   useEffect(() => {
-    if (status === 'authenticated') {
-      setIsLocked(false);
+    if (!isLocked && status === 'authenticated') {
+      setFaceVerified(true);
     }
-  }, [status]);
+  }, [isLocked, status]);
 
   // Handle Webcam feed and simulated biometric scan
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -131,7 +133,7 @@ export default function Home() {
     let grantTimeout: NodeJS.Timeout;
     let unlockTimeout: NodeJS.Timeout;
 
-    if (isLocked && authMethod === 'face' && status === 'unauthenticated') {
+    if (isLocked && authMethod === 'face' && status === 'authenticated') {
       navigator.mediaDevices.getUserMedia({ video: true })
         .then((mediaStream) => {
           stream = mediaStream;
@@ -228,10 +230,26 @@ export default function Home() {
     show: { opacity: 1, y: 0 }
   };
 
+  // Phase 1: OAuth Gate — user is not authenticated at all
+  if (status === 'loading') {
+    return (
+      <div className="relative h-screen w-full bg-background flex items-center justify-center">
+        <div className="text-cyan font-mono text-sm tracking-widest animate-pulse border border-cyan/30 p-4 chamfer-card-sm bg-cyan/5">
+          INITIALIZING SECURITY SUBSYSTEMS...
+        </div>
+      </div>
+    );
+  }
+
+  if (status === 'unauthenticated') {
+    return <OAuthGate />;
+  }
+
+  // Phase 2 & 3: Authenticated user — show face recognition or HUD
   return (
     <div className="relative h-screen w-full bg-background">
       <AnimatePresence mode="wait">
-        {isLocked ? (
+        {!faceVerified ? (
           <motion.div 
             key="lock-screen"
             initial={{ opacity: 0 }}
@@ -239,8 +257,28 @@ export default function Home() {
             exit={{ opacity: 0, scale: 1.1 }}
             className={`absolute inset-0 z-[200] flex flex-col items-center justify-center transition-colors duration-1000 ${isLockdown ? 'bg-error/10' : 'bg-background'}`}
           >
+            {/* Sign Out Button */}
+            <div className="absolute top-6 right-6 z-30">
+              <button
+                onClick={() => signOut()}
+                className="flex items-center gap-2 px-4 py-2 font-mono text-[10px] text-foreground/40 tracking-widest hover:text-error transition-colors"
+              >
+                <LogOut size={12} />
+                SIGN_OUT
+              </button>
+            </div>
+
+            {/* Authenticated User Badge */}
+            {session?.user?.name && (
+              <div className="absolute top-6 left-6 z-30">
+                <p className="font-mono text-[10px] text-cyan/50 tracking-widest">
+                  OPERATOR: <span className="text-cyan/80">{session.user.name.toUpperCase()}</span>
+                </p>
+              </div>
+            )}
+
             {/* Terminal Logs Overlay */}
-            <div className="absolute top-8 left-8 w-80 font-mono text-[10px] text-cyan/50 tracking-widest leading-relaxed pointer-events-none text-left z-10 flex flex-col gap-1">
+            <div className="absolute top-16 left-8 w-80 font-mono text-[10px] text-cyan/50 tracking-widest leading-relaxed pointer-events-none text-left z-10 flex flex-col gap-1">
               <AnimatePresence>
                 {bootLogs.map((log, i) => (
                   <motion.div 

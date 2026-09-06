@@ -2,6 +2,8 @@ import { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import GithubProvider from "next-auth/providers/github";
 import CredentialsProvider from "next-auth/providers/credentials";
+import clientPromise from "@/lib/mongodb";
+import bcrypt from "bcrypt";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -21,15 +23,36 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
-          throw new Error("Invalid credentials");
+          throw new Error("MISSING_FIELDS");
         }
 
-        // Mocking successful authentication for HUD presentation
-        return { 
-          id: "sys_op_1", 
-          email: credentials.email, 
-          name: "System Operator", 
-          image: "" 
+        const client = await clientPromise;
+        const db = client.db();
+        const user = await db.collection("users").findOne({ 
+          email: credentials.email.toLowerCase() 
+        });
+
+        // User not found — client will redirect to Signup
+        if (!user) {
+          throw new Error("NO_USER");
+        }
+
+        // User signed up via OAuth only (no password set)
+        if (!user.password) {
+          throw new Error("OAUTH_ACCOUNT");
+        }
+
+        // Validate password
+        const isValid = await bcrypt.compare(credentials.password, user.password);
+        if (!isValid) {
+          throw new Error("WRONG_PASSWORD");
+        }
+
+        return {
+          id: user._id.toString(),
+          email: user.email,
+          name: user.name || "Operator",
+          image: user.image || "",
         };
       },
     }),
@@ -52,7 +75,7 @@ export const authOptions: NextAuthOptions = {
     },
   },
   pages: {
-    signIn: "/", // We will use a modal in the HUD, so redirect to home
+    signIn: "/", // OAuth Gate handles the UI, redirect to home
   },
   secret: process.env.NEXTAUTH_SECRET,
 };

@@ -157,3 +157,115 @@ body {
   z-index: 10000;
 }
 
+/* ═══ OAuth Gate Styles ═══ */
+
+.oauth-card {
+  background: rgba(23, 33, 39, 0.85);
+  backdrop-filter: blur(24px);
+  border: 1px solid rgba(0, 242, 255, 0.15);
+  box-shadow: 
+    0 0 40px rgba(0, 242, 255, 0.08),
+    inset 0 0 30px rgba(0, 242, 255, 0.03),
+    0 25px 50px rgba(0, 0, 0, 0.5);
+  clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px));
+}
+
+.auth-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: rgba(6, 15, 22, 0.7);
+  border: 1px solid rgba(58, 73, 75, 0.5);
+  transition: all 0.3s ease;
+  clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px));
+}
+
+.auth-input-wrapper:focus-within {
+  border-color: rgba(0, 242, 255, 0.5);
+  box-shadow: 
+    0 0 15px rgba(0, 242, 255, 0.1),
+    inset 0 0 15px rgba(0, 242, 255, 0.05);
+}
+
+.auth-input-icon {
+  position: absolute;
+  left: 14px;
+  color: rgba(0, 242, 255, 0.4);
+  pointer-events: none;
+  transition: color 0.3s;
+}
+
+.auth-input-wrapper:focus-within .auth-input-icon {
+  color: rgba(0, 242, 255, 0.8);
+}
+
+.auth-input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 10px 14px 10px 40px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: rgba(0, 242, 255, 0.9);
+  letter-spacing: 0.05em;
+}
+
+.auth-input::placeholder {
+  color: rgba(132, 148, 149, 0.4);
+  letter-spacing: 0.05em;
+}
+
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(58, 73, 75, 0.6), transparent);
+}
+
+.auth-divider span {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.3em;
+  color: rgba(217, 228, 237, 0.2);
+}
+
+.oauth-btn-provider {
+  padding: 10px 16px;
+  background: rgba(6, 15, 22, 0.5);
+  border: 1px solid rgba(58, 73, 75, 0.4);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+}
+
+.oauth-btn-provider:hover {
+  background: rgba(6, 15, 22, 0.8);
+  border-color: rgba(86, 141, 255, 0.4);
+  box-shadow: 0 0 15px rgba(86, 141, 255, 0.1);
+}
+
+.oauth-btn-provider:active {
+  transform: scale(0.98);
+}
+
+.oauth-btn-provider:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.glow-green {
+  text-shadow: 0 0 10px rgba(74, 222, 128, 0.7);
+}
+
+.glow-error {
+  text-shadow: 0 0 10px rgba(255, 59, 59, 0.7);
+}
+
