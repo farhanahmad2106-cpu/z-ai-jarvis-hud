@@ -5,7 +5,7 @@ import { useVoiceInterface } from '@/hooks/useVoiceInterface';
 import { 
   Terminal as TerminalIcon, Shield, Cpu, Activity, Network, 
   Settings2, Menu, X, Check, RotateCcw, Volume2, 
-  SlidersHorizontal, RefreshCw, Power, Radio, Layers, Wifi, Sparkles, Zap, Database, Thermometer
+  SlidersHorizontal, RefreshCw, Power, Radio, Layers, Wifi, Sparkles, Zap, Database, Thermometer, User
 } from 'lucide-react';
 import Link from 'next/link';
 import { 
@@ -22,7 +22,6 @@ import { WeatherWidget } from '@/components/WeatherWidget';
 import BrokenByDesign from '@/components/ui/broken-by-design';
 import { HITLPrompt } from './HITLPrompt';
 import { useSession, signOut } from "next-auth/react";
-import { LoginModal } from "./LoginModal";
 
 export const JarvisHUD: React.FC = () => {
   const { data: session, status: sessionStatus } = useSession();
@@ -135,7 +134,6 @@ export const JarvisHUD: React.FC = () => {
 
   return (
     <main className={`relative h-screen w-full flex items-center justify-center p-8 overflow-hidden transform-gpu select-none ${!isOnline ? 'offline-mode' : ''}`}>
-      {sessionStatus === "unauthenticated" && <LoginModal />}
       {!isOnline && (
         <div className="absolute top-24 left-1/2 -translate-x-1/2 z-[100] border border-[#ffaa00]/40 bg-[#ffaa00]/10 px-8 py-2 rounded-full backdrop-blur-md shadow-[0_0_20px_rgba(255,170,0,0.3)] pointer-events-none">
           <span className="font-mono text-xs font-extrabold text-[#ffaa00] tracking-[0.4em] animate-pulse">NETWORK OFFLINE - RUNNING LOCAL</span>
@@ -171,17 +169,39 @@ export const JarvisHUD: React.FC = () => {
           <span className="font-mono text-[9px] text-cyan/50 px-2 py-0.5 border border-cyan/20 chamfer-card-sm">V1.1.0</span>
           <span className="font-mono text-[10px] text-cyan font-bold tracking-widest uppercase glow-cyan">[{status}]</span>
           
-          {session?.user && (
+          {session?.user ? (
             <div className="flex items-center gap-2 border-l border-cyan/30 pl-4 ml-2">
-              <span className="font-mono text-[10px] text-emerald-400 tracking-widest uppercase">
-                {session.user.name || "OPERATOR"}
-              </span>
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_#34d399]" />
+              <div className="flex flex-col text-left">
+                <span className="font-mono text-[8px] text-cyan/40 tracking-wider">OPERATOR</span>
+                <span className="font-mono text-[10px] text-emerald-400 tracking-widest uppercase font-bold max-w-[120px] truncate">
+                  {session.user.name || "OPERATOR"}
+                </span>
+              </div>
               <button 
-                onClick={() => signOut()}
-                className="text-[9px] font-mono text-cyan/60 hover:text-red-400 px-2 py-0.5 border border-cyan/20 hover:border-red-400/50 chamfer-btn transition-colors"
+                onClick={() => signOut({ callbackUrl: "/" })}
+                className="text-[9px] font-mono text-cyan/60 hover:text-red-400 px-2 py-1 border border-cyan/20 hover:border-red-400/50 chamfer-btn transition-all hover:bg-red-500/10 cursor-pointer ml-1"
+                title="Disconnect Session"
               >
                 LOGOUT
               </button>
+            </div>
+          ) : (
+            <div className="flex items-center gap-2 border-l border-cyan/30 pl-4 ml-2">
+              <div className="hidden sm:flex flex-col text-left">
+                <span className="font-mono text-[8px] text-cyan/40 tracking-wider">PROFILE</span>
+                <span className="font-mono text-[10px] text-cyan/60 tracking-widest uppercase">
+                  GUEST
+                </span>
+              </div>
+              <Link
+                href="/auth"
+                className="font-mono text-[10px] text-cyan light-pipe-cyan bg-cyan/10 hover:bg-cyan/25 px-3 py-1.5 chamfer-btn flex items-center gap-1.5 transition-all shadow-[0_0_15px_rgba(0,242,255,0.25)] hover:text-white cursor-pointer group"
+                title="Sign in or create account"
+              >
+                <User size={12} className="text-cyan group-hover:drop-shadow-[0_0_8px_rgba(0,242,255,1)]" />
+                <span className="tracking-widest">LOGIN / SIGNUP</span>
+              </Link>
             </div>
           )}
 

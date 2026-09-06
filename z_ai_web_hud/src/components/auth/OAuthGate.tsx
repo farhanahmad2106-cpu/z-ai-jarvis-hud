@@ -1,9 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { signIn, useSession } from "next-auth/react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Lock, UserPlus, Mail, KeyRound, User, AlertTriangle, ArrowRight, Shield } from "lucide-react";
+import { Lock, UserPlus, Mail, KeyRound, User, AlertTriangle, ArrowRight, Shield, ArrowLeft } from "lucide-react";
 
 type AuthMode = "login" | "signup";
 
@@ -13,6 +15,8 @@ interface FlashMessage {
 }
 
 export function OAuthGate() {
+  const router = useRouter();
+  const { status: sessionStatus } = useSession();
   const [mode, setMode] = useState<AuthMode>("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -23,6 +27,13 @@ export function OAuthGate() {
   const [error, setError] = useState("");
   const [flash, setFlash] = useState<FlashMessage | null>(null);
   const [bootLogs, setBootLogs] = useState<string[]>([]);
+
+  // If already authenticated, redirect back to dashboard
+  useEffect(() => {
+    if (sessionStatus === "authenticated") {
+      router.push("/");
+    }
+  }, [sessionStatus, router]);
 
   // Boot log sequence
   useEffect(() => {
@@ -104,8 +115,10 @@ export function OAuthGate() {
       } else {
         setError("AUTHENTICATION FAILED");
       }
+    } else {
+      router.push("/");
+      router.refresh();
     }
-    // If success, NextAuth session updates automatically → page.tsx re-renders
   };
 
   const handleSignup = async (e: React.FormEvent) => {
@@ -164,6 +177,9 @@ export function OAuthGate() {
           text: "REGISTRATION SUCCESSFUL — AUTHENTICATE NOW",
           type: "success",
         });
+      } else {
+        router.push("/");
+        router.refresh();
       }
     } catch {
       setLoading(false);
@@ -218,6 +234,18 @@ export function OAuthGate() {
         transition={{ duration: 0.6, ease: "easeOut" }}
         className="relative z-20 w-full max-w-md mx-4"
       >
+        {/* Back to Dashboard Link */}
+        <div className="mb-3 flex items-center justify-between px-1">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-1.5 font-mono text-[11px] text-cyan/70 hover:text-cyan tracking-widest transition-all hover:translate-x-[-2px] group"
+          >
+            <ArrowLeft size={13} className="text-cyan group-hover:drop-shadow-[0_0_6px_rgba(0,242,255,1)]" />
+            <span>RETURN TO DASHBOARD</span>
+          </Link>
+          <span className="font-mono text-[9px] text-cyan/40 tracking-widest">[GUEST MODE]</span>
+        </div>
+
         {/* Card Header with animated border */}
         <div className="oauth-card relative">
           {/* Animated top accent line */}

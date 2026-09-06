@@ -75,7 +75,7 @@ export const authOptions: NextAuthOptions = {
     },
   },
   pages: {
-    signIn: "/", // OAuth Gate handles the UI, redirect to home
+    signIn: "/auth",
   },
   secret: process.env.NEXTAUTH_SECRET,
 };
