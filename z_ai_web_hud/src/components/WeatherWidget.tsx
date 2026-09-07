@@ -8,7 +8,7 @@ export function WeatherWidget() {
   const { weatherData } = useAssistantStore();
 
   const getIcon = (condition: string) => {
-    const c = condition.toLowerCase();
+    const c = (condition || "").toLowerCase();
     if (c.includes("rain") || c.includes("drizzle")) return <CloudRain size={40} className="text-cyan drop-shadow-[0_0_12px_#00f2ff]" />;
     if (c.includes("thunder") || c.includes("storm")) return <CloudLightning size={40} className="text-amber drop-shadow-[0_0_12px_#ffaa00]" />;
     if (c.includes("snow")) return <Snowflake size={40} className="text-white drop-shadow-[0_0_12px_#ffffff]" />;

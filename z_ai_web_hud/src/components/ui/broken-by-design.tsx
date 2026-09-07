@@ -788,13 +788,13 @@ export default function BrokenByDesign({
         aria-hidden="true"
       >
         <g className="bbd2-cracks-glow">
-          {cracks.main.map((d, i) => <path key={i} d={d} />)}
+          {cracks?.main?.filter(Boolean).map((d, i) => <path key={i} d={d} />)}
         </g>
         <g className="bbd2-cracks-line">
-          {cracks.main.map((d, i) => <path key={i} d={d} />)}
+          {cracks?.main?.filter(Boolean).map((d, i) => <path key={i} d={d} />)}
         </g>
         <g className="bbd2-cracks-fine">
-          {cracks.fine.map((d, i) => <path key={i} d={d} />)}
+          {cracks?.fine?.filter(Boolean).map((d, i) => <path key={i} d={d} />)}
         </g>
       </svg>
 

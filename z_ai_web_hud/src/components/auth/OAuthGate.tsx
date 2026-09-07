@@ -51,7 +51,10 @@ export function OAuthGate() {
     setBootLogs([]);
     const interval = setInterval(() => {
       if (i < logs.length) {
-        setBootLogs((prev) => [...prev, logs[i]]);
+        const nextLog = logs[i];
+        if (nextLog) {
+          setBootLogs((prev) => [...prev, nextLog]);
+        }
         i++;
       } else {
         clearInterval(interval);
@@ -101,7 +104,7 @@ export function OAuthGate() {
     setLoading(false);
 
     if (result?.error) {
-      const errMsg = result.error;
+      const errMsg = String(result.error || "");
       // NextAuth wraps the error — check for our custom codes
       if (errMsg.includes("NO_USER")) {
         switchMode("signup", {
@@ -207,12 +210,12 @@ export function OAuthGate() {
       {/* Boot Log Terminal */}
       <div className="absolute top-8 left-8 w-72 font-mono text-[10px] text-cyan/40 tracking-widest leading-relaxed pointer-events-none text-left z-10 hidden md:flex flex-col gap-0.5">
         <AnimatePresence>
-          {bootLogs.map((log, i) => (
+          {bootLogs.filter(Boolean).map((log, i) => (
             <motion.div
               key={i}
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
-              className={log.includes("AWAITING") ? "text-cyan/70 font-bold" : ""}
+              className={log?.includes("AWAITING") ? "text-cyan/70 font-bold" : ""}
             >
               {log}
             </motion.div>

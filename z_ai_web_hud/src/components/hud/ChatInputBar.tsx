@@ -43,7 +43,7 @@ export const ChatInputBar: React.FC = () => {
 
       // Choose an English voice if available
       const voices = window.speechSynthesis.getVoices();
-      const preferred = voices.find((v) => v.lang.startsWith("en") && (v.name.includes("Male") || v.name.includes("Natural") || v.name.includes("Google")));
+      const preferred = voices.find((v) => v.lang?.startsWith("en") && (v.name?.includes("Male") || v.name?.includes("Natural") || v.name?.includes("Google")));
       if (preferred) utterance.voice = preferred;
 
       window.speechSynthesis.speak(utterance);

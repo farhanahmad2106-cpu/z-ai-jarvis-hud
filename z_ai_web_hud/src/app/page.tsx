@@ -188,7 +188,10 @@ export default function Home() {
       setBootLogs([]);
       const logInterval = setInterval(() => {
         if (i < logs.length) {
-          setBootLogs(prev => [...prev, logs[i]]);
+          const nextLog = logs[i];
+          if (nextLog) {
+            setBootLogs(prev => [...prev, nextLog]);
+          }
           i++;
         } else {
           clearInterval(logInterval);
@@ -251,7 +254,7 @@ export default function Home() {
             {/* Terminal Logs Overlay */}
             <div className="absolute top-8 left-8 w-80 font-mono text-[10px] text-cyan/50 tracking-widest leading-relaxed pointer-events-none text-left z-10 flex flex-col gap-1">
               <AnimatePresence>
-                {bootLogs.map((log, i) => (
+                {bootLogs.filter(Boolean).map((log, i) => (
                   <motion.div 
                     key={i} 
                     initial={{ opacity: 0, x: -10 }} 
