@@ -19,7 +19,7 @@ import {
 } from '@/utils/hudConfig';
 import { Visualizer } from '@/components/Visualizer';
 import { RadarScanner } from '@/components/hud/RadarScanner';
-import { CommandInputBar } from '@/components/hud/CommandInputBar';
+import { ChatInputBar } from '@/components/hud/ChatInputBar';
 import { playChirp, playModeShift, isSoundMuted, toggleSoundMute } from '@/utils/cyberSound';
 import { VolumeX, Palette, Clock } from 'lucide-react';
 import { WeatherWidget } from '@/components/WeatherWidget';
@@ -184,6 +184,37 @@ export const JarvisHUD: React.FC = () => {
   };
 
   const currentThemeObj = THEMES.find(t => t.id === hudTheme) || THEMES[0];
+
+  // Terminal Command Input State ('CMND')
+  const [isCmdInputOpen, setIsCmdInputOpen] = useState(false);
+  const [terminalCmdInput, setTerminalCmdInput] = useState('');
+
+  const handleExecuteTerminalCmd = (e: React.FormEvent) => {
+    e.preventDefault();
+    const cmd = terminalCmdInput.trim();
+    if (!cmd) return;
+    playChirp(1900);
+    appendLog(`OPERATOR_CMD: ${cmd}`);
+    setTerminalCmdInput('');
+
+    // If it requires human authorization, trigger HITL
+    if (/^(rm|del|systemctl|service|kill|pkill)\\b/i.test(cmd)) {
+      setPendingCommand(cmd);
+      appendLog("SYSTEM: Elevated authorization required for this action.");
+      return;
+    }
+
+    // Dispatch to local desktop daemon if connected
+    if (ws && ws.readyState === WebSocket.OPEN) {
+      appendLog("SYSTEM: Dispatching command to desktop daemon...");
+      ws.send(JSON.stringify({ type: 'execute', command: cmd }));
+    } else {
+      setTimeout(() => {
+        appendLog(`DAEMON_MOCK: [${cmd}] executed via local environment.`);
+      }, 300);
+    }
+  };
+
 
   const [modules, setModules] = useState({
     acoustic: true,
@@ -431,8 +462,8 @@ export const JarvisHUD: React.FC = () => {
           </AnimatePresence>
         </div>
 
-        {/* Tactical Command Bar & Macro Matrix */}
-        <CommandInputBar />
+        {/* Zayd Conversational Chat Interface */}
+        <ChatInputBar />
       </section>
 
       {/* Right Wing: Status & Sensors */}
@@ -556,7 +587,21 @@ export const JarvisHUD: React.FC = () => {
                 <TerminalIcon size={12} className="animate-pulse text-cyan" />
                 SYSTEM_LOG [MOD_082]
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5">
+                <button 
+                  onClick={() => {
+                    playChirp(1900);
+                    setIsCmdInputOpen(!isCmdInputOpen);
+                  }}
+                  className={`text-[9px] font-mono border px-2.5 py-1 chamfer-btn transition-all cursor-pointer active:scale-95 font-bold uppercase tracking-wider ${
+                    isCmdInputOpen 
+                      ? 'border-[#00ff9d] text-[#00ff9d] bg-[#00ff9d]/20 shadow-[0_0_10px_#00ff9d]' 
+                      : 'border-cyan/40 text-cyan hover:bg-cyan/20'
+                  }`}
+                  title="Toggle Direct Shell Command Execution"
+                >
+                  CMND
+                </button>
                 <button 
                   onClick={() => {
                     appendLog("SYSTEM: Diagnostic sweep initialized...");
@@ -564,19 +609,35 @@ export const JarvisHUD: React.FC = () => {
                       setTimeout(() => appendLog(msg), idx * 150);
                     });
                   }}
-                  className="text-[9px] font-mono text-cyan border border-cyan/40 px-2.5 py-1 chamfer-btn hover:bg-cyan/20 transition-all cursor-pointer active:scale-95 font-bold uppercase tracking-wider"
+                  className="text-[9px] font-mono text-cyan border border-cyan/40 px-2 py-1 chamfer-btn hover:bg-cyan/20 transition-all cursor-pointer active:scale-95 font-bold uppercase tracking-wider"
                 >
-                  RUN_DIAGNOSTICS
+                  DIAG
                 </button>
                 <button
                   onClick={() => setPendingCommand("rm -rf /tmp/cache_modules && systemctl restart z-ai-daemon")}
-                  className="text-[9px] font-mono text-red-500 border border-red-500/40 px-2.5 py-1 chamfer-btn hover:bg-red-500/20 transition-all cursor-pointer active:scale-95 font-bold uppercase tracking-wider"
+                  className="text-[9px] font-mono text-red-500 border border-red-500/40 px-2 py-1 chamfer-btn hover:bg-red-500/20 transition-all cursor-pointer active:scale-95 font-bold uppercase tracking-wider"
                 >
-                  TEST_HITL
+                  HITL
                 </button>
               </div>
             </div>
-            <div className="font-mono text-[10px] text-foreground/80 space-y-1 h-[9.5rem] overflow-y-auto scrollbar-hide flex flex-col-reverse">
+            {isCmdInputOpen && (
+              <form onSubmit={handleExecuteTerminalCmd} className="flex items-center gap-2 mb-2 p-1.5 bg-black/70 border border-cyan/40 rounded-sm shadow-[inset_0_0_10px_rgba(0,242,255,0.1)]">
+                <span className="text-cyan font-mono text-xs font-bold pl-1 animate-pulse">&gt;</span>
+                <input 
+                  type="text"
+                  value={terminalCmdInput}
+                  onChange={(e) => setTerminalCmdInput(e.target.value)}
+                  placeholder="Enter system command (e.g. systemctl restart, ping, rm, dir)..."
+                  className="w-full bg-transparent font-mono text-[10px] text-[#00ff9d] placeholder-cyan/40 focus:outline-none selection:bg-cyan/30"
+                  autoFocus
+                />
+                <button type="submit" className="text-[8px] font-mono px-2 py-0.5 bg-cyan text-background font-black uppercase chamfer-btn active:scale-95 cursor-pointer shadow-[0_0_8px_#00f2ff]">
+                  EXEC
+                </button>
+              </form>
+            )}
+            <div className={`font-mono text-[10px] text-foreground/80 space-y-1 ${isCmdInputOpen ? 'h-[7rem]' : 'h-[9.5rem]'} overflow-y-auto scrollbar-hide flex flex-col-reverse`}>
               {terminalLog.slice().reverse().map((log, i) => (
                 <div key={i} className="flex gap-2">
                   <span className="text-cyan shrink-0 font-bold">&gt;</span> 

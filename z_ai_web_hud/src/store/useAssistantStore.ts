@@ -33,6 +33,7 @@ interface AssistantState {
   // Context & Memory State
   contextMemory: any[];
   flushContextMemory: () => void;
+  addContextTurn: (turn: { role: string; content: string }) => void;
 }
 
 export const useAssistantStore = create<AssistantState>((set) => ({
@@ -88,4 +89,7 @@ export const useAssistantStore = create<AssistantState>((set) => ({
     { role: 'assistant', content: 'ZAYD is ready.' }
   ],
   flushContextMemory: () => set({ contextMemory: [] }),
+  addContextTurn: (turn) => set((s) => ({
+    contextMemory: [...s.contextMemory.slice(-9), turn],
+  })),
 }));
