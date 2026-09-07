@@ -214,7 +214,7 @@ export const JarvisHUD: React.FC = () => {
       )}
       <WeatherWidget />
       {/* Header */}
-      <header className="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-8 py-4 border-b border-cyan/30 bg-surface-container-lowest/80 backdrop-blur-xl">
+      <header className="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-6 py-2.5 border-b border-cyan/30 bg-surface-container-lowest/90 backdrop-blur-xl shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
         <div className="flex items-center gap-4">
           <Menu 
             className="text-cyan hover:glow-cyan cursor-pointer transition-all active:scale-95 hover:text-white" 
@@ -282,7 +282,17 @@ export const JarvisHUD: React.FC = () => {
             <Sparkles size={12} className="animate-pulse" /> 3D_HERO
           </button>
           <span className="font-mono text-[9px] text-cyan/50 px-2 py-0.5 border border-cyan/20 chamfer-card-sm">V1.1.0</span>
-          <span className="font-mono text-[10px] text-cyan font-bold tracking-widest uppercase glow-cyan">[{status}]</span>
+          <div className="flex items-center gap-1.5 px-3 py-1 rounded-sm border border-cyan/40 bg-cyan/10 shadow-[0_0_12px_rgba(0,242,255,0.2)]">
+            <span className={`w-2 h-2 rounded-full animate-pulse ${
+              status === 'LISTENING' ? 'bg-[#00ff9d] shadow-[0_0_8px_#00ff9d]' :
+              status === 'THINKING' ? 'bg-[#ffaa00] shadow-[0_0_8px_#ffaa00]' :
+              status === 'SPEAKING' ? 'bg-[#00f2ff] shadow-[0_0_8px_#00f2ff]' :
+              'bg-cyan/80 shadow-[0_0_8px_#00f2ff]'
+            }`} />
+            <span className="font-mono text-[10px] text-cyan font-extrabold tracking-widest uppercase glow-cyan">
+              STATUS: [{status}]
+            </span>
+          </div>
           
           {session?.user ? (
             <div className="flex items-center gap-2 border-l border-cyan/30 pl-4 ml-2">
@@ -426,12 +436,17 @@ export const JarvisHUD: React.FC = () => {
       </section>
 
       {/* Right Wing: Status & Sensors */}
-      <aside className="absolute right-8 top-1/2 -translate-y-1/2 flex flex-col gap-4 text-right z-40">
+      <aside className="absolute right-6 top-16 bottom-20 flex flex-col gap-2.5 text-right z-40 overflow-y-auto scrollbar-hide max-h-[calc(100vh-140px)]">
         <div className="relative">
           <div className={`flex flex-col gap-4 transition-all duration-500 ${modules.telemetry ? '' : 'opacity-20 blur-sm pointer-events-none'}`}>
-            <div className="chamfer-card light-pipe-cyan bg-surface-container-low/80 backdrop-blur-xl p-5 w-52 text-left hover:shadow-[0_0_25px_rgba(0,242,255,0.25)] transition-all duration-300">
-              <div className="font-mono text-[9px] text-cyan/70 tracking-[0.2em] uppercase mb-2">
-                [MOD_SYS_004]
+            <div className="chamfer-card light-pipe-cyan bg-surface-container-low/85 backdrop-blur-xl p-3.5 w-52 text-left hover:shadow-[0_0_25px_rgba(0,242,255,0.25)] transition-all duration-300">
+              <div className="flex items-center justify-between mb-1.5 border-b border-cyan/15 pb-1">
+                <span className="font-mono text-[9px] text-cyan/70 tracking-[0.2em] uppercase font-bold">
+                  [MOD_SYS_004]
+                </span>
+                <span className="font-mono text-[8px] text-[#00ff9d] uppercase tracking-wider font-bold">
+                  SYS_LINK
+                </span>
               </div>
               <div className="flex items-center justify-between mb-2">
                 <span className="font-mono text-[10px] text-foreground/70 tracking-wider">STATUS:</span>
@@ -462,13 +477,13 @@ export const JarvisHUD: React.FC = () => {
                   appendLog("SYSTEM: Voice capture manual override triggered.");
                 }
               }}
-              className="chamfer-card light-pipe-cyan bg-surface-container-low/80 backdrop-blur-xl p-4 cursor-pointer hover:bg-surface-container/90 hover:shadow-[0_0_25px_rgba(0,242,255,0.3)] transition-all duration-300 active:scale-95 group text-left"
+              className="chamfer-card light-pipe-cyan bg-surface-container-low/80 backdrop-blur-xl p-3 cursor-pointer hover:bg-surface-container/90 hover:shadow-[0_0_25px_rgba(0,242,255,0.3)] transition-all duration-300 active:scale-95 group text-left"
             >
               <div className="flex justify-between items-center mb-1">
                 <div className="font-mono text-[10px] text-cyan tracking-wider font-bold group-hover:glow-cyan transition-all">V_INPUT_FREQ</div>
                 <div className="font-mono text-[9px] text-cyan/60">[MOD_ACOU_01]</div>
               </div>
-              <svg className="w-full h-12 stroke-cyan fill-none stroke-1" viewBox="0 0 100 30">
+              <svg className="w-full h-9 stroke-cyan fill-none stroke-1" viewBox="0 0 100 30">
                 <motion.path 
                   d={WAVEFORM_PATHS.IDLE}
                   animate={{ 
@@ -492,7 +507,7 @@ export const JarvisHUD: React.FC = () => {
                   setActiveTab('cpu');
                   appendLog("SYSTEM: Navigating to CPU workloads page.");
                 }}
-                className="chamfer-card-sm border border-cyan/30 bg-surface-container-lowest/80 p-3 transition-all duration-300 hover:bg-cyan/15 hover:border-cyan hover:shadow-[0_0_18px_rgba(0,242,255,0.25)] cursor-pointer active:scale-95 group"
+                className="chamfer-card-sm border border-cyan/30 bg-surface-container-lowest/80 p-2.5 transition-all duration-300 hover:bg-cyan/15 hover:border-cyan hover:shadow-[0_0_18px_rgba(0,242,255,0.25)] cursor-pointer active:scale-95 group"
               >
                 <div className="font-mono text-[9px] text-cyan/70 font-bold group-hover:text-cyan transition-colors">CPU_LOAD</div>
                 <div className="font-mono text-xs text-cyan mt-1 group-hover:glow-cyan font-extrabold">{isThinking ? CPU_THINKING_LOAD : CPU_NOMINAL_LOAD}</div>
@@ -512,7 +527,7 @@ export const JarvisHUD: React.FC = () => {
                   setActiveTab('cpu');
                   appendLog("SYSTEM: Navigating to System Performance Metrics.");
                 }}
-                className="chamfer-card-sm border border-cyan/30 bg-surface-container-lowest/80 p-3 transition-all duration-300 hover:bg-cyan/15 hover:border-cyan hover:shadow-[0_0_18px_rgba(0,242,255,0.25)] cursor-pointer active:scale-95 group col-span-2 text-center"
+                className="chamfer-card-sm border border-cyan/30 bg-surface-container-lowest/80 p-2 transition-all duration-300 hover:bg-cyan/15 hover:border-cyan hover:shadow-[0_0_18px_rgba(0,242,255,0.25)] cursor-pointer active:scale-95 group col-span-2 text-center"
               >
                 <div className="font-mono text-[9px] text-cyan/70 font-bold group-hover:text-cyan transition-colors">SYS_PERFORMANCE</div>
                 <div className="font-mono text-[8px] text-cyan/50 mt-0.5 uppercase tracking-widest">CPU / RAM / NET</div>

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Radio, Crosshair, ShieldCheck, Zap } from "lucide-react";
+import { Radio, ShieldCheck } from "lucide-react";
 import { playPing, playChirp } from "@/utils/cyberSound";
 import { useAssistantStore } from "@/store/useAssistantStore";
 
@@ -47,11 +47,11 @@ export const RadarScanner: React.FC = () => {
   };
 
   return (
-    <div className="chamfer-card light-pipe-cyan bg-surface-container-low/85 backdrop-blur-xl p-4 w-56 flex flex-col gap-3 transition-all duration-300 hover:shadow-[0_0_25px_rgba(0,242,255,0.25)] text-left group">
+    <div className="chamfer-card light-pipe-cyan bg-surface-container-low/85 backdrop-blur-xl p-3 w-52 flex flex-col gap-2 transition-all duration-300 hover:shadow-[0_0_25px_rgba(0,242,255,0.25)] text-left group">
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-cyan/20 pb-2">
+      <div className="flex items-center justify-between border-b border-cyan/20 pb-1.5">
         <div className="flex items-center gap-1.5">
-          <Radio size={12} className="text-cyan animate-pulse glow-cyan" />
+          <Radio size={11} className="text-cyan animate-pulse glow-cyan" />
           <span className="font-mono text-[9px] text-cyan font-extrabold tracking-widest uppercase">
             [MOD_RADAR_09]
           </span>
@@ -151,7 +151,7 @@ export const RadarScanner: React.FC = () => {
       </div>
 
       {/* Target Readout / Telemetry */}
-      <div className="font-mono text-[8px] flex flex-col gap-1 border-t border-cyan/20 pt-2 text-foreground/70">
+      <div className="font-mono text-[8px] flex flex-col gap-0.5 border-t border-cyan/20 pt-1.5 text-foreground/70">
         <div className="flex justify-between items-center">
           <span>AZIMUTH_TRACK:</span>
           <span className="text-cyan font-bold glow-cyan">{String(azimuth).padStart(3, "0")}° AZ</span>
