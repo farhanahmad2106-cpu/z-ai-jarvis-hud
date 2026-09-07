@@ -55,6 +55,9 @@
   "allowScripts": {
     "sharp": true,
     "unrs-resolver": true,
-    "bcrypt": true
+    "bcrypt": true,
+    "esbuild": true,
+    "msgpackr-extract": true,
+    "workerd": true
   }
 }
