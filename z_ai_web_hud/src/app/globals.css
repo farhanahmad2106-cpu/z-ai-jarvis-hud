@@ -11,9 +11,9 @@
   --color-surface-container-highest: #2c363d;
   --color-foreground: #d9e4ed;
   --color-primary: #e1fdff;
-  --color-cyan: #00f2ff;
+  --color-cyan: var(--cyan);
   --color-electric-blue: #568dff;
-  --color-surface-tint: #00f2ff;
+  --color-surface-tint: var(--surface-tint);
   --color-error: #ff3b3b;
   --color-amber: #ffaa00;
   --color-outline: #3a494b;
@@ -33,9 +33,46 @@
   --hud-glow-intense: 0 0 40px rgba(0, 242, 255, 0.6);
 }
 
+/* ── Tactical Protocol Themes ── */
+.theme-quantum {
+  --cyan: #00f2ff;
+  --surface-tint: #00f2ff;
+  --hud-glow: 0 0 20px rgba(0, 242, 255, 0.4);
+  --hud-glow-intense: 0 0 40px rgba(0, 242, 255, 0.6);
+}
+
+.theme-stealth {
+  --cyan: #00ff9d;
+  --surface-tint: #00ff9d;
+  --hud-glow: 0 0 20px rgba(0, 255, 157, 0.4);
+  --hud-glow-intense: 0 0 40px rgba(0, 255, 157, 0.6);
+}
+
+.theme-combat {
+  --cyan: #ffaa00;
+  --surface-tint: #ffaa00;
+  --hud-glow: 0 0 20px rgba(255, 170, 0, 0.4);
+  --hud-glow-intense: 0 0 40px rgba(255, 170, 0, 0.6);
+}
+
+.theme-crimson {
+  --cyan: #ff3366;
+  --surface-tint: #ff3366;
+  --hud-glow: 0 0 20px rgba(255, 51, 102, 0.4);
+  --hud-glow-intense: 0 0 40px rgba(255, 51, 102, 0.6);
+}
+
+.theme-void {
+  --cyan: #bd00ff;
+  --surface-tint: #bd00ff;
+  --hud-glow: 0 0 20px rgba(189, 0, 255, 0.4);
+  --hud-glow-intense: 0 0 40px rgba(189, 0, 255, 0.6);
+}
+
 .offline-mode {
   --color-surface-tint: #ffaa00;
   --surface-tint: #ffaa00;
+  --cyan: #ffaa00;
   --hud-glow: 0 0 20px rgba(255, 170, 0, 0.4);
   --hud-glow-intense: 0 0 40px rgba(255, 170, 0, 0.6);
 }
@@ -46,6 +83,7 @@ body {
   font-family: var(--font-sans);
   overflow: hidden;
   min-height: 100vh;
+  transition: color 0.4s ease;
 }
 
 /* Custom HUD Chamfered Containers & Tactical Edges */
@@ -63,8 +101,8 @@ body {
 
 /* HUD Light-Pipe Border Styling */
 .light-pipe-cyan {
-  border: 1px solid rgba(0, 242, 255, 0.4);
-  box-shadow: inset 0 0 12px rgba(0, 242, 255, 0.15), 0 0 15px rgba(0, 242, 255, 0.2);
+  border: 1px solid color-mix(in srgb, var(--cyan) 40%, transparent);
+  box-shadow: inset 0 0 12px color-mix(in srgb, var(--cyan) 15%, transparent), 0 0 15px color-mix(in srgb, var(--cyan) 20%, transparent);
 }
 
 .light-pipe-blue {
@@ -80,8 +118,8 @@ body {
 /* Grid & HUD Texture Background */
 .hud-grid-bg {
   background-image: 
-    linear-gradient(to right, rgba(0, 242, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(0, 242, 255, 0.03) 1px, transparent 1px);
+    linear-gradient(to right, color-mix(in srgb, var(--cyan) 3%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--cyan) 3%, transparent) 1px, transparent 1px);
   background-size: 32px 32px;
 }
 
@@ -97,7 +135,7 @@ body {
 @layer components {
   .hud-canvas {
     @apply relative w-full h-full flex items-center justify-center overflow-hidden;
-    background: radial-gradient(circle at center, rgba(0, 242, 255, 0.06) 0%, transparent 70%);
+    background: radial-gradient(circle at center, color-mix(in srgb, var(--cyan) 6%, transparent) 0%, transparent 70%);
   }
 
   .hologram-ring {
@@ -108,16 +146,16 @@ body {
 
   .border-glow {
     @apply border border-outline/30 shadow-lg transition-all duration-300;
-    box-shadow: inset 0 0 12px rgba(0, 242, 255, 0.12);
+    box-shadow: inset 0 0 12px color-mix(in srgb, var(--cyan) 12%, transparent);
   }
   
   .border-glow:hover {
     @apply border-surface-tint/60;
-    box-shadow: 0 0 18px rgba(0, 242, 255, 0.25), inset 0 0 14px rgba(0, 242, 255, 0.15);
+    box-shadow: 0 0 18px color-mix(in srgb, var(--cyan) 25%, transparent), inset 0 0 14px color-mix(in srgb, var(--cyan) 15%, transparent);
   }
 
   .glow-cyan {
-    text-shadow: 0 0 10px rgba(0, 242, 255, 0.7);
+    text-shadow: 0 0 10px color-mix(in srgb, var(--cyan) 70%, transparent);
   }
 
   .glow-blue {
@@ -157,7 +195,7 @@ body {
   z-index: 10000;
 }
 
-/* ═══ OAuth Gate Styles ═══ */
+/* ─── OAuth Gate Styles ─── */
 
 .oauth-card {
   background: rgba(23, 33, 39, 0.85);
@@ -268,4 +306,3 @@ body {
 .glow-error {
   text-shadow: 0 0 10px rgba(255, 59, 59, 0.7);
 }
-

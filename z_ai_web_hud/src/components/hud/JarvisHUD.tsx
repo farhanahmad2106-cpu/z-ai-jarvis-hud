@@ -18,10 +18,24 @@ import {
   DIAGNOSTICS_RESPONSE 
 } from '@/utils/hudConfig';
 import { Visualizer } from '@/components/Visualizer';
+import { RadarScanner } from '@/components/hud/RadarScanner';
+import { CommandInputBar } from '@/components/hud/CommandInputBar';
+import { playChirp, playModeShift, isSoundMuted, toggleSoundMute } from '@/utils/cyberSound';
+import { VolumeX, Palette, Clock } from 'lucide-react';
 import { WeatherWidget } from '@/components/WeatherWidget';
 import BrokenByDesign from '@/components/ui/broken-by-design';
 import { HITLPrompt } from './HITLPrompt';
 import { useSession, signOut } from "next-auth/react";
+
+type HudTheme = 'theme-quantum' | 'theme-stealth' | 'theme-combat' | 'theme-crimson' | 'theme-void';
+
+const THEMES: { id: HudTheme; label: string; color: string }[] = [
+  { id: 'theme-quantum', label: 'QUANTUM', color: '#00f2ff' },
+  { id: 'theme-stealth', label: 'STEALTH', color: '#00ff9d' },
+  { id: 'theme-combat', label: 'COMBAT', color: '#ffaa00' },
+  { id: 'theme-crimson', label: 'CRIMSON', color: '#ff3366' },
+  { id: 'theme-void', label: 'VOID', color: '#bd00ff' },
+];
 
 export const JarvisHUD: React.FC = () => {
   const { data: session, status: sessionStatus } = useSession();
@@ -112,6 +126,65 @@ export const JarvisHUD: React.FC = () => {
   });
 
   // Dashboard Modules State (Toggled in left sidebar)
+  
+  // Tactical Theme State
+
+  const [hudTheme, setHudTheme] = useState<HudTheme>('theme-quantum');
+  const [soundMuted, setSoundMuted] = useState(false);
+  const [utcTime, setUtcTime] = useState('');
+  const [uptime, setUptime] = useState(0);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const savedTheme = localStorage.getItem('zayd_hud_theme') as HudTheme;
+      if (savedTheme && THEMES.some(t => t.id === savedTheme)) {
+        setHudTheme(savedTheme);
+      }
+      setSoundMuted(isSoundMuted());
+    }
+  }, []);
+
+  useEffect(() => {
+    const updateClock = () => {
+      const now = new Date();
+      setUtcTime(now.toUTCString().slice(17, 25) + ' UTC');
+    };
+    updateClock();
+    const clockInterval = setInterval(updateClock, 1000);
+    const uptimeInterval = setInterval(() => setUptime(prev => prev + 1), 1000);
+    return () => {
+      clearInterval(clockInterval);
+      clearInterval(uptimeInterval);
+    };
+  }, []);
+
+  const cycleTheme = () => {
+    const currentIndex = THEMES.findIndex(t => t.id === hudTheme);
+    const nextTheme = THEMES[(currentIndex + 1) % THEMES.length];
+    setHudTheme(nextTheme.id);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('zayd_hud_theme', nextTheme.id);
+    }
+    playModeShift(1.1);
+    appendLog(`SYSTEM: Tactical HUD protocol shifted to [${nextTheme.label}].`);
+  };
+
+  const handleToggleSound = () => {
+    const muted = toggleSoundMute();
+    setSoundMuted(muted);
+    if (!muted) playChirp(2000);
+    appendLog(`SYSTEM: Synthetic audio feedback ${muted ? 'MUTED' : 'ENGAGED'}.`);
+  };
+
+  const formatUptime = (seconds: number) => {
+    const h = Math.floor(seconds / 3600).toString().padStart(2, '0');
+    const m = Math.floor((seconds % 3600) / 60).toString().padStart(2, '0');
+    const s = (seconds % 60).toString().padStart(2, '0');
+    return `${h}:${m}:${s}`;
+  };
+
+  const currentThemeObj = THEMES.find(t => t.id === hudTheme) || THEMES[0];
+
   const [modules, setModules] = useState({
     acoustic: true,
     telemetry: true,
@@ -133,7 +206,7 @@ export const JarvisHUD: React.FC = () => {
   };
 
   return (
-    <main className={`relative h-screen w-full flex items-center justify-center p-8 overflow-hidden transform-gpu select-none ${!isOnline ? 'offline-mode' : ''}`}>
+    <main className={`relative h-screen w-full flex items-center justify-center p-8 overflow-hidden transform-gpu select-none ${!isOnline ? 'offline-mode' : ''} ${hudTheme}`}>
       {!isOnline && (
         <div className="absolute top-24 left-1/2 -translate-x-1/2 z-[100] border border-[#ffaa00]/40 bg-[#ffaa00]/10 px-8 py-2 rounded-full backdrop-blur-md shadow-[0_0_20px_rgba(255,170,0,0.3)] pointer-events-none">
           <span className="font-mono text-xs font-extrabold text-[#ffaa00] tracking-[0.4em] animate-pulse">NETWORK OFFLINE - RUNNING LOCAL</span>
@@ -155,8 +228,50 @@ export const JarvisHUD: React.FC = () => {
           <span className="font-mono text-[9px] text-cyan/60 px-2.5 py-0.5 border border-cyan/30 chamfer-card-sm bg-cyan/5">
             [SYS_ACTIVE]
           </span>
+          {/* Mission Clock & Uptime Ticker */}
+          <div className="hidden md:flex items-center gap-3 border-l border-cyan/30 pl-4">
+            <div className="flex flex-col text-left">
+              <span className="font-mono text-[8px] text-cyan/40 tracking-wider">MISSION_CLOCK</span>
+              <span className="font-mono text-[10px] text-cyan font-bold tracking-widest glow-cyan">
+                {utcTime || "00:00:00 UTC"}
+              </span>
+            </div>
+            <div className="flex flex-col text-left border-l border-cyan/20 pl-3">
+              <span className="font-mono text-[8px] text-cyan/40 tracking-wider">UPTIME</span>
+              <span className="font-mono text-[10px] text-[#00ff9d] font-bold tracking-widest">
+                {formatUptime(uptime)}
+              </span>
+            </div>
+          </div>
         </div>
         <div className="flex items-center gap-4">
+          
+          {/* Tactical Protocol Mode Selector */}
+          <button
+            onClick={cycleTheme}
+            className="font-mono text-[10px] text-cyan light-pipe-cyan bg-cyan/10 hover:bg-cyan/25 px-3 py-1.5 chamfer-btn flex items-center gap-1.5 transition-all shadow-[0_0_15px_rgba(0,242,255,0.25)] cursor-pointer active:scale-95"
+            title="Cycle Tactical HUD Theme Protocol"
+          >
+            <span 
+              className="w-2 h-2 rounded-full animate-pulse shadow-[0_0_8px_currentColor]"
+              style={{ backgroundColor: currentThemeObj.color, color: currentThemeObj.color }}
+            />
+            <span className="tracking-widest font-bold">[{currentThemeObj.label}]</span>
+          </button>
+
+          {/* Synthetic Sound FX Toggle */}
+          <button
+            onClick={handleToggleSound}
+            className={`font-mono text-[10px] px-2.5 py-1.5 chamfer-btn border transition-all flex items-center gap-1 cursor-pointer active:scale-95 ${
+              !soundMuted 
+                ? 'border-cyan/40 text-cyan bg-cyan/10 hover:bg-cyan/25 shadow-[0_0_12px_rgba(0,242,255,0.2)]' 
+                : 'border-red-500/40 text-red-400 bg-red-500/10 hover:bg-red-500/20'
+            }`}
+            title={soundMuted ? "Unmute Synthetic Sound FX" : "Mute Synthetic Sound FX"}
+          >
+            {!soundMuted ? <Volume2 size={13} className="text-cyan animate-pulse" /> : <VolumeX size={13} className="text-red-400" />}
+          </button>
+
           <button
             onClick={() => {
               setIsGlassHeroOpen(true);
@@ -271,38 +386,43 @@ export const JarvisHUD: React.FC = () => {
         </div>
       </aside>
 
-      {/* Center: Holographic Core */}
-      <section 
-        className="relative flex items-center justify-center cursor-pointer group z-30 transform-gpu"
-        onClick={() => {
-          if (modules.acoustic) {
-            toggleManualListen();
-          } else {
-            appendLog("SYSTEM: Acoustic microphone is MUTED. Please enable it in the dashboard sidebar.");
-          }
-        }}
-      >
-        <div className={`transition-opacity duration-500 ${modules.hologram ? 'opacity-100' : 'opacity-20'}`}>
-          <Visualizer />
+      {/* Center: Holographic Core & Tactical Command Bar */}
+      <section className="relative flex flex-col items-center justify-center z-30 transform-gpu gap-1">
+        <div 
+          className="relative flex items-center justify-center cursor-pointer group"
+          onClick={() => {
+            if (modules.acoustic) {
+              toggleManualListen();
+            } else {
+              appendLog("SYSTEM: Acoustic microphone is MUTED. Please enable it in the dashboard sidebar.");
+            }
+          }}
+        >
+          <div className={`transition-opacity duration-500 ${modules.hologram ? 'opacity-100' : 'opacity-20'}`}>
+            <Visualizer />
+          </div>
+
+          {/* Reactive Particles */}
+          <AnimatePresence>
+            {(isListening || isSpeaking || isThinking) && modules.hologram && (
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="absolute inset-0 flex items-center justify-center pointer-events-none transform-gpu"
+              >
+                 <motion.div 
+                  animate={{ scale: [1, 2, 1], opacity: [0.5, 0, 0.5] }}
+                  transition={{ duration: isThinking ? 0.5 : 2, repeat: Infinity }}
+                  className={`w-full h-full border rounded-full transform-gpu will-change-transform ${isListening ? 'border-[#00ff9d]/30' : 'border-surface-tint/30'}`}
+                 />
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
-        {/* Reactive Particles */}
-        <AnimatePresence>
-          {(isListening || isSpeaking || isThinking) && modules.hologram && (
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="absolute inset-0 flex items-center justify-center pointer-events-none transform-gpu"
-            >
-               <motion.div 
-                animate={{ scale: [1, 2, 1], opacity: [0.5, 0, 0.5] }}
-                transition={{ duration: isThinking ? 0.5 : 2, repeat: Infinity }}
-                className={`w-full h-full border rounded-full transform-gpu will-change-transform ${isListening ? 'border-[#00ff9d]/30' : 'border-surface-tint/30'}`}
-               />
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {/* Tactical Command Bar & Macro Matrix */}
+        <CommandInputBar />
       </section>
 
       {/* Right Wing: Status & Sensors */}
@@ -398,6 +518,9 @@ export const JarvisHUD: React.FC = () => {
                 <div className="font-mono text-[8px] text-cyan/50 mt-0.5 uppercase tracking-widest">CPU / RAM / NET</div>
               </div>
             </div>
+
+            {/* Orbital Radar Scanner Widget */}
+            <RadarScanner />
           </div>
           {!modules.telemetry && (
             <div className="absolute inset-0 bg-background/70 backdrop-blur-md flex items-center justify-center rounded-xl border border-red-500/20 shadow-[inset_0_0_12px_rgba(239,68,68,0.1)]">
@@ -1161,7 +1284,10 @@ export const JarvisHUD: React.FC = () => {
 
 const NavIcon: React.FC<{ icon: React.ReactNode; active?: boolean; onClick?: () => void }> = ({ icon, active, onClick }) => (
   <div 
-    onClick={onClick}
+    onClick={() => {
+      playChirp(1800);
+      onClick?.();
+    }}
     className={`flex flex-col items-center justify-center p-4 cursor-pointer transition-all active:scale-90 transform-gpu ${active ? 'text-surface-tint border-t-2 border-surface-tint shadow-[0_-4px_12px_rgba(0,219,231,0.3)] scale-110' : 'text-foreground/40 hover:text-surface-tint hover:opacity-100'}`}
   >
     {icon}
