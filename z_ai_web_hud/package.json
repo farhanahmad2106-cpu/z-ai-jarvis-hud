@@ -7,8 +7,7 @@
     "build": "next build",
     "build:android": "set EXPORT_MODE=true && next build",
     "start": "next start",
-    "lint": "eslint",
-    "postinstall": "prisma skills sync || exit 0"
+    "lint": "eslint"
   },
   "dependencies": {
     "@ai-sdk/google": "^3.0.73",
@@ -48,9 +47,12 @@
     "@types/react-dom": "^19.0.1",
     "eslint": "^9.16.0",
     "eslint-config-next": "15.1.0",
-    "prisma": "^8.0.0-rc.13",
+    "prisma": "^6.4.1",
     "tailwindcss": "^4",
     "typescript": "^5"
+  },
+  "overrides": {
+    "react-reconciler": "$react"
   },
   "allowScripts": {
     "sharp": true,
