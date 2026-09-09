@@ -49,3 +49,23 @@ All system architectural upgrades, diagnostics, and incremental modifications ar
 Add these variables to your Vercel/Local configuration for enhanced web queries:
 *   `SEARCHAPI_API_KEY` *(Optional)*: Google organic search API key from [SearchAPI.io](https://www.searchapi.io/).
 *   `TAVILY_API_KEY` *(Optional)*: Real-time internet search key from Tavily.
+
+---
+
+## 🏷️ [Latest] - Conversational Context & Autonomous Actions
+
+### 🧠 Feature: Conversational Context Retention & Memory Synchronization
+*   **Context Retention:** Updated `/api/chat/route.ts` and client chat logic to inspect previous conversation turns. The assistant now seamlessly resumes previous topics upon user affirmation (e.g., "yes", "yup"), eliminating generic acknowledgements.
+*   **Memory Synchronization:** Unified conversation memory across the voice interface (`useVoiceInterface.ts`) and HUD UI (`ChatInputBar.tsx`) via the global Zustand store (`useAssistantStore`). The assistant successfully maintains a consistent 16-turn context window for both text and voice modes.
+
+### 🤖 Feature: Autonomous Action Logic
+*   **Action Execution:** Reconfigured system prompts for Gemini and OpenAI models to strictly forbid rhetorical questions (e.g., "Shall I proceed?"). ZAYD is now fully autonomous, performing requested tasks and searches immediately upon command.
+
+### 🛠️ Fixes: Deployment & Build Stability
+*   **Vercel Deployment Fixes:** 
+    *   Added `.npmrc` with `legacy-peer-deps=true` to resolve peer dependency conflicts within the React 19 / Next.js 15 environment.
+    *   Downgraded Prisma from an unstable RC to a stable version (v6.4.1) and removed the breaking `postinstall` script, guaranteeing smooth deployments.
+
+---
+
+*Reference Repository:* [Zaid-HUD/zaid-hud](https://github.com/farhanahmad2106-cpu/z-ai-jarvis-hud)
