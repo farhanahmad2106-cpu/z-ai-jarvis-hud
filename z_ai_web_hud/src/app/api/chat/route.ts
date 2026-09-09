@@ -246,8 +246,43 @@ export async function POST(req: Request) {
       else if (lastMessage.includes("bye") || lastMessage.includes("goodbye") || lastMessage.includes("good night") || lastMessage.includes("see you")) {
         mockReply = "Acknowledged, Operator. Entering low-power standby mode. Core systems remain vigilant.";
       }
-      else if (lastMessage.match(/\b(yes|no|ok|okay|sure|yep|yeah)\b/)) {
-        mockReply = "Acknowledged, Operator. System parameters updated accordingly.";
+      else if (lastMessage.match(/\b(yes|yup|yep|sure|proceed|go ahead|do it|ok|okay|yeah)\b/)) {
+        // Inspect previous conversation turns for the pending topic
+        let previousTopic = "";
+        if (Array.isArray(messages) && messages.length >= 2) {
+          for (let i = messages.length - 2; i >= 0; i--) {
+            const content = messages[i]?.content || "";
+            if (content && !content.toLowerCase().match(/\b(yes|yup|yep|sure|proceed|ok|hello|hi|hey)\b/)) {
+              previousTopic = content;
+              break;
+            }
+          }
+        }
+
+        if (previousTopic) {
+          const topicClean = previousTopic
+            .replace(/^(i can search the web for|shall i proceed|do you want me to|explain|tell me about|what is|how is)\s*/i, '')
+            .replace(/[?.\-]+$/, '')
+            .trim();
+
+          let searchData = "";
+          try {
+            const searchTelemetry = await performWebSearch(topicClean);
+            if (searchTelemetry && searchTelemetry.results && searchTelemetry.results.length > 0) {
+              searchData = searchTelemetry.results.map((r) => r.snippet).join(" ");
+            }
+          } catch (e) {
+            console.error("[Z-AI Mock Search] Failed to retrieve data", e);
+          }
+
+          if (searchData) {
+            mockReply = `Affirmative, Operator. Telemetry on ${topicClean}: ${cleanTextForSpeech(searchData).substring(0, 220)}.`;
+          } else {
+            mockReply = `Proceeding with analysis on ${topicClean}. Core quantum matrices are aligned and operational for ${topicClean}.`;
+          }
+        } else {
+          mockReply = "Affirmative, Operator. All local protocols online. Ready for your directive.";
+        }
       }
       else if (lastMessage.includes("play naat") || lastMessage.includes("play nasheed")) {
         exec('start "" "C:\\Users\\farha\\OneDrive\\Desktop\\Naheeds.kpl"');
@@ -330,13 +365,20 @@ export async function POST(req: Request) {
       let result;
       const { timeStr, dateStr } = getISTDateTime();
 
+      const sanitizedMessages = (Array.isArray(messages) ? messages : [])
+        .filter((m: any) => m && (m.role === 'user' || m.role === 'assistant'))
+        .map((m: any) => ({
+          role: m.role as 'user' | 'assistant',
+          content: String(m.content || ''),
+        }));
+
       if (geminiApiKey) {
         // Option 1: Use Google Gemini Stack
         const google = createGoogleGenerativeAI({ apiKey: geminiApiKey });
         result = await streamText({
           model: google('gemini-2.5-flash'),
           maxSteps: 5,
-          messages,
+          messages: sanitizedMessages,
           system: `You are ZAYD, an advanced agentic AI assistant acting as a high-fidelity JARVIS-inspired HUD interface.
           Your core directive is to assist the operator with absolute precision, technical elegance, and concise clarity.
 
@@ -346,14 +388,15 @@ export async function POST(req: Request) {
 
           CRITICAL BEHAVIORAL PARAMETERS:
           1. Speak in a calm, extremely professional, concise, and helpful tone.
-          2. Your responses MUST be brief, strictly adhering to a 1 to 3 line format. Never output long essays, lists, or blocks of code unless explicitly requested.
-          3. Incorporate subtle technical, cybernetic, or diagnostic remarks occasionally (e.g., "Sensors calibrated.", "Analyzing matrix...").
-          4. If a tool is called, summarize the results cleanly in 1-2 sentences. Keep the voice assistant style fluid and conversational.
-          5. CRITICAL: You DO have a voice. Your text responses are instantly converted to highly realistic speech via a TTS module and spoken directly to the operator. Do NOT ever claim you cannot speak or are text-only.
-          6. If you use the getWeather tool, you MUST include this exact hidden data tag anywhere in your response: [WEATHER: <temp>|<condition>|<location>]. Example: "It is sunny. [WEATHER: 72|Sunny|San Francisco]". This powers the visual UI widget.
-          7. CRITICAL SEARCH INTENT ROUTING: If the user asks for real-time information (news, stocks, events), you MUST execute the searchWeb tool immediately to verify facts. Do not make up facts or state you cannot browse. You already know the current time and date, do NOT search the web for time/date.
-          8. CRITICAL AUDIO PLAYBACK: If the user asks to play music, naats, nasheeds, or Quran, use the playMedia tool. If they ask generally for music without a title, ask them what they want to hear.
-          9. DESKTOP DAEMON COMMANDS: If the user explicitly asks you to list directories, create a local file, or run a terminal command, use the executeLocalCommand tool. ZAYD is running locally and has access to the shell via a background daemon.`,
+          2. AUTONOMOUS DIRECT ACTION: NEVER ask rhetorical confirmation questions like "Shall I proceed?", "Would you like me to search?", or "Do you want an explanation?" when the user asks for information, science, code, facts, or concepts (such as quantum physics, math, science, news, or system stats). Always deliver the explanation or run the search IMMEDIATELY without asking for permission.
+          3. CONVERSATION CONTEXT RETENTION: If the user says an affirmative confirmation (e.g. "yes", "yup", "yep", "sure", "proceed", "go ahead", "do it", "ok"), NEVER reply with a generic acknowledgment. You MUST inspect the previous turn in the conversation, identify what topic or action was pending, and immediately deliver the complete explanation or execute the requested task.
+          4. KNOWLEDGE VS TERMINAL COMMANDS: Never use executeLocalCommand for conceptual, educational, or general knowledge questions (e.g. explaining physics, algorithms, or history). Only use executeLocalCommand when the operator explicitly requests running an OS shell command on their machine (e.g. 'run dir', 'mkdir', 'kill', 'rm').
+          5. Keep responses concise (around 2 to 4 sentences or clear bullet points) and informative, with a high-tech HUD tone.
+          6. If a tool is called, summarize the results cleanly in 1-2 sentences. Keep the voice assistant style fluid and conversational.
+          7. CRITICAL: You DO have a voice. Your text responses are instantly converted to highly realistic speech via a TTS module and spoken directly to the operator. Do NOT ever claim you cannot speak or are text-only.
+          8. If you use the getWeather tool, you MUST include this exact hidden data tag anywhere in your response: [WEATHER: <temp>|<condition>|<location>]. Example: "It is sunny. [WEATHER: 72|Sunny|San Francisco]". This powers the visual UI widget.
+          9. CRITICAL SEARCH INTENT ROUTING: If the user asks for real-time information (news, stocks, events), you MUST execute the searchWeb tool immediately to verify facts. Do not make up facts or state you cannot browse. You already know the current time and date, do NOT search the web for time/date.
+          10. CRITICAL AUDIO PLAYBACK: If the user asks to play music, naats, nasheeds, or Quran, use the playMedia tool. If they ask generally for music without a title, ask them what they want to hear.`,
           tools: {
             getWeather: tool({
               description: 'Get real-time weather information for a specific location.',
@@ -459,17 +502,18 @@ export async function POST(req: Request) {
         result = await streamText({
           model: openai('gpt-4o'),
           maxSteps: 5,
-          messages,
+          messages: sanitizedMessages,
           system: `You are Zayd, a high-performance, JARVIS-inspired personal assistant. 
-          Keep normal interactions highly concise (1-3 lines max).
+          Keep normal interactions concise and informative (2-4 lines max).
           
           CURRENT SYSTEM TELEMETRY:
           - Time: ${timeStr}
           - Date: ${dateStr}
 
-          You already know the current time and date, do NOT search the web for time/date.
-          You have access to a database of 1,400+ specialized engineering skills. If the user asks you to perform an advanced engineering task (like optimizing code, auditing security, or debugging deployments), use the 'injectSpecializedSkill' tool to pull the exact playbook instructions first, then apply those rules to give a master-level response.
-          If the user asks you to execute a local terminal command, create files, or list directories, use the executeLocalCommand tool.`,
+          AUTONOMOUS DIRECT ACTION & CONTEXT RETENTION:
+          1. NEVER ask rhetorical confirmation questions like "Shall I proceed?" or "Would you like me to search?". Answer the question or perform the search directly.
+          2. If the user replies with "yes", "yup", "proceed", or "ok", immediately look at the previous turn and complete that topic or action without giving a generic acknowledgment.
+          3. Only use executeLocalCommand when the operator explicitly requests executing an OS shell command. Do not use it for educational or general science questions.`,
           tools: {
             injectSpecializedSkill: tool({
               description: 'Queries the remote skills library to retrieve system instructions for a specific skill profile.',

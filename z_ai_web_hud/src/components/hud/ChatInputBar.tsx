@@ -116,8 +116,34 @@ export const ChatInputBar: React.FC = () => {
         }
       }
 
+      // Extract weather widget tag if present
+      const weatherMatch = replyText.match(/\[WEATHER:\s*([^|]+)\|([^|]+)\|([^\]]+)\]/i);
+      if (weatherMatch) {
+        useAssistantStore.getState().setWeatherData({
+          temp: weatherMatch[1].trim(),
+          condition: weatherMatch[2].trim(),
+          location: weatherMatch[3].trim(),
+        });
+        replyText = replyText.replace(weatherMatch[0], '').trim();
+      }
+
+      // Extract desktop daemon command tag if present
+      const commandMatch = replyText.match(/\[COMMAND:\s*([^\]]+)\]/i);
+      if (commandMatch) {
+        const cmd = commandMatch[1].trim();
+        useAssistantStore.getState().setPendingCommand(cmd);
+        replyText = replyText.replace(commandMatch[0], '').trim();
+      }
+
       if (!replyText || replyText.trim() === "") {
-        replyText = `Understood. All system protocols are online and functioning nominally. How else may I assist you, operator?`;
+        const isAffirmative = message.toLowerCase().match(/\b(yes|yup|yep|sure|proceed|ok|go ahead|do it)\b/);
+        const lastTopic = contextMemory.slice().reverse().find((m: any) => m.content && !m.content.toLowerCase().match(/\b(yes|yup|yep|sure|proceed|ok|hello|hi)\b/))?.content || "";
+        if (isAffirmative && lastTopic) {
+          const topicName = lastTopic.replace(/^(i can search the web for|shall i proceed|do you want me to|explain|tell me about|what is|how is)\s*/i, '').replace(/[?.\-]+$/, '').trim();
+          replyText = `Affirmative, Operator. Telemetry and records on ${topicName || 'your topic'} are synchronized and ready.`;
+        } else {
+          replyText = `Understood. All system protocols are online and functioning nominally. How else may I assist you, operator?`;
+        }
       }
 
       // Clean markdown tags or quotes if any

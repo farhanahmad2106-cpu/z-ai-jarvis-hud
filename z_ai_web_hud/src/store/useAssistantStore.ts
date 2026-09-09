@@ -84,12 +84,9 @@ export const useAssistantStore = create<AssistantState>((set) => ({
   setIsAgenticMode: (enabled) => set({ isAgenticMode: enabled }),
 
   // Context & Memory Initial State
-  contextMemory: [
-    { role: 'system', content: 'SYSTEM: Core modules loaded.' },
-    { role: 'assistant', content: 'ZAYD is ready.' }
-  ],
+  contextMemory: [],
   flushContextMemory: () => set({ contextMemory: [] }),
   addContextTurn: (turn) => set((s) => ({
-    contextMemory: [...s.contextMemory.slice(-9), turn],
+    contextMemory: [...s.contextMemory.slice(-15), turn],
   })),
 }));

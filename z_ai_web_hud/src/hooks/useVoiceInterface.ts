@@ -171,12 +171,13 @@ export function useVoiceInterface() {
 
       const telemetryContext = telemetryData ? ` [SYSTEM TELEMETRY: ${telemetryData}]` : '';
 
-      // Build conversation history (contextual memory — last 5 turns)
+      // Build conversation history from shared store contextual memory
+      const storeMemory = useAssistantStore.getState().contextMemory;
+      const baseHistory = storeMemory.length > 0 ? storeMemory : conversationHistoryRef.current;
       const newMessages = [
-        ...conversationHistoryRef.current,
+        ...baseHistory,
         { role: 'user', content: command + telemetryContext },
       ];
-      if (newMessages.length > 5) newMessages.splice(0, newMessages.length - 5);
       conversationHistoryRef.current = newMessages;
 
       const response = await fetch('/api/chat', {
@@ -246,9 +247,11 @@ export function useVoiceInterface() {
         cleanResponse = "Executing command sequence.";
       }
 
-      // Update conversation memory with assistant reply
+      // Update shared conversation memory across both voice and HUD chat
       conversationHistoryRef.current.push({ role: 'assistant', content: cleanResponse });
-      if (conversationHistoryRef.current.length > 5) conversationHistoryRef.current.shift();
+      if (conversationHistoryRef.current.length > 10) conversationHistoryRef.current.shift();
+      useAssistantStore.getState().addContextTurn({ role: 'user', content: command });
+      useAssistantStore.getState().addContextTurn({ role: 'assistant', content: cleanResponse });
 
       await speak(cleanResponse);
     } catch (error: any) {
