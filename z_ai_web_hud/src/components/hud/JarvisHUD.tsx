@@ -428,7 +428,7 @@ export const JarvisHUD: React.FC = () => {
       </aside>
 
       {/* Center: Holographic Core & Tactical Command Bar */}
-      <section className="relative flex flex-col items-center justify-center z-30 transform-gpu gap-1">
+      <section className="relative flex flex-col items-center justify-center z-30 transform-gpu gap-1 my-auto max-h-[calc(100vh-125px)] max-w-2xl px-2">
         <div 
           className="relative flex items-center justify-center cursor-pointer group"
           onClick={() => {

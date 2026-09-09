@@ -306,3 +306,29 @@ body {
 .glow-error {
   text-shadow: 0 0 10px rgba(255, 59, 59, 0.7);
 }
+
+/* Sleek Cybernetic Scrollbar for HUD Elements */
+.cyber-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--cyan) 40%, transparent) rgba(6, 15, 22, 0.5);
+}
+
+.cyber-scrollbar::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+.cyber-scrollbar::-webkit-scrollbar-track {
+  background: rgba(6, 15, 22, 0.6);
+  border-radius: 2px;
+}
+
+.cyber-scrollbar::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--cyan) 45%, transparent);
+  border-radius: 2px;
+}
+
+.cyber-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--cyan);
+  box-shadow: 0 0 8px var(--cyan);
+}

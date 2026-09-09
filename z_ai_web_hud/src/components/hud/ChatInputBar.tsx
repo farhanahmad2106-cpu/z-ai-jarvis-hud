@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import { MessageSquare, CornerDownLeft, Bot, Sparkles, Volume2, X } from "lucide-react";
+import { MessageSquare, CornerDownLeft, Bot, Sparkles, Volume2, X, Copy, Check, Maximize2 } from "lucide-react";
 import { useAssistantStore } from "@/store/useAssistantStore";
 import { playChirp, playSuccess, isSoundMuted } from "@/utils/cyberSound";
 
@@ -14,9 +14,12 @@ export const ChatInputBar: React.FC = () => {
   const [inputVal, setInputVal] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [lastExchange, setLastExchange] = useState<ChatExchange | null>(null);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [copied, setCopied] = useState(false);
   const { status, setStatus, appendLog, contextMemory, addContextTurn } = useAssistantStore();
 
   const inputRef = useRef<HTMLInputElement>(null);
+  const responseScrollRef = useRef<HTMLDivElement>(null);
 
   // Quick conversational prompt suggestions
   const CHAT_PROMPTS = [
@@ -25,6 +28,21 @@ export const ChatInputBar: React.FC = () => {
     { label: "🌦️ Weather & Time", prompt: "What is the current time, weather, and environmental readings?" },
     { label: "⚡ Capabilities", prompt: "What tasks and engineering skills can you help me with?" },
   ];
+
+  // Helper to copy response text
+  const handleCopyResponse = (text: string) => {
+    if (!text) return;
+    navigator.clipboard?.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  // Re-focus input field automatically when typing finishes
+  useEffect(() => {
+    if (!isTyping) {
+      inputRef.current?.focus();
+    }
+  }, [isTyping]);
 
   // Helper to synthesize speech in browser if speech is enabled
   const speakReply = (text: string) => {
@@ -135,34 +153,69 @@ export const ChatInputBar: React.FC = () => {
       setTimeout(() => setStatus("IDLE"), 3000);
     } finally {
       setIsTyping(false);
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 50);
     }
   };
 
   return (
-    <div className="w-full max-w-xl flex flex-col gap-2 z-40 transform-gpu select-none">
+    <div className="w-full max-w-xl flex flex-col gap-1.5 z-40 transform-gpu select-none shrink-0">
       {/* Latest Chat Conversation Bubble (if present) */}
       {lastExchange && (
-        <div className="relative flex flex-col gap-1.5 p-3.5 bg-surface-container-lowest/95 backdrop-blur-2xl border border-cyan/30 chamfer-card-sm shadow-[0_0_20px_rgba(0,242,255,0.15)] text-left transition-all">
-          <button
-            onClick={() => setLastExchange(null)}
-            className="absolute top-2 right-2 text-cyan/40 hover:text-cyan p-1 transition-colors cursor-pointer"
-            title="Dismiss Message"
-          >
-            <X size={12} />
-          </button>
+        <div className="relative flex flex-col gap-1 p-3 bg-surface-container-lowest/95 backdrop-blur-2xl border border-cyan/30 chamfer-card-sm shadow-[0_0_20px_rgba(0,242,255,0.15)] text-left transition-all">
+          {/* Header Row: Operator Tag & Action Controls */}
+          <div className="flex items-center justify-between gap-2 border-b border-cyan/15 pb-1">
+            <div className="flex items-center gap-1.5 font-mono text-[9.5px] text-cyan/70 truncate">
+              <span className="text-cyan font-bold tracking-wider shrink-0">OPERATOR:</span>
+              <span className="text-foreground/85 truncate max-w-[320px]">{lastExchange.user}</span>
+            </div>
 
-          {/* User query */}
-          <div className="flex items-center gap-2 font-mono text-[10px] text-cyan/70">
-            <span className="text-cyan font-bold tracking-wider">OPERATOR:</span>
-            <span className="text-foreground/85 truncate">{lastExchange.user}</span>
+            <div className="flex items-center gap-1 shrink-0">
+              {/* Copy Response Button */}
+              <button
+                type="button"
+                onClick={() => handleCopyResponse(lastExchange.zayd)}
+                className="text-cyan/60 hover:text-cyan p-1 transition-colors cursor-pointer"
+                title={copied ? "Copied!" : "Copy response"}
+              >
+                {copied ? <Check size={11} className="text-[#00ff9d]" /> : <Copy size={11} />}
+              </button>
+
+              {/* Expand to Full View Modal Button */}
+              <button
+                type="button"
+                onClick={() => setIsExpanded(true)}
+                className="text-cyan/60 hover:text-cyan p-1 transition-colors cursor-pointer"
+                title="Expand full transmission"
+              >
+                <Maximize2 size={11} />
+              </button>
+
+              {/* Dismiss Bubble Button */}
+              <button
+                type="button"
+                onClick={() => {
+                  setLastExchange(null);
+                  inputRef.current?.focus();
+                }}
+                className="text-cyan/60 hover:text-red-400 p-1 transition-colors cursor-pointer"
+                title="Dismiss message"
+              >
+                <X size={12} />
+              </button>
+            </div>
           </div>
 
-          {/* Zayd Response */}
-          <div className="flex items-start gap-2 pt-1 border-t border-cyan/15 font-mono text-[11px] text-[#00ff9d] leading-relaxed">
+          {/* Scrollable Zayd Response - strictly constrained in height with sleek scrollbar */}
+          <div className="flex items-start gap-2 pt-0.5 font-mono text-[11px] text-[#00ff9d]">
             <Bot size={13} className="shrink-0 mt-0.5 text-cyan animate-pulse glow-cyan" />
-            <div className="flex-1">
+            <div
+              ref={responseScrollRef}
+              className="flex-1 max-h-24 sm:max-h-28 overflow-y-auto pr-1 cyber-scrollbar text-left select-text"
+            >
               <span className="text-cyan font-bold tracking-wider mr-1.5">ZAYD:</span>
-              <span className={isTyping ? "text-amber-400 animate-pulse" : "text-foreground/95 font-sans text-xs"}>
+              <span className={isTyping ? "text-amber-400 animate-pulse font-mono text-[11px]" : "text-foreground/95 font-sans text-xs leading-relaxed"}>
                 {lastExchange.zayd}
               </span>
             </div>
@@ -171,30 +224,30 @@ export const ChatInputBar: React.FC = () => {
       )}
 
       {/* Conversational Quick Suggestion Chips */}
-      <div className="flex items-center justify-center gap-2 overflow-x-auto pb-1 scrollbar-hide">
+      <div className="flex items-center justify-center gap-1.5 overflow-x-auto py-0.5 scrollbar-hide">
         {CHAT_PROMPTS.map((item, idx) => (
           <button
             key={idx}
             type="button"
             onClick={() => handleSendMessage(item.prompt)}
             disabled={isTyping}
-            className="font-mono text-[9px] text-cyan/80 hover:text-cyan border border-cyan/30 hover:border-cyan hover:bg-cyan/15 px-3 py-1 chamfer-btn flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer uppercase font-bold whitespace-nowrap shadow-[0_0_10px_rgba(0,242,255,0.12)] disabled:opacity-50"
+            className="font-mono text-[8.5px] text-cyan/75 hover:text-cyan border border-cyan/30 hover:border-cyan hover:bg-cyan/15 px-2.5 py-0.5 chamfer-btn flex items-center gap-1 transition-all active:scale-95 cursor-pointer uppercase font-bold whitespace-nowrap shadow-[0_0_8px_rgba(0,242,255,0.1)] disabled:opacity-50"
           >
             <span>{item.label}</span>
           </button>
         ))}
       </div>
 
-      {/* Main Chat Input Field */}
+      {/* Main Chat Input Field - Always Visible & Guaranteed Anchor */}
       <form
         onSubmit={(e) => {
           e.preventDefault();
           handleSendMessage();
         }}
-        className="relative flex items-center w-full chamfer-card light-pipe-cyan bg-surface-container-lowest/90 backdrop-blur-2xl px-4 py-2.5 border border-cyan/40 shadow-[0_0_25px_rgba(0,242,255,0.2)] focus-within:border-cyan focus-within:shadow-[0_0_35px_rgba(0,242,255,0.4)] transition-all"
+        className="relative flex items-center w-full chamfer-card light-pipe-cyan bg-surface-container-lowest/90 backdrop-blur-2xl px-3.5 py-2 border border-cyan/40 shadow-[0_0_25px_rgba(0,242,255,0.2)] focus-within:border-cyan focus-within:shadow-[0_0_35px_rgba(0,242,255,0.4)] transition-all shrink-0"
       >
-        <div className="flex items-center gap-2 text-cyan shrink-0 mr-2">
-          <MessageSquare size={14} className="text-cyan animate-pulse glow-cyan" />
+        <div className="flex items-center gap-1.5 text-cyan shrink-0 mr-2">
+          <MessageSquare size={13} className="text-cyan animate-pulse glow-cyan" />
         </div>
 
         <input
@@ -202,7 +255,7 @@ export const ChatInputBar: React.FC = () => {
           type="text"
           value={inputVal}
           onChange={(e) => setInputVal(e.target.value)}
-          placeholder={isTyping ? "Zayd is formulating response..." : "Chat with Zayd... (type your message here)"}
+          placeholder={isTyping ? "Zayd is formulating response..." : "Chat with Zayd... (type next question here)"}
           disabled={isTyping}
           className="w-full bg-transparent font-sans text-xs text-cyan placeholder-cyan/40 focus:outline-none tracking-wide selection:bg-cyan/30"
         />
@@ -210,7 +263,7 @@ export const ChatInputBar: React.FC = () => {
         <button
           type="submit"
           disabled={!inputVal.trim() || isTyping}
-          className={`shrink-0 ml-2 font-mono text-[9px] px-3.5 py-1.5 chamfer-btn flex items-center gap-1.5 transition-all font-bold tracking-wider uppercase cursor-pointer ${
+          className={`shrink-0 ml-2 font-mono text-[9px] px-3 py-1 chamfer-btn flex items-center gap-1 transition-all font-bold tracking-wider uppercase cursor-pointer ${
             inputVal.trim() && !isTyping
               ? "bg-cyan text-background hover:bg-cyan/90 shadow-[0_0_12px_#00f2ff] active:scale-95"
               : "border border-cyan/20 text-cyan/30 cursor-not-allowed"
@@ -220,6 +273,62 @@ export const ChatInputBar: React.FC = () => {
           <CornerDownLeft size={10} />
         </button>
       </form>
+
+      {/* Full Transmission Modal for Long Paragraphs/Answers */}
+      {isExpanded && lastExchange && (
+        <div className="fixed inset-0 z-[200] bg-black/75 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="relative w-full max-w-2xl bg-surface-container-lowest border border-cyan/40 chamfer-card p-6 shadow-[0_0_50px_rgba(0,242,255,0.25)] flex flex-col gap-4 text-left">
+            {/* Modal Header */}
+            <div className="flex justify-between items-center border-b border-cyan/20 pb-3">
+              <div className="flex items-center gap-2">
+                <Bot size={16} className="text-cyan glow-cyan" />
+                <span className="font-mono text-xs text-cyan font-bold tracking-widest uppercase">
+                  [ZAYD_TRANSMISSION_EXPANDED]
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => handleCopyResponse(lastExchange.zayd)}
+                  className="font-mono text-[9px] text-cyan border border-cyan/30 px-2.5 py-1 chamfer-btn hover:bg-cyan/20 transition-all flex items-center gap-1 cursor-pointer"
+                >
+                  {copied ? <Check size={10} className="text-[#00ff9d]" /> : <Copy size={10} />}
+                  <span>{copied ? "COPIED" : "COPY TEXT"}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsExpanded(false)}
+                  className="text-cyan/60 hover:text-cyan p-1 transition-colors cursor-pointer"
+                >
+                  <X size={16} />
+                </button>
+              </div>
+            </div>
+
+            {/* Operator Query */}
+            <div className="font-mono text-[10px] text-cyan/70 bg-cyan/5 p-2.5 border-l-2 border-cyan">
+              <span className="font-bold text-cyan mr-1.5">QUERY:</span>
+              <span className="text-foreground/90">{lastExchange.user}</span>
+            </div>
+
+            {/* Full Answer Body */}
+            <div className="max-h-[50vh] overflow-y-auto cyber-scrollbar pr-2 font-sans text-sm text-foreground/95 leading-relaxed space-y-2 select-text">
+              {lastExchange.zayd}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="flex justify-end pt-2 border-t border-cyan/15">
+              <button
+                type="button"
+                onClick={() => setIsExpanded(false)}
+                className="font-mono text-[9px] bg-cyan text-background px-4 py-1.5 font-bold uppercase tracking-wider chamfer-btn hover:bg-cyan/90 transition-all cursor-pointer shadow-[0_0_10px_#00f2ff]"
+              >
+                RETURN TO HUD
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

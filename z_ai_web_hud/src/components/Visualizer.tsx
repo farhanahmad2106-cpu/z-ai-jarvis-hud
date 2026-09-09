@@ -109,7 +109,7 @@ export function Visualizer() {
     : { glow: "#00f2ff", badge: "STANDBY" };
 
   return (
-    <div className="relative flex items-center justify-center w-[340px] h-[340px] pointer-events-auto">
+    <div className="relative flex items-center justify-center w-[260px] h-[260px] sm:w-[280px] sm:h-[280px] pointer-events-auto shrink-0">
       {/* Outer ambient pulse ring */}
       <motion.div
         className="absolute inset-0 rounded-full pointer-events-none"
@@ -139,9 +139,9 @@ export function Visualizer() {
       </div>
 
       {/* Modern Sleek HUD Center Badge */}
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-0.5 pointer-events-none">
+      <div className="absolute bottom-2 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-0.5 pointer-events-none">
         <span
-          className="font-sans font-black text-xl tracking-[0.5em] uppercase"
+          className="font-sans font-black text-lg tracking-[0.5em] uppercase"
           style={{
             color: palette.glow,
             textShadow: `0 0 16px ${palette.glow}`,
@@ -149,9 +149,9 @@ export function Visualizer() {
         >
           ZAYD
         </span>
-        <div className="flex items-center gap-1.5 px-3 py-0.5 chamfer-card-sm border border-cyan/40 bg-surface-container-lowest/90 backdrop-blur-md shadow-[0_0_12px_rgba(0,242,255,0.2)]">
+        <div className="flex items-center gap-1.5 px-2.5 py-0.5 chamfer-card-sm border border-cyan/40 bg-surface-container-lowest/90 backdrop-blur-md shadow-[0_0_12px_rgba(0,242,255,0.2)]">
           <span className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: palette.glow }} />
-          <span className="font-mono text-[9px] tracking-[0.25em] font-extrabold uppercase" style={{ color: palette.glow }}>
+          <span className="font-mono text-[8.5px] tracking-[0.25em] font-extrabold uppercase" style={{ color: palette.glow }}>
             [{palette.badge}]
           </span>
         </div>
