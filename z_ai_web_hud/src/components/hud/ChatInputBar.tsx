@@ -189,7 +189,7 @@ export const ChatInputBar: React.FC = () => {
     <div className="w-full max-w-xl flex flex-col gap-1.5 z-40 transform-gpu select-none shrink-0">
       {/* Latest Chat Conversation Bubble (if present) */}
       {lastExchange && (
-        <div className="relative flex flex-col gap-1 p-3 bg-surface-container-lowest/95 backdrop-blur-2xl border border-cyan/30 chamfer-card-sm shadow-[0_0_20px_rgba(0,242,255,0.15)] text-left transition-all">
+        <div className="relative flex flex-col gap-1 p-3 glass-panel chamfer-card-sm text-left transition-all">
           {/* Header Row: Operator Tag & Action Controls */}
           <div className="flex items-center justify-between gap-2 border-b border-cyan/15 pb-1">
             <div className="flex items-center gap-1.5 font-mono text-[9.5px] text-cyan/70 truncate">
@@ -270,7 +270,7 @@ export const ChatInputBar: React.FC = () => {
           e.preventDefault();
           handleSendMessage();
         }}
-        className="relative flex items-center w-full chamfer-card light-pipe-cyan bg-surface-container-lowest/90 backdrop-blur-2xl px-3.5 py-2 border border-cyan/40 shadow-[0_0_25px_rgba(0,242,255,0.2)] focus-within:border-cyan focus-within:shadow-[0_0_35px_rgba(0,242,255,0.4)] transition-all shrink-0"
+        className="relative flex items-center w-full chamfer-card light-pipe-cyan glass-panel px-3.5 py-2 focus-within:border-cyan focus-within:shadow-[0_0_35px_rgba(0,242,255,0.4)] transition-all shrink-0 group"
       >
         <div className="flex items-center gap-1.5 text-cyan shrink-0 mr-2">
           <MessageSquare size={13} className="text-cyan animate-pulse glow-cyan" />
@@ -291,12 +291,12 @@ export const ChatInputBar: React.FC = () => {
           disabled={!inputVal.trim() || isTyping}
           className={`shrink-0 ml-2 font-mono text-[9px] px-3 py-1 chamfer-btn flex items-center gap-1 transition-all font-bold tracking-wider uppercase cursor-pointer ${
             inputVal.trim() && !isTyping
-              ? "bg-cyan text-background hover:bg-cyan/90 shadow-[0_0_12px_#00f2ff] active:scale-95"
+              ? "bg-cyan text-background hover:bg-cyan/90 shadow-[0_0_12px_#00f2ff] hover:scale-105 active:scale-95 group-focus-within:translate-x-1"
               : "border border-cyan/20 text-cyan/30 cursor-not-allowed"
           }`}
         >
           <span>CHAT</span>
-          <CornerDownLeft size={10} />
+          <CornerDownLeft size={10} className="transition-transform group-focus-within:-translate-x-0.5" />
         </button>
       </form>
 

@@ -378,7 +378,7 @@ export const JarvisHUD: React.FC = () => {
           <div className={`flex flex-col gap-6 transition-all duration-500 ${modules.telemetry ? '' : 'opacity-20 blur-sm pointer-events-none'}`}>
             <div 
               onClick={() => appendLog("SYSTEM: Calibrating altimeter core... Zero grid offset calibrated at 1123.4 FT.")}
-              className="chamfer-card light-pipe-cyan bg-surface-container-low/80 backdrop-blur-xl p-5 w-36 cursor-pointer hover:bg-surface-container/90 hover:shadow-[0_0_25px_rgba(0,242,255,0.3)] transition-all duration-300 active:scale-95 group"
+              className="chamfer-card light-pipe-cyan glass-panel p-5 w-36 cursor-pointer hover:bg-surface-container/90 hover:shadow-[0_0_25px_rgba(0,242,255,0.3)] transition-all duration-300 active:scale-95 group"
             >
               <div className="font-mono text-[9px] text-cyan/70 mb-1 tracking-[0.2em] uppercase">
                 [MOD_014]
@@ -401,7 +401,7 @@ export const JarvisHUD: React.FC = () => {
 
             <div 
               onClick={() => appendLog("SYSTEM: Recalibrating pitch gyroscopes... Gyro horizon stabilization nominal.")}
-              className="chamfer-card light-pipe-cyan bg-surface-container-low/80 backdrop-blur-xl p-5 w-36 cursor-pointer hover:bg-surface-container/90 hover:shadow-[0_0_25px_rgba(0,242,255,0.3)] transition-all duration-300 active:scale-95 group"
+              className="chamfer-card light-pipe-cyan glass-panel p-5 w-36 cursor-pointer hover:bg-surface-container/90 hover:shadow-[0_0_25px_rgba(0,242,255,0.3)] transition-all duration-300 active:scale-95 group"
             >
               <div className="font-mono text-[9px] text-cyan/70 mb-1 tracking-[0.2em] uppercase">
                 [MOD_082]
@@ -470,7 +470,7 @@ export const JarvisHUD: React.FC = () => {
       <aside className="absolute right-6 top-16 bottom-20 flex flex-col gap-2.5 text-right z-40 overflow-y-auto scrollbar-hide max-h-[calc(100vh-140px)]">
         <div className="relative">
           <div className={`flex flex-col gap-4 transition-all duration-500 ${modules.telemetry ? '' : 'opacity-20 blur-sm pointer-events-none'}`}>
-            <div className="chamfer-card light-pipe-cyan bg-surface-container-low/85 backdrop-blur-xl p-3.5 w-52 text-left hover:shadow-[0_0_25px_rgba(0,242,255,0.25)] transition-all duration-300">
+            <div className="chamfer-card light-pipe-cyan glass-panel p-3.5 w-52 text-left hover:shadow-[0_0_25px_rgba(0,242,255,0.25)] transition-all duration-300">
               <div className="flex items-center justify-between mb-1.5 border-b border-cyan/15 pb-1">
                 <span className="font-mono text-[9px] text-cyan/70 tracking-[0.2em] uppercase font-bold">
                   [MOD_SYS_004]

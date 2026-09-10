@@ -161,6 +161,11 @@ body {
   .glow-blue {
     text-shadow: 0 0 10px rgba(86, 141, 255, 0.7);
   }
+
+  .glass-panel {
+    @apply bg-surface-container/40 backdrop-blur-xl border border-surface-tint/20 shadow-2xl;
+    box-shadow: inset 0 0 20px color-mix(in srgb, var(--cyan) 5%, transparent), 0 8px 32px rgba(0, 0, 0, 0.3);
+  }
 }
 
 /* CRT Scanline Effect */

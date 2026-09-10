@@ -267,7 +267,7 @@ export default function Home() {
               </AnimatePresence>
             </div>
             
-            <div className={`relative flex items-center justify-center mb-8 transform-gpu w-72 h-72 rounded-full overflow-hidden border-[3px] ${isLockdown ? 'border-error shadow-[0_0_50px_rgba(255,0,0,0.4)]' : 'border-surface-tint shadow-[0_0_50px_rgba(0,219,231,0.4)]'} backdrop-blur-md bg-background/20 transition-all duration-500`}>
+            <div className={`relative flex items-center justify-center mb-8 transform-gpu w-72 h-72 rounded-full overflow-hidden border-[3px] ${isLockdown ? 'border-error shadow-[0_0_50px_rgba(255,0,0,0.4)]' : (scanStatus === 'granted' ? 'border-green-400 shadow-[0_0_50px_rgba(74,222,128,0.6)] scale-105' : 'border-surface-tint shadow-[0_0_50px_rgba(0,219,231,0.4)] animate-pulse')} glass-panel transition-all duration-500`}>
                
                {/* Live Webcam Feed */}
                {authMethod === 'face' ? (
@@ -347,7 +347,7 @@ export default function Home() {
 
             <button 
               onClick={() => setAuthMethod('password')}
-              className="px-8 py-3 chamfer-btn light-pipe-cyan bg-surface-container-low/80 font-mono text-[11px] text-cyan hover:bg-cyan/20 hover:text-white transition-all flex items-center gap-2 backdrop-blur-md shadow-[0_0_20px_rgba(0,242,255,0.25)] uppercase tracking-widest cursor-pointer"
+              className="px-8 py-3 chamfer-btn light-pipe-cyan glass-panel font-mono text-[11px] text-cyan hover:bg-cyan/20 hover:text-white transition-all flex items-center gap-2 shadow-[0_0_20px_rgba(0,242,255,0.25)] uppercase tracking-widest cursor-pointer hover:scale-105"
             >
               <Lock size={14} className="opacity-90" /> USE_PASSCODE_FALLBACK
             </button>
@@ -364,7 +364,7 @@ export default function Home() {
                     type="password" 
                     placeholder={isLockdown ? "LOCKED_OUT" : "ENTER_KEY"}
                     disabled={isLockdown}
-                    className={`relative bg-surface-container-lowest/80 backdrop-blur-xl border ${isLockdown ? 'border-error text-error placeholder:text-error cursor-not-allowed' : (passcodeError ? 'border-error focus:border-error focus:ring-error/50 text-error shadow-[inset_0_0_20px_rgba(255,0,0,0.2)]' : 'border-cyan/60 focus:border-cyan focus:ring-cyan/50 text-cyan shadow-[inset_0_0_20px_rgba(0,242,255,0.15)]')} chamfer-card-sm px-6 py-3 font-mono text-sm focus:outline-none focus:ring-1 w-72 text-center transition-all placeholder:text-current opacity-70`}
+                    className={`relative glass-panel border ${isLockdown ? 'border-error text-error placeholder:text-error cursor-not-allowed' : (passcodeError ? 'border-error focus:border-error focus:ring-error/50 text-error shadow-[inset_0_0_20px_rgba(255,0,0,0.2)]' : 'border-cyan/60 focus:border-cyan focus:ring-cyan/50 text-cyan shadow-[inset_0_0_20px_rgba(0,242,255,0.15)]')} chamfer-card-sm px-6 py-3 font-mono text-sm focus:outline-none focus:ring-1 w-72 text-center transition-all placeholder:text-current`}
                     onChange={() => setPasscodeError(false)}
                     onKeyDown={(e) => {
                       if (e.key === 'Enter' && !isLockdown) {
