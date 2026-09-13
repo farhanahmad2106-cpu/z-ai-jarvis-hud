@@ -625,13 +625,6 @@ export const JarvisHUD: React.FC = () => {
               </div>
               <div className="flex items-center gap-1.5">
                 <button 
-                  onClick={() => setIsCommandCenterExpanded(!isCommandCenterExpanded)}
-                  className="text-cyan/70 hover:text-cyan transition-colors p-1"
-                  title="Toggle Panel Size"
-                >
-                  {isCommandCenterExpanded ? <Minimize2 size={12} /> : <Maximize2 size={12} />}
-                </button>
-                <button 
                   onClick={() => {
                     playChirp(1900);
                     setIsCmdInputOpen(!isCmdInputOpen);
@@ -661,6 +654,13 @@ export const JarvisHUD: React.FC = () => {
                   className="text-[9px] font-mono text-red-500 border border-red-500/40 px-2 py-1 chamfer-btn hover:bg-red-500/20 transition-all cursor-pointer active:scale-95 font-bold uppercase tracking-wider"
                 >
                   HITL
+                </button>
+                <button 
+                  onClick={() => setIsCommandCenterExpanded(!isCommandCenterExpanded)}
+                  className="text-cyan/70 hover:text-cyan transition-colors p-1 ml-1"
+                  title="Toggle Panel Size"
+                >
+                  {isCommandCenterExpanded ? <Minimize2 size={14} /> : <Maximize2 size={14} />}
                 </button>
               </div>
             </div>
