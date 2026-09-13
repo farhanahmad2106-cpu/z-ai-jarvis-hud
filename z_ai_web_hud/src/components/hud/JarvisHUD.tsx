@@ -407,7 +407,7 @@ export const JarvisHUD: React.FC = () => {
       </header>
 
       {/* Left Wing: Altimeter & Telemetry */}
-      <aside className="absolute left-8 top-1/2 -translate-y-1/2 flex flex-col gap-6 z-40 max-h-[55vh] overflow-y-auto scrollbar-hide pr-2 pb-4">
+      <aside className="absolute left-8 top-1/2 -translate-y-1/2 flex flex-col gap-6 z-40 max-h-[55vh] overflow-y-auto pr-2 pb-4 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-thumb]:bg-cyan/30 [&::-webkit-scrollbar-track]:bg-transparent hover:[&::-webkit-scrollbar-thumb]:bg-cyan/50">
         <div className="relative">
           <div className={`flex flex-col gap-6 transition-all duration-500 ${modules.telemetry ? '' : 'opacity-20 blur-sm pointer-events-none'}`}>
             <TodoListWidget />
