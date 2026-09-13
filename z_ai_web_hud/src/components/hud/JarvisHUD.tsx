@@ -506,7 +506,7 @@ export const JarvisHUD: React.FC = () => {
       </section>
 
       {/* Right Wing: Status & Sensors */}
-      <aside className="absolute right-6 top-16 bottom-20 flex flex-col gap-2.5 text-right z-40 overflow-y-auto scrollbar-hide max-h-[calc(100vh-140px)]">
+      <aside className="absolute right-6 top-16 bottom-20 flex flex-col gap-2.5 text-right z-40 overflow-y-auto max-h-[calc(100vh-140px)] pr-2 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-cyan/50 [&::-webkit-scrollbar-track]:bg-cyan/10 hover:[&::-webkit-scrollbar-thumb]:bg-cyan/80">
         <div className="relative">
           <div className={`flex flex-col gap-4 transition-all duration-500 ${modules.telemetry ? '' : 'opacity-20 blur-sm pointer-events-none'}`}>
             <div className="chamfer-card light-pipe-cyan glass-panel p-3.5 w-52 text-left hover:shadow-[0_0_25px_rgba(0,242,255,0.25)] transition-all duration-300">
