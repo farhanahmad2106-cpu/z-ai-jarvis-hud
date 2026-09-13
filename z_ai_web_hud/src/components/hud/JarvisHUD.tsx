@@ -6,7 +6,7 @@ import { useVoiceInterface } from '@/hooks/useVoiceInterface';
 import { 
   Terminal as TerminalIcon, Shield, Cpu, Activity, Network, 
   Settings2, Menu, X, Check, RotateCcw, Volume2, 
-  SlidersHorizontal, RefreshCw, Power, Radio, Layers, Wifi, Sparkles, Zap, Database, Thermometer, User
+  SlidersHorizontal, RefreshCw, Power, Radio, Layers, Wifi, Sparkles, Zap, Database, Thermometer, User, Maximize2, Minimize2
 } from 'lucide-react';
 import Link from 'next/link';
 import { 
@@ -149,6 +149,7 @@ export const JarvisHUD: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isGlassHeroOpen, setIsGlassHeroOpen] = useState(false);
+  const [isCommandCenterExpanded, setIsCommandCenterExpanded] = useState(true);
   
   // Configuration Settings State
   const [settings, setSettings] = useState({
@@ -612,17 +613,24 @@ export const JarvisHUD: React.FC = () => {
       </aside>
 
       {/* Bottom: Multi-Tab Command Center Panel */}
-      <section className="absolute bottom-24 left-8 w-[28rem] chamfer-card light-pipe-cyan bg-surface-container-low/90 backdrop-blur-2xl p-6 shadow-2xl min-h-64 max-h-72 overflow-hidden z-[100] transform-gpu text-left">
+      <section className={`absolute bottom-24 left-8 w-[28rem] chamfer-card light-pipe-cyan bg-surface-container-low/90 backdrop-blur-2xl p-6 shadow-2xl overflow-hidden z-[100] transform-gpu text-left transition-all duration-300 ${isCommandCenterExpanded ? 'min-h-64 max-h-72' : 'min-h-0 h-auto pb-4'}`}>
         
         {/* Tab 1: Terminal Logs */}
         {activeTab === 'terminal' && (
           <div className="flex flex-col h-full">
-            <div className="flex justify-between items-center mb-3 border-b border-cyan/20 pb-2">
+            <div className={`flex justify-between items-center ${isCommandCenterExpanded ? 'mb-3' : 'mb-0'} border-b border-cyan/20 pb-2`}>
               <div className="font-mono text-[10px] text-cyan tracking-widest font-extrabold flex items-center gap-1.5 glow-cyan">
                 <TerminalIcon size={12} className="animate-pulse text-cyan" />
                 SYSTEM_LOG [MOD_082]
               </div>
               <div className="flex items-center gap-1.5">
+                <button 
+                  onClick={() => setIsCommandCenterExpanded(!isCommandCenterExpanded)}
+                  className="text-cyan/70 hover:text-cyan transition-colors p-1"
+                  title="Toggle Panel Size"
+                >
+                  {isCommandCenterExpanded ? <Minimize2 size={12} /> : <Maximize2 size={12} />}
+                </button>
                 <button 
                   onClick={() => {
                     playChirp(1900);
@@ -656,30 +664,42 @@ export const JarvisHUD: React.FC = () => {
                 </button>
               </div>
             </div>
-            {isCmdInputOpen && (
-              <form onSubmit={handleExecuteTerminalCmd} className="flex items-center gap-2 mb-2 p-1.5 bg-black/70 border border-cyan/40 rounded-sm shadow-[inset_0_0_10px_rgba(0,242,255,0.1)]">
-                <span className="text-cyan font-mono text-xs font-bold pl-1 animate-pulse">&gt;</span>
-                <input 
-                  type="text"
-                  value={terminalCmdInput}
-                  onChange={(e) => setTerminalCmdInput(e.target.value)}
-                  placeholder="Enter system command (e.g. systemctl restart, ping, rm, dir)..."
-                  className="w-full bg-transparent font-mono text-[10px] text-[#00ff9d] placeholder-cyan/40 focus:outline-none selection:bg-cyan/30"
-                  autoFocus
-                />
-                <button type="submit" className="text-[8px] font-mono px-2 py-0.5 bg-cyan text-background font-black uppercase chamfer-btn active:scale-95 cursor-pointer shadow-[0_0_8px_#00f2ff]">
-                  EXEC
-                </button>
-              </form>
-            )}
-            <div className={`font-mono text-[10px] text-foreground/80 space-y-1 ${isCmdInputOpen ? 'h-[7rem]' : 'h-[9.5rem]'} overflow-y-auto scrollbar-hide flex flex-col-reverse`}>
-              {terminalLog.slice().reverse().map((log, i) => (
-                <div key={i} className="flex gap-2">
-                  <span className="text-cyan shrink-0 font-bold">&gt;</span> 
-                  <span className="break-all text-left">{log}</span>
-                </div>
-              ))}
-            </div>
+            
+            <AnimatePresence>
+              {isCommandCenterExpanded && (
+                <motion.div 
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  className="flex flex-col overflow-hidden"
+                >
+                  {isCmdInputOpen && (
+                    <form onSubmit={handleExecuteTerminalCmd} className="flex items-center gap-2 mb-2 p-1.5 bg-black/70 border border-cyan/40 rounded-sm shadow-[inset_0_0_10px_rgba(0,242,255,0.1)] mt-3">
+                      <span className="text-cyan font-mono text-xs font-bold pl-1 animate-pulse">&gt;</span>
+                      <input 
+                        type="text"
+                        value={terminalCmdInput}
+                        onChange={(e) => setTerminalCmdInput(e.target.value)}
+                        placeholder="Enter system command (e.g. systemctl restart, ping, rm, dir)..."
+                        className="w-full bg-transparent font-mono text-[10px] text-[#00ff9d] placeholder-cyan/40 focus:outline-none selection:bg-cyan/30"
+                        autoFocus
+                      />
+                      <button type="submit" className="text-[8px] font-mono px-2 py-0.5 bg-cyan text-background font-black uppercase chamfer-btn active:scale-95 cursor-pointer shadow-[0_0_8px_#00f2ff]">
+                        EXEC
+                      </button>
+                    </form>
+                  )}
+                  <div className={`font-mono text-[10px] text-foreground/80 space-y-1 ${isCmdInputOpen ? 'h-[7rem]' : 'h-[9.5rem] mt-3'} overflow-y-auto scrollbar-hide flex flex-col-reverse`}>
+                    {terminalLog.slice().reverse().map((log, i) => (
+                      <div key={i} className="flex gap-2">
+                        <span className="text-cyan shrink-0 font-bold">&gt;</span> 
+                        <span className="break-all text-left">{log}</span>
+                      </div>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         )}
 
