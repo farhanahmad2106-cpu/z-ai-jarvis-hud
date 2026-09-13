@@ -8,7 +8,9 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   images: {
-    unoptimized: true,
+    // Only disable optimization for Capacitor/Android export builds
+    // On Vercel, Next.js image optimization (WebP, resizing, lazy) kicks in automatically
+    unoptimized: isExportMode,
   },
   // Ensure the root path maps correctly
   trailingSlash: false,

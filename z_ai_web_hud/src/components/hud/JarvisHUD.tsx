@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import dynamic from 'next/dynamic';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAssistantStore } from '@/store/useAssistantStore';
 import { useVoiceInterface } from '@/hooks/useVoiceInterface';
@@ -17,13 +18,34 @@ import {
   WAVEFORM_PATHS, 
   DIAGNOSTICS_RESPONSE 
 } from '@/utils/hudConfig';
-import { Visualizer } from '@/components/Visualizer';
 import { RadarScanner } from '@/components/hud/RadarScanner';
+
+// Lazy-load the 3D Visualizer (Three.js ~1MB) — only parsed when the HUD actually renders
+const Visualizer = dynamic(
+  () => import('@/components/Visualizer').then(mod => ({ default: mod.Visualizer })),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="relative flex items-center justify-center w-[260px] h-[260px] sm:w-[280px] sm:h-[280px]">
+        <div className="absolute inset-0 rounded-full border border-cyan/20 animate-pulse" />
+        <span className="font-mono text-[10px] text-cyan/40 tracking-widest">LOADING HOLOMATRIX...</span>
+      </div>
+    ),
+  }
+);
 import { ChatInputBar } from '@/components/hud/ChatInputBar';
 import { playChirp, playModeShift, isSoundMuted, toggleSoundMute } from '@/utils/cyberSound';
 import { VolumeX, Palette, Clock } from 'lucide-react';
 import { WeatherWidget } from '@/components/WeatherWidget';
-import BrokenByDesign from '@/components/ui/broken-by-design';
+// Lazy-load BrokenByDesign (32KB, Three.js) — only loaded when user opens the 3D hero modal
+const BrokenByDesign = dynamic(() => import('@/components/ui/broken-by-design'), {
+  ssr: false,
+  loading: () => (
+    <div className="flex items-center justify-center h-screen bg-[#030407]">
+      <span className="font-mono text-sm text-white/40 tracking-widest animate-pulse">INITIALIZING 3D ENGINE...</span>
+    </div>
+  ),
+});
 import { HITLPrompt } from './HITLPrompt';
 import { useSession, signOut } from "next-auth/react";
 
@@ -62,8 +84,18 @@ export const JarvisHUD: React.FC = () => {
     };
   }, [setIsOnline]);
 
-  // Connect to Desktop Daemon via WebSocket
+  // Connect to Desktop Daemon via WebSocket — only on localhost (not on Vercel production)
   useEffect(() => {
+    const isLocal = typeof window !== 'undefined' && (
+      window.location.hostname === 'localhost' ||
+      window.location.hostname === '127.0.0.1'
+    );
+
+    if (!isLocal) {
+      // On Vercel/production there's no local daemon — skip WebSocket entirely
+      return;
+    }
+
     const socket = new WebSocket('ws://localhost:8080');
 
     socket.onopen = () => {

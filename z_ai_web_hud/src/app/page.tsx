@@ -62,10 +62,13 @@ export default function Home() {
     return parts.join(' ');
   };
 
-  // Preload the heavy HUD component chunk in the background as soon as the page mounts
+  // Preload the heavy HUD component chunk in the background after lock screen paints
   useEffect(() => {
-    const preloadHUD = () => import('@/components/hud/JarvisHUD');
-    preloadHUD();
+    // Delay preload so the lock screen's first paint isn't blocked by downloading ~1MB of HUD+Three.js
+    const timeout = setTimeout(() => {
+      import('@/components/hud/JarvisHUD');
+    }, 2000);
+    return () => clearTimeout(timeout);
   }, []);
 
   // Bypass lock screen if user is already authenticated
