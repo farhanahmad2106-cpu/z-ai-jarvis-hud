@@ -47,6 +47,7 @@ const BrokenByDesign = dynamic(() => import('@/components/ui/broken-by-design'),
   ),
 });
 import { HITLPrompt } from './HITLPrompt';
+import { TodoListWidget } from './TodoListWidget';
 import { useSession, signOut } from "next-auth/react";
 
 type HudTheme = 'theme-quantum' | 'theme-stealth' | 'theme-combat' | 'theme-crimson' | 'theme-void';
@@ -408,6 +409,8 @@ export const JarvisHUD: React.FC = () => {
       <aside className="absolute left-8 top-1/2 -translate-y-1/2 flex flex-col gap-6 z-40">
         <div className="relative">
           <div className={`flex flex-col gap-6 transition-all duration-500 ${modules.telemetry ? '' : 'opacity-20 blur-sm pointer-events-none'}`}>
+            <TodoListWidget />
+
             <div 
               onClick={() => appendLog("SYSTEM: Calibrating altimeter core... Zero grid offset calibrated at 1123.4 FT.")}
               className="chamfer-card light-pipe-cyan glass-panel p-5 w-36 cursor-pointer hover:bg-surface-container/90 hover:shadow-[0_0_25px_rgba(0,242,255,0.3)] transition-all duration-300 active:scale-95 group"
