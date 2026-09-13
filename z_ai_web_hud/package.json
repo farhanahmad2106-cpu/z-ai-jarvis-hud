@@ -60,6 +60,8 @@
     "bcrypt": true,
     "esbuild": true,
     "msgpackr-extract": true,
-    "workerd": true
+    "workerd": true,
+    "prisma": true,
+    "@prisma/engines": true
   }
 }
