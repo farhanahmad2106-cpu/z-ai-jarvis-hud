@@ -48,7 +48,6 @@ const BrokenByDesign = dynamic(() => import('@/components/ui/broken-by-design'),
 });
 import { HITLPrompt } from './HITLPrompt';
 import { TodoListWidget } from './TodoListWidget';
-import { RadarScanner } from './RadarScanner';
 import { AtmosphericTelemetry } from './AtmosphericTelemetry';
 import { TacticalWorldClocks } from './TacticalWorldClocks';
 import { NeuralTelemetry } from './NeuralTelemetry';
