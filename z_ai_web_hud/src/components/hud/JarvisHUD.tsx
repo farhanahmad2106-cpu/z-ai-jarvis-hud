@@ -516,6 +516,7 @@ export const JarvisHUD: React.FC = () => {
         <div className="relative">
           <div className={`flex flex-col gap-4 transition-all duration-500 ${modules.telemetry ? '' : 'opacity-20 blur-sm pointer-events-none'}`}>
             <RadarScanner />
+            <NeuralTelemetry />
             <div className="chamfer-card light-pipe-cyan glass-panel p-3.5 w-52 text-left hover:shadow-[0_0_25px_rgba(0,242,255,0.25)] transition-all duration-300">
               <div className="flex items-center justify-between mb-1.5 border-b border-cyan/15 pb-1">
                 <span className="font-mono text-[9px] text-cyan/70 tracking-[0.2em] uppercase font-bold">
@@ -577,8 +578,6 @@ export const JarvisHUD: React.FC = () => {
                 />
               </svg>
             </div>
-
-            <NeuralTelemetry />
 
             <div className="grid grid-cols-2 gap-3 transform-gpu text-left">
               <div 
