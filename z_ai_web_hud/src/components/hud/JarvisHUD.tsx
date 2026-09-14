@@ -418,6 +418,9 @@ export const JarvisHUD: React.FC = () => {
           <div className={`flex flex-col gap-6 transition-all duration-500 ${modules.telemetry ? '' : 'opacity-20 blur-sm pointer-events-none'}`}>
             <TodoListWidget />
 
+            <AtmosphericTelemetry />
+            <TacticalWorldClocks />
+
             <div 
               onClick={() => appendLog("SYSTEM: Calibrating altimeter core... Zero grid offset calibrated at 1123.4 FT.")}
               className="chamfer-card light-pipe-cyan glass-panel p-5 w-36 cursor-pointer hover:bg-surface-container/90 hover:shadow-[0_0_25px_rgba(0,242,255,0.3)] transition-all duration-300 active:scale-95 group"
@@ -460,9 +463,6 @@ export const JarvisHUD: React.FC = () => {
                  />
               </div>
             </div>
-
-            <AtmosphericTelemetry />
-            <TacticalWorldClocks />
           </div>
           {!modules.telemetry && (
             <div className="absolute inset-0 bg-background/80 backdrop-blur-md flex items-center justify-center chamfer-card light-pipe-amber">
