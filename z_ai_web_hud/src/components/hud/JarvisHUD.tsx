@@ -48,6 +48,10 @@ const BrokenByDesign = dynamic(() => import('@/components/ui/broken-by-design'),
 });
 import { HITLPrompt } from './HITLPrompt';
 import { TodoListWidget } from './TodoListWidget';
+import { RadarScanner } from './RadarScanner';
+import { AtmosphericTelemetry } from './AtmosphericTelemetry';
+import { TacticalWorldClocks } from './TacticalWorldClocks';
+import { NeuralTelemetry } from './NeuralTelemetry';
 import { useSession, signOut } from "next-auth/react";
 
 type HudTheme = 'theme-quantum' | 'theme-stealth' | 'theme-combat' | 'theme-crimson' | 'theme-void';
@@ -408,7 +412,7 @@ export const JarvisHUD: React.FC = () => {
 
       {/* Left Wing: Altimeter & Telemetry */}
       <aside 
-        className="absolute left-8 top-1/2 -translate-y-1/2 flex flex-col gap-6 z-40 max-h-[45vh] overflow-y-auto pb-4 pl-3 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-cyan/50 [&::-webkit-scrollbar-track]:bg-cyan/10 hover:[&::-webkit-scrollbar-thumb]:bg-cyan/80"
+        className="absolute left-8 top-1/2 -translate-y-1/2 flex flex-col gap-6 z-40 max-h-[calc(100vh-140px)] overflow-y-auto pb-4 pl-3 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-cyan/50 [&::-webkit-scrollbar-track]:bg-cyan/10 hover:[&::-webkit-scrollbar-thumb]:bg-cyan/80"
         style={{ direction: 'rtl' }}
       >
         <div className="relative" style={{ direction: 'ltr' }}>
@@ -457,6 +461,9 @@ export const JarvisHUD: React.FC = () => {
                  />
               </div>
             </div>
+
+            <AtmosphericTelemetry />
+            <TacticalWorldClocks />
           </div>
           {!modules.telemetry && (
             <div className="absolute inset-0 bg-background/80 backdrop-blur-md flex items-center justify-center chamfer-card light-pipe-amber">
@@ -509,6 +516,7 @@ export const JarvisHUD: React.FC = () => {
       <aside className="absolute right-6 top-16 bottom-20 flex flex-col gap-2.5 text-right z-40 overflow-y-auto max-h-[calc(100vh-140px)] pr-2 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-cyan/50 [&::-webkit-scrollbar-track]:bg-cyan/10 hover:[&::-webkit-scrollbar-thumb]:bg-cyan/80">
         <div className="relative">
           <div className={`flex flex-col gap-4 transition-all duration-500 ${modules.telemetry ? '' : 'opacity-20 blur-sm pointer-events-none'}`}>
+            <RadarScanner />
             <div className="chamfer-card light-pipe-cyan glass-panel p-3.5 w-52 text-left hover:shadow-[0_0_25px_rgba(0,242,255,0.25)] transition-all duration-300">
               <div className="flex items-center justify-between mb-1.5 border-b border-cyan/15 pb-1">
                 <span className="font-mono text-[9px] text-cyan/70 tracking-[0.2em] uppercase font-bold">
@@ -570,6 +578,8 @@ export const JarvisHUD: React.FC = () => {
                 />
               </svg>
             </div>
+
+            <NeuralTelemetry />
 
             <div className="grid grid-cols-2 gap-3 transform-gpu text-left">
               <div 
