@@ -611,9 +611,6 @@ export const JarvisHUD: React.FC = () => {
                 <div className="font-mono text-[8px] text-cyan/50 mt-0.5 uppercase tracking-widest">CPU / RAM / NET</div>
               </div>
             </div>
-
-            {/* Orbital Radar Scanner Widget */}
-            <RadarScanner />
           </div>
           {!modules.telemetry && (
             <div className="absolute inset-0 bg-background/70 backdrop-blur-md flex items-center justify-center rounded-xl border border-red-500/20 shadow-[inset_0_0_12px_rgba(239,68,68,0.1)]">
