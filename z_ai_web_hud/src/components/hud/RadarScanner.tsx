@@ -47,7 +47,7 @@ export const RadarScanner: React.FC = () => {
   };
 
   return (
-    <div className="chamfer-card light-pipe-cyan glass-panel p-3 w-52 flex flex-col gap-2 transition-all duration-300 hover:shadow-[0_0_25px_rgba(0,242,255,0.25)] text-left group">
+    <div className="chamfer-card light-pipe-cyan glass-panel p-3 w-52 sm:w-56 flex flex-col gap-2 transition-all duration-300 hover:shadow-[0_0_25px_rgba(0,242,255,0.25)] text-left group">
       {/* Header */}
       <div className="flex items-center justify-between border-b border-cyan/20 pb-1.5">
         <div className="flex items-center gap-1.5">

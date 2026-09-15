@@ -186,7 +186,7 @@ export const ChatInputBar: React.FC = () => {
   };
 
   return (
-    <div className="w-full max-w-xl flex flex-col gap-1.5 z-40 transform-gpu select-none shrink-0">
+    <div className="w-full max-w-xl flex flex-col gap-1.5 z-40 transform-gpu select-none shrink-0 px-2 sm:px-4 xl:px-0">
       {/* Latest Chat Conversation Bubble (if present) */}
       {lastExchange && (
         <div className="relative flex flex-col gap-1 p-3 glass-panel chamfer-card-sm text-left transition-all">
@@ -250,7 +250,7 @@ export const ChatInputBar: React.FC = () => {
       )}
 
       {/* Conversational Quick Suggestion Chips */}
-      <div className="flex items-center justify-center gap-1.5 overflow-x-auto py-0.5 scrollbar-hide">
+      <div className="flex items-center justify-start sm:justify-center gap-1.5 overflow-x-auto py-0.5 pb-1.5 cyber-scrollbar">
         {CHAT_PROMPTS.map((item, idx) => (
           <button
             key={idx}

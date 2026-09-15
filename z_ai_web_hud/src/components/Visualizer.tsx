@@ -109,7 +109,7 @@ export function Visualizer() {
     : { glow: "#00f2ff", badge: "STANDBY" };
 
   return (
-    <div className="relative flex items-center justify-center w-[260px] h-[260px] sm:w-[280px] sm:h-[280px] pointer-events-auto shrink-0">
+    <div className="relative flex items-center justify-center w-[220px] h-[220px] sm:w-[260px] sm:h-[260px] xl:w-[280px] xl:h-[280px] pointer-events-auto shrink-0">
       {/* Outer ambient pulse ring */}
       <motion.div
         className="absolute inset-0 rounded-full pointer-events-none"

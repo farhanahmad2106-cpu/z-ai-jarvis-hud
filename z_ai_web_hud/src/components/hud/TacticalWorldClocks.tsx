@@ -30,7 +30,7 @@ export function TacticalWorldClocks() {
   ];
 
   return (
-    <div className="chamfer-card light-pipe-cyan glass-panel p-3 w-52 text-left group hover:shadow-[0_0_25px_rgba(0,242,255,0.25)] transition-all duration-300">
+    <div className="chamfer-card light-pipe-cyan glass-panel p-3 w-52 sm:w-56 text-left group hover:shadow-[0_0_25px_rgba(0,242,255,0.25)] transition-all duration-300">
       <div className="flex items-center justify-between mb-3 border-b border-cyan/20 pb-1.5">
         <div className="flex items-center gap-1.5">
           <Globe size={11} className="text-cyan animate-spin-slow glow-cyan" />

@@ -154,6 +154,10 @@ export const JarvisHUD: React.FC = () => {
   const [isGlassHeroOpen, setIsGlassHeroOpen] = useState(false);
   const [isCommandCenterExpanded, setIsCommandCenterExpanded] = useState(true);
   
+  // Mobile Wing Toggle States
+  const [showLeftWing, setShowLeftWing] = useState(false);
+  const [showRightWing, setShowRightWing] = useState(false);
+  
   // Configuration Settings State
   const [settings, setSettings] = useState({
     volume: 85,
@@ -314,6 +318,22 @@ export const JarvisHUD: React.FC = () => {
         </div>
         <div className="flex items-center gap-4">
           
+          {/* Mobile Wing Toggles */}
+          <div className="flex xl:hidden items-center gap-2">
+            <button
+              onClick={() => setShowLeftWing(!showLeftWing)}
+              className={`font-mono text-[9px] px-2 py-1 chamfer-btn border transition-all ${showLeftWing ? 'border-cyan bg-cyan/20 text-cyan shadow-[0_0_10px_rgba(0,242,255,0.3)]' : 'border-cyan/30 bg-cyan/5 text-cyan/50 hover:bg-cyan/10'}`}
+            >
+              [TELEMETRY]
+            </button>
+            <button
+              onClick={() => setShowRightWing(!showRightWing)}
+              className={`font-mono text-[9px] px-2 py-1 chamfer-btn border transition-all ${showRightWing ? 'border-cyan bg-cyan/20 text-cyan shadow-[0_0_10px_rgba(0,242,255,0.3)]' : 'border-cyan/30 bg-cyan/5 text-cyan/50 hover:bg-cyan/10'}`}
+            >
+              [SENSORS]
+            </button>
+          </div>
+
           {/* Tactical Protocol Mode Selector */}
           <button
             onClick={cycleTheme}
@@ -411,7 +431,7 @@ export const JarvisHUD: React.FC = () => {
 
       {/* Left Wing: Altimeter & Telemetry */}
       <aside 
-        className="absolute left-8 top-1/2 -translate-y-1/2 flex flex-col gap-6 z-40 max-h-[calc(100vh-140px)] overflow-y-auto pb-4 pl-3 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-cyan/50 [&::-webkit-scrollbar-track]:bg-cyan/10 hover:[&::-webkit-scrollbar-thumb]:bg-cyan/80"
+        className={`absolute left-4 xl:left-8 top-20 xl:top-1/2 xl:-translate-y-1/2 flex flex-col gap-6 z-[60] xl:z-40 max-h-[calc(100vh-140px)] overflow-y-auto pb-4 pl-3 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-cyan/50 [&::-webkit-scrollbar-track]:bg-cyan/10 hover:[&::-webkit-scrollbar-thumb]:bg-cyan/80 transition-transform duration-500 ease-in-out ${showLeftWing ? 'translate-x-0' : '-translate-x-[150%] xl:translate-x-0'}`}
         style={{ direction: 'rtl' }}
       >
         <div className="relative" style={{ direction: 'ltr' }}>
@@ -423,7 +443,7 @@ export const JarvisHUD: React.FC = () => {
 
             <div 
               onClick={() => appendLog("SYSTEM: Calibrating altimeter core... Zero grid offset calibrated at 1123.4 FT.")}
-              className="chamfer-card light-pipe-cyan glass-panel p-5 w-36 cursor-pointer hover:bg-surface-container/90 hover:shadow-[0_0_25px_rgba(0,242,255,0.3)] transition-all duration-300 active:scale-95 group"
+              className="chamfer-card light-pipe-cyan glass-panel p-5 w-52 sm:w-56 cursor-pointer hover:bg-surface-container/90 hover:shadow-[0_0_25px_rgba(0,242,255,0.3)] transition-all duration-300 active:scale-95 group"
             >
               <div className="font-mono text-[9px] text-cyan/70 mb-1 tracking-[0.2em] uppercase">
                 [MOD_014]
@@ -446,7 +466,7 @@ export const JarvisHUD: React.FC = () => {
 
             <div 
               onClick={() => appendLog("SYSTEM: Recalibrating pitch gyroscopes... Gyro horizon stabilization nominal.")}
-              className="chamfer-card light-pipe-cyan glass-panel p-5 w-36 cursor-pointer hover:bg-surface-container/90 hover:shadow-[0_0_25px_rgba(0,242,255,0.3)] transition-all duration-300 active:scale-95 group"
+              className="chamfer-card light-pipe-cyan glass-panel p-5 w-52 sm:w-56 cursor-pointer hover:bg-surface-container/90 hover:shadow-[0_0_25px_rgba(0,242,255,0.3)] transition-all duration-300 active:scale-95 group"
             >
               <div className="font-mono text-[9px] text-cyan/70 mb-1 tracking-[0.2em] uppercase">
                 [MOD_082]
@@ -512,12 +532,12 @@ export const JarvisHUD: React.FC = () => {
       </section>
 
       {/* Right Wing: Status & Sensors */}
-      <aside className="absolute right-6 top-16 bottom-20 flex flex-col gap-2.5 text-right z-40 overflow-y-auto max-h-[calc(100vh-140px)] pr-2 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-cyan/50 [&::-webkit-scrollbar-track]:bg-cyan/10 hover:[&::-webkit-scrollbar-thumb]:bg-cyan/80">
+      <aside className={`absolute right-4 xl:right-6 top-20 xl:top-16 bottom-20 flex flex-col gap-2.5 text-right z-[60] xl:z-40 overflow-y-auto max-h-[calc(100vh-140px)] pr-2 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-cyan/50 [&::-webkit-scrollbar-track]:bg-cyan/10 hover:[&::-webkit-scrollbar-thumb]:bg-cyan/80 transition-transform duration-500 ease-in-out ${showRightWing ? 'translate-x-0' : 'translate-x-[150%] xl:translate-x-0'}`}>
         <div className="relative">
           <div className={`flex flex-col gap-4 transition-all duration-500 ${modules.telemetry ? '' : 'opacity-20 blur-sm pointer-events-none'}`}>
             <RadarScanner />
             <NeuralTelemetry />
-            <div className="chamfer-card light-pipe-cyan glass-panel p-3.5 w-52 text-left hover:shadow-[0_0_25px_rgba(0,242,255,0.25)] transition-all duration-300">
+            <div className="chamfer-card light-pipe-cyan glass-panel p-3.5 w-52 sm:w-56 text-left hover:shadow-[0_0_25px_rgba(0,242,255,0.25)] transition-all duration-300">
               <div className="flex items-center justify-between mb-1.5 border-b border-cyan/15 pb-1">
                 <span className="font-mono text-[9px] text-cyan/70 tracking-[0.2em] uppercase font-bold">
                   [MOD_SYS_004]
@@ -621,7 +641,7 @@ export const JarvisHUD: React.FC = () => {
       </aside>
 
       {/* Bottom: Multi-Tab Command Center Panel */}
-      <section className={`absolute bottom-24 left-8 w-[28rem] chamfer-card light-pipe-cyan bg-surface-container-low/90 backdrop-blur-2xl p-6 shadow-2xl overflow-hidden z-[100] transform-gpu text-left transition-all duration-300 ${isCommandCenterExpanded ? 'min-h-64 max-h-72' : 'min-h-0 h-auto pb-4'}`}>
+      <section className={`absolute bottom-24 left-1/2 -translate-x-1/2 xl:-translate-x-0 xl:left-8 w-11/12 max-w-sm sm:max-w-md xl:max-w-none xl:w-[28rem] chamfer-card light-pipe-cyan bg-surface-container-low/90 backdrop-blur-2xl p-6 shadow-2xl overflow-hidden z-[100] transform-gpu text-left transition-all duration-300 ${isCommandCenterExpanded ? 'min-h-64 max-h-72' : 'min-h-0 h-auto pb-4'}`}>
         
         {/* Tab 1: Terminal Logs */}
         {activeTab === 'terminal' && (
@@ -1410,7 +1430,7 @@ export const JarvisHUD: React.FC = () => {
       />
 
       {/* Bottom Navigation Bar */}
-      <nav className="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-8 border-t border-outline/20 bg-surface-container/80 backdrop-blur-xl">
+      <nav className="fixed bottom-0 left-0 w-full z-50 flex xl:hidden justify-around items-center px-4 pb-8 border-t border-outline/20 bg-surface-container/80 backdrop-blur-xl">
         <NavIcon icon={<TerminalIcon size={20} />} active={activeTab === 'terminal'} onClick={() => { setActiveTab('terminal'); appendLog("SYSTEM: Terminal telemetry active."); }} />
         <NavIcon icon={<Shield size={20} />} active={activeTab === 'shield'} onClick={() => { setActiveTab('shield'); appendLog("SYSTEM: Deflector shields status check complete."); }} />
         <NavIcon icon={<Cpu size={20} />} active={activeTab === 'cpu'} onClick={() => { setActiveTab('cpu'); appendLog("SYSTEM: CPU core workload balanced."); }} />

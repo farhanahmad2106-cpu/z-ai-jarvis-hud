@@ -129,7 +129,7 @@ export function TodoListWidget() {
 
   return (
     <>
-      <div className="chamfer-card light-pipe-cyan glass-panel p-4 w-64 flex flex-col gap-3 group transition-all duration-300 hover:shadow-[0_0_25px_rgba(0,242,255,0.3)]">
+      <div className="chamfer-card light-pipe-cyan glass-panel p-4 w-52 sm:w-56 flex flex-col gap-3 group transition-all duration-300 hover:shadow-[0_0_25px_rgba(0,242,255,0.3)]">
         <div className="flex items-center justify-between border-b border-cyan/30 pb-2">
           <div>
             <div className="font-mono text-[9px] text-cyan/70 tracking-[0.2em] uppercase">

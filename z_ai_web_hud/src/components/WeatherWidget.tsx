@@ -24,7 +24,7 @@ export function WeatherWidget() {
           animate={{ opacity: 1, x: 0, scale: 1, filter: 'blur(0px)' }}
           exit={{ opacity: 0, x: 50, scale: 0.9, filter: 'blur(5px)' }}
           transition={{ type: "spring", stiffness: 200, damping: 25 }}
-          className="absolute top-24 right-12 z-50 flex items-center gap-6 p-6 chamfer-card bg-surface-container-low/80 backdrop-blur-2xl light-pipe-cyan group hover:shadow-[0_0_30px_rgba(0,242,255,0.3)] transition-all duration-500"
+          className="absolute top-16 sm:top-20 xl:top-24 right-4 sm:right-8 xl:right-12 z-50 flex items-center gap-4 xl:gap-6 p-4 xl:p-6 chamfer-card bg-surface-container-low/80 backdrop-blur-2xl light-pipe-cyan group hover:shadow-[0_0_30px_rgba(0,242,255,0.3)] transition-all duration-500 scale-75 sm:scale-90 xl:scale-100 origin-top-right"
         >
           <div className="flex flex-col items-end">
             <span className="font-mono text-[9px] text-cyan/70 tracking-[0.25em] uppercase mb-1">

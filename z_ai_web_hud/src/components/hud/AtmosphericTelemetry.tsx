@@ -18,7 +18,7 @@ export function AtmosphericTelemetry() {
   }, []);
 
   return (
-    <div className="chamfer-card light-pipe-cyan glass-panel p-4 w-52 text-left group hover:shadow-[0_0_25px_rgba(0,242,255,0.25)] transition-all duration-300">
+    <div className="chamfer-card light-pipe-cyan glass-panel p-4 w-52 sm:w-56 text-left group hover:shadow-[0_0_25px_rgba(0,242,255,0.25)] transition-all duration-300">
       <div className="flex items-center justify-between mb-3 border-b border-cyan/20 pb-2">
         <div className="flex items-center gap-1.5">
           <Cloud size={12} className="text-cyan animate-pulse glow-cyan" />
