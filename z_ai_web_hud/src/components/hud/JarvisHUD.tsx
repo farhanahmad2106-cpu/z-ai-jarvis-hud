@@ -278,7 +278,7 @@ export const JarvisHUD: React.FC = () => {
   };
 
   return (
-    <main className={`relative h-screen w-full flex items-center justify-center p-8 overflow-hidden transform-gpu select-none ${!isOnline ? 'offline-mode' : ''} ${hudTheme}`}>
+    <main className={`relative min-h-[100dvh] h-[100dvh] w-full flex items-center justify-center p-4 sm:p-8 overflow-hidden transform-gpu select-none ${!isOnline ? 'offline-mode' : ''} ${hudTheme}`}>
       {!isOnline && (
         <div className="absolute top-24 left-1/2 -translate-x-1/2 z-[100] border border-[#ffaa00]/40 bg-[#ffaa00]/10 px-8 py-2 rounded-full backdrop-blur-md shadow-[0_0_20px_rgba(255,170,0,0.3)] pointer-events-none">
           <span className="font-mono text-xs font-extrabold text-[#ffaa00] tracking-[0.4em] animate-pulse">NETWORK OFFLINE - RUNNING LOCAL</span>
@@ -431,7 +431,7 @@ export const JarvisHUD: React.FC = () => {
 
       {/* Left Wing: Altimeter & Telemetry */}
       <aside 
-        className={`absolute left-4 xl:left-8 top-20 xl:top-1/2 xl:-translate-y-1/2 flex flex-col gap-6 z-[60] xl:z-40 max-h-[calc(100vh-140px)] overflow-y-auto pb-4 pl-3 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-cyan/50 [&::-webkit-scrollbar-track]:bg-cyan/10 hover:[&::-webkit-scrollbar-thumb]:bg-cyan/80 transition-transform duration-500 ease-in-out ${showLeftWing ? 'translate-x-0' : '-translate-x-[150%] xl:translate-x-0'}`}
+        className={`absolute left-4 xl:left-8 top-20 xl:top-1/2 xl:-translate-y-1/2 flex flex-col gap-6 z-[60] xl:z-40 max-h-[calc(100dvh-140px)] overflow-y-auto pb-4 pl-3 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-cyan/50 [&::-webkit-scrollbar-track]:bg-cyan/10 hover:[&::-webkit-scrollbar-thumb]:bg-cyan/80 transition-transform duration-500 ease-in-out ${showLeftWing ? 'translate-x-0' : '-translate-x-[150%] xl:translate-x-0'}`}
         style={{ direction: 'rtl' }}
       >
         <div className="relative" style={{ direction: 'ltr' }}>
@@ -493,7 +493,7 @@ export const JarvisHUD: React.FC = () => {
       </aside>
 
       {/* Center: Holographic Core & Tactical Command Bar */}
-      <section className="relative flex flex-col items-center justify-center z-30 transform-gpu gap-1 my-auto max-h-[calc(100vh-125px)] max-w-2xl px-2">
+      <section className="relative flex flex-col items-center justify-center z-30 transform-gpu gap-1 my-auto max-h-[calc(100dvh-125px)] max-w-2xl px-2">
         <div 
           className="relative flex items-center justify-center cursor-pointer group"
           onClick={() => {
@@ -532,7 +532,7 @@ export const JarvisHUD: React.FC = () => {
       </section>
 
       {/* Right Wing: Status & Sensors */}
-      <aside className={`absolute right-4 xl:right-6 top-20 xl:top-16 bottom-20 flex flex-col gap-2.5 text-right z-[60] xl:z-40 overflow-y-auto max-h-[calc(100vh-140px)] pr-2 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-cyan/50 [&::-webkit-scrollbar-track]:bg-cyan/10 hover:[&::-webkit-scrollbar-thumb]:bg-cyan/80 transition-transform duration-500 ease-in-out ${showRightWing ? 'translate-x-0' : 'translate-x-[150%] xl:translate-x-0'}`}>
+      <aside className={`absolute right-4 xl:right-6 top-20 xl:top-16 bottom-20 flex flex-col gap-2.5 text-right z-[60] xl:z-40 overflow-y-auto max-h-[calc(100dvh-140px)] pr-2 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-cyan/50 [&::-webkit-scrollbar-track]:bg-cyan/10 hover:[&::-webkit-scrollbar-thumb]:bg-cyan/80 transition-transform duration-500 ease-in-out ${showRightWing ? 'translate-x-0' : 'translate-x-[150%] xl:translate-x-0'}`}>
         <div className="relative">
           <div className={`flex flex-col gap-4 transition-all duration-500 ${modules.telemetry ? '' : 'opacity-20 blur-sm pointer-events-none'}`}>
             <RadarScanner />
@@ -641,7 +641,7 @@ export const JarvisHUD: React.FC = () => {
       </aside>
 
       {/* Bottom: Multi-Tab Command Center Panel */}
-      <section className={`absolute bottom-24 left-1/2 -translate-x-1/2 xl:-translate-x-0 xl:left-8 w-11/12 max-w-sm sm:max-w-md xl:max-w-none xl:w-[28rem] chamfer-card light-pipe-cyan bg-surface-container-low/90 backdrop-blur-2xl p-6 shadow-2xl overflow-hidden z-[100] transform-gpu text-left transition-all duration-300 ${isCommandCenterExpanded ? 'min-h-64 max-h-72' : 'min-h-0 h-auto pb-4'}`}>
+      <section className={`absolute bottom-24 left-1/2 -translate-x-1/2 xl:-translate-x-0 xl:left-8 w-11/12 max-w-sm sm:max-w-md xl:max-w-none xl:w-[28rem] chamfer-card light-pipe-cyan bg-surface-container-low/90 backdrop-blur-2xl p-4 sm:p-6 shadow-2xl overflow-hidden z-[100] transform-gpu text-left transition-all duration-300 ${isCommandCenterExpanded ? 'min-h-64 max-h-72' : 'min-h-0 h-auto pb-4'}`}>
         
         {/* Tab 1: Terminal Logs */}
         {activeTab === 'terminal' && (

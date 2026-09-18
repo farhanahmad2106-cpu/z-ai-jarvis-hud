@@ -82,7 +82,7 @@ body {
   color: var(--foreground);
   font-family: var(--font-sans);
   overflow: hidden;
-  min-height: 100vh;
+  min-height: 100dvh;
   transition: color 0.4s ease;
 }
 
@@ -127,7 +127,8 @@ body {
   body {
     @apply bg-background text-foreground antialiased selection:bg-surface-tint/30;
     overflow: hidden;
-    height: 100vh;
+    min-height: 100dvh;
+    height: 100dvh;
     width: 100vw;
   }
 }
@@ -147,6 +148,14 @@ body {
   .border-glow {
     @apply border border-outline/30 shadow-lg transition-all duration-300;
     box-shadow: inset 0 0 12px color-mix(in srgb, var(--cyan) 12%, transparent);
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
   }
   
   .border-glow:hover {

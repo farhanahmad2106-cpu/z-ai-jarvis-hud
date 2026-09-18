@@ -250,14 +250,14 @@ export const ChatInputBar: React.FC = () => {
       )}
 
       {/* Conversational Quick Suggestion Chips */}
-      <div className="flex items-center justify-start sm:justify-center gap-1.5 overflow-x-auto py-0.5 pb-1.5 cyber-scrollbar">
+      <div className="flex items-center justify-start sm:justify-center gap-1.5 overflow-x-auto py-1 px-0.5 no-scrollbar scroll-smooth">
         {CHAT_PROMPTS.map((item, idx) => (
           <button
             key={idx}
             type="button"
             onClick={() => handleSendMessage(item.prompt)}
             disabled={isTyping}
-            className="font-mono text-[8.5px] text-cyan/75 hover:text-cyan border border-cyan/30 hover:border-cyan hover:bg-cyan/15 px-2.5 py-0.5 chamfer-btn flex items-center gap-1 transition-all active:scale-95 cursor-pointer uppercase font-bold whitespace-nowrap shadow-[0_0_8px_rgba(0,242,255,0.1)] disabled:opacity-50"
+            className="font-mono text-[8px] sm:text-[8.5px] text-cyan/75 hover:text-cyan border border-cyan/30 hover:border-cyan hover:bg-cyan/15 px-2 py-0.5 chamfer-btn flex items-center gap-1 transition-all active:scale-95 cursor-pointer uppercase font-bold whitespace-nowrap shadow-[0_0_8px_rgba(0,242,255,0.1)] disabled:opacity-50"
           >
             <span>{item.label}</span>
           </button>
@@ -283,7 +283,7 @@ export const ChatInputBar: React.FC = () => {
           onChange={(e) => setInputVal(e.target.value)}
           placeholder={isTyping ? "Zayd is formulating response..." : "Chat with Zayd... (type next question here)"}
           disabled={isTyping}
-          className="w-full bg-transparent font-sans text-xs text-cyan placeholder-cyan/40 focus:outline-none tracking-wide selection:bg-cyan/30"
+          className="w-full bg-transparent font-sans text-base sm:text-xs text-cyan placeholder-cyan/40 focus:outline-none tracking-wide selection:bg-cyan/30"
         />
 
         <button
