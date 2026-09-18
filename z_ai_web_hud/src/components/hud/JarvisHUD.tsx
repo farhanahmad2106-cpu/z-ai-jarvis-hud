@@ -1430,7 +1430,7 @@ export const JarvisHUD: React.FC = () => {
       />
 
       {/* Bottom Navigation Bar */}
-      <nav className="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-4 sm:pb-6 xl:pb-8 border-t border-outline/20 bg-surface-container/80 backdrop-blur-xl">
+      <nav className="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-2 pb-6 sm:pb-8 pt-2 border-t border-outline/20 bg-surface-container/80 backdrop-blur-xl pb-[calc(1rem+env(safe-area-inset-bottom))]">
         <NavIcon icon={<TerminalIcon size={20} />} active={activeTab === 'terminal'} onClick={() => { setActiveTab('terminal'); appendLog("SYSTEM: Terminal telemetry active."); }} />
         <NavIcon icon={<Shield size={20} />} active={activeTab === 'shield'} onClick={() => { setActiveTab('shield'); appendLog("SYSTEM: Deflector shields status check complete."); }} />
         <NavIcon icon={<Cpu size={20} />} active={activeTab === 'cpu'} onClick={() => { setActiveTab('cpu'); appendLog("SYSTEM: CPU core workload balanced."); }} />
