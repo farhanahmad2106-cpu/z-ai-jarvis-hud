@@ -641,7 +641,7 @@ export const JarvisHUD: React.FC = () => {
       </aside>
 
       {/* Bottom: Multi-Tab Command Center Panel */}
-      <section className={`absolute bottom-4 sm:bottom-6 xl:bottom-12 left-1/2 -translate-x-1/2 xl:-translate-x-0 xl:left-8 w-11/12 max-w-sm sm:max-w-md xl:max-w-none xl:w-[28rem] chamfer-card light-pipe-cyan bg-surface-container-low/90 backdrop-blur-2xl p-4 sm:p-6 shadow-2xl overflow-hidden z-[100] transform-gpu text-left transition-all duration-300 flex flex-col ${isCommandCenterExpanded ? 'h-[30vh] min-h-[14rem] xl:min-h-[16rem] max-h-[40vh] xl:max-h-72' : 'min-h-0 h-auto pb-4'}`}>
+      <section className={`absolute bottom-20 sm:bottom-24 xl:bottom-28 left-1/2 -translate-x-1/2 xl:-translate-x-0 xl:left-8 w-11/12 max-w-sm sm:max-w-md xl:max-w-none xl:w-[28rem] chamfer-card light-pipe-cyan bg-surface-container-low/90 backdrop-blur-2xl p-4 sm:p-6 shadow-2xl overflow-hidden z-[100] transform-gpu text-left transition-all duration-300 flex flex-col ${isCommandCenterExpanded ? 'h-[25vh] min-h-[12rem] xl:min-h-[16rem] max-h-[30vh] xl:max-h-72' : 'min-h-0 h-auto pb-4'}`}>
         
         {/* Tab 1: Terminal Logs */}
         {activeTab === 'terminal' && (
@@ -1430,7 +1430,7 @@ export const JarvisHUD: React.FC = () => {
       />
 
       {/* Bottom Navigation Bar */}
-      <nav className="fixed bottom-0 left-0 w-full z-50 flex xl:hidden justify-around items-center px-4 pb-8 border-t border-outline/20 bg-surface-container/80 backdrop-blur-xl">
+      <nav className="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-4 sm:pb-6 xl:pb-8 border-t border-outline/20 bg-surface-container/80 backdrop-blur-xl">
         <NavIcon icon={<TerminalIcon size={20} />} active={activeTab === 'terminal'} onClick={() => { setActiveTab('terminal'); appendLog("SYSTEM: Terminal telemetry active."); }} />
         <NavIcon icon={<Shield size={20} />} active={activeTab === 'shield'} onClick={() => { setActiveTab('shield'); appendLog("SYSTEM: Deflector shields status check complete."); }} />
         <NavIcon icon={<Cpu size={20} />} active={activeTab === 'cpu'} onClick={() => { setActiveTab('cpu'); appendLog("SYSTEM: CPU core workload balanced."); }} />
