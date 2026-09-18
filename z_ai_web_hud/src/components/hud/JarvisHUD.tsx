@@ -316,10 +316,10 @@ export const JarvisHUD: React.FC = () => {
             </div>
           </div>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 sm:gap-4">
           
           {/* Mobile Wing Toggles */}
-          <div className="flex xl:hidden items-center gap-2">
+          <div className="flex xl:hidden items-center gap-1.5 sm:gap-2">
             <button
               onClick={() => setShowLeftWing(!showLeftWing)}
               className={`font-mono text-[9px] px-2 py-1 chamfer-btn border transition-all ${showLeftWing ? 'border-cyan bg-cyan/20 text-cyan shadow-[0_0_10px_rgba(0,242,255,0.3)]' : 'border-cyan/30 bg-cyan/5 text-cyan/50 hover:bg-cyan/10'}`}
@@ -337,7 +337,7 @@ export const JarvisHUD: React.FC = () => {
           {/* Tactical Protocol Mode Selector */}
           <button
             onClick={cycleTheme}
-            className="font-mono text-[10px] text-cyan light-pipe-cyan bg-cyan/10 hover:bg-cyan/25 px-3 py-1.5 chamfer-btn flex items-center gap-1.5 transition-all shadow-[0_0_15px_rgba(0,242,255,0.25)] cursor-pointer active:scale-95"
+            className="hidden lg:flex font-mono text-[10px] text-cyan light-pipe-cyan bg-cyan/10 hover:bg-cyan/25 px-3 py-1.5 chamfer-btn items-center gap-1.5 transition-all shadow-[0_0_15px_rgba(0,242,255,0.25)] cursor-pointer active:scale-95"
             title="Cycle Tactical HUD Theme Protocol"
           >
             <span 
@@ -350,7 +350,7 @@ export const JarvisHUD: React.FC = () => {
           {/* Synthetic Sound FX Toggle */}
           <button
             onClick={handleToggleSound}
-            className={`font-mono text-[10px] px-2.5 py-1.5 chamfer-btn border transition-all flex items-center gap-1 cursor-pointer active:scale-95 ${
+            className={`hidden md:flex font-mono text-[10px] px-2.5 py-1.5 chamfer-btn border transition-all items-center gap-1 cursor-pointer active:scale-95 ${
               !soundMuted 
                 ? 'border-cyan/40 text-cyan bg-cyan/10 hover:bg-cyan/25 shadow-[0_0_12px_rgba(0,242,255,0.2)]' 
                 : 'border-red-500/40 text-red-400 bg-red-500/10 hover:bg-red-500/20'
@@ -365,12 +365,12 @@ export const JarvisHUD: React.FC = () => {
               setIsGlassHeroOpen(true);
               appendLog("SYSTEM: 3D BrokenByDesign glass visualizer initialized.");
             }}
-            className="font-mono text-[10px] text-cyan light-pipe-cyan bg-cyan/10 hover:bg-cyan/25 px-4 py-1.5 chamfer-btn flex items-center gap-1.5 transition-all shadow-[0_0_15px_rgba(0,242,255,0.25)] cursor-pointer"
+            className="hidden md:flex font-mono text-[10px] text-cyan light-pipe-cyan bg-cyan/10 hover:bg-cyan/25 px-4 py-1.5 chamfer-btn items-center gap-1.5 transition-all shadow-[0_0_15px_rgba(0,242,255,0.25)] cursor-pointer"
           >
             <Sparkles size={12} className="animate-pulse" /> 3D_HERO
           </button>
-          <span className="font-mono text-[9px] text-cyan/50 px-2 py-0.5 border border-cyan/20 chamfer-card-sm">V1.1.0</span>
-          <div className="flex items-center gap-1.5 px-3 py-1 rounded-sm border border-cyan/40 bg-cyan/10 shadow-[0_0_12px_rgba(0,242,255,0.2)]">
+          <span className="hidden md:flex font-mono text-[9px] text-cyan/50 px-2 py-0.5 border border-cyan/20 chamfer-card-sm">V1.1.0</span>
+          <div className="hidden lg:flex items-center gap-1.5 px-3 py-1 rounded-sm border border-cyan/40 bg-cyan/10 shadow-[0_0_12px_rgba(0,242,255,0.2)]">
             <span className={`w-2 h-2 rounded-full animate-pulse ${
               status === 'LISTENING' ? 'bg-[#00ff9d] shadow-[0_0_8px_#00ff9d]' :
               status === 'THINKING' ? 'bg-[#ffaa00] shadow-[0_0_8px_#ffaa00]' :
@@ -383,9 +383,9 @@ export const JarvisHUD: React.FC = () => {
           </div>
           
           {session?.user ? (
-            <div className="flex items-center gap-2 border-l border-cyan/30 pl-4 ml-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_#34d399]" />
-              <div className="flex flex-col text-left">
+            <div className="flex items-center gap-2 border-l border-cyan/30 pl-2 sm:pl-4 ml-1 sm:ml-2">
+              <span className="hidden sm:block w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_#34d399]" />
+              <div className="hidden sm:flex flex-col text-left">
                 <span className="font-mono text-[8px] text-cyan/40 tracking-wider">OPERATOR</span>
                 <span className="font-mono text-[10px] text-emerald-400 tracking-widest uppercase font-bold max-w-[120px] truncate">
                   {session.user.name || "OPERATOR"}
@@ -400,7 +400,7 @@ export const JarvisHUD: React.FC = () => {
               </button>
             </div>
           ) : (
-            <div className="flex items-center gap-2 border-l border-cyan/30 pl-4 ml-2">
+            <div className="flex items-center gap-2 border-l border-cyan/30 pl-2 sm:pl-4 ml-1 sm:ml-2">
               <div className="hidden sm:flex flex-col text-left">
                 <span className="font-mono text-[8px] text-cyan/40 tracking-wider">PROFILE</span>
                 <span className="font-mono text-[10px] text-cyan/60 tracking-widest uppercase">
@@ -409,17 +409,17 @@ export const JarvisHUD: React.FC = () => {
               </div>
               <Link
                 href="/auth"
-                className="font-mono text-[10px] text-cyan light-pipe-cyan bg-cyan/10 hover:bg-cyan/25 px-3 py-1.5 chamfer-btn flex items-center gap-1.5 transition-all shadow-[0_0_15px_rgba(0,242,255,0.25)] hover:text-white cursor-pointer group"
+                className="font-mono text-[9px] sm:text-[10px] text-cyan light-pipe-cyan bg-cyan/10 hover:bg-cyan/25 px-2 sm:px-3 py-1.5 chamfer-btn flex items-center gap-1 sm:gap-1.5 transition-all shadow-[0_0_15px_rgba(0,242,255,0.25)] hover:text-white cursor-pointer group"
                 title="Sign in or create account"
               >
                 <User size={12} className="text-cyan group-hover:drop-shadow-[0_0_8px_rgba(0,242,255,1)]" />
-                <span className="tracking-widest">LOGIN / SIGNUP</span>
+                <span className="tracking-widest">LOGIN</span>
               </Link>
             </div>
           )}
 
           <Settings2 
-            className="text-cyan hover:glow-cyan cursor-pointer transition-all active:scale-95 hover:text-white" 
+            className="hidden sm:block text-cyan hover:glow-cyan cursor-pointer transition-all active:scale-95 hover:text-white" 
             size={20} 
             onClick={() => {
               setIsSettingsOpen(true);
