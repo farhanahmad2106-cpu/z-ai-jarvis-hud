@@ -26,7 +26,7 @@ const Visualizer = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="relative flex items-center justify-center w-[260px] h-[260px] sm:w-[280px] sm:h-[280px]">
+      <div className="relative flex items-center justify-center w-[160px] h-[160px] sm:w-[280px] sm:h-[280px]">
         <div className="absolute inset-0 rounded-full border border-cyan/20 animate-pulse" />
         <span className="font-mono text-[10px] text-cyan/40 tracking-widest">LOADING HOLOMATRIX...</span>
       </div>
@@ -493,7 +493,7 @@ export const JarvisHUD: React.FC = () => {
       </aside>
 
       {/* Center: Holographic Core & Tactical Command Bar */}
-      <section className="relative flex flex-col items-center justify-center z-30 transform-gpu gap-1 my-auto max-h-[calc(100dvh-125px)] max-w-2xl px-2">
+      <section className="relative flex flex-col items-center justify-center z-30 transform-gpu gap-1 xl:gap-4 my-auto max-h-[calc(100dvh-125px)] max-w-2xl px-2 mt-20 xl:mt-auto">
         <div 
           className="relative flex items-center justify-center cursor-pointer group"
           onClick={() => {
@@ -641,7 +641,7 @@ export const JarvisHUD: React.FC = () => {
       </aside>
 
       {/* Bottom: Multi-Tab Command Center Panel */}
-      <section className={`absolute bottom-24 left-1/2 -translate-x-1/2 xl:-translate-x-0 xl:left-8 w-11/12 max-w-sm sm:max-w-md xl:max-w-none xl:w-[28rem] chamfer-card light-pipe-cyan bg-surface-container-low/90 backdrop-blur-2xl p-4 sm:p-6 shadow-2xl overflow-hidden z-[100] transform-gpu text-left transition-all duration-300 ${isCommandCenterExpanded ? 'min-h-64 max-h-72' : 'min-h-0 h-auto pb-4'}`}>
+      <section className={`absolute bottom-4 sm:bottom-6 xl:bottom-12 left-1/2 -translate-x-1/2 xl:-translate-x-0 xl:left-8 w-11/12 max-w-sm sm:max-w-md xl:max-w-none xl:w-[28rem] chamfer-card light-pipe-cyan bg-surface-container-low/90 backdrop-blur-2xl p-4 sm:p-6 shadow-2xl overflow-hidden z-[100] transform-gpu text-left transition-all duration-300 flex flex-col ${isCommandCenterExpanded ? 'h-[30vh] min-h-[14rem] xl:min-h-[16rem] max-h-[40vh] xl:max-h-72' : 'min-h-0 h-auto pb-4'}`}>
         
         {/* Tab 1: Terminal Logs */}
         {activeTab === 'terminal' && (
@@ -717,7 +717,7 @@ export const JarvisHUD: React.FC = () => {
                       </button>
                     </form>
                   )}
-                  <div className={`font-mono text-[10px] text-foreground/80 space-y-1 ${isCmdInputOpen ? 'h-[7rem]' : 'h-[9.5rem] mt-3'} overflow-y-auto scrollbar-hide flex flex-col-reverse`}>
+                  <div className={`font-mono text-[10px] text-foreground/80 space-y-1 ${isCmdInputOpen ? 'flex-1 min-h-0' : 'flex-1 min-h-0 mt-3'} overflow-y-auto scrollbar-hide flex flex-col-reverse`}>
                     {terminalLog.slice().reverse().map((log, i) => (
                       <div key={i} className="flex gap-2">
                         <span className="text-cyan shrink-0 font-bold">&gt;</span> 
