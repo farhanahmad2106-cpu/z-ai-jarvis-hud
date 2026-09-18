@@ -286,8 +286,8 @@ export const JarvisHUD: React.FC = () => {
       )}
       <WeatherWidget />
       {/* Header */}
-      <header className="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-6 py-2.5 border-b border-cyan/30 bg-surface-container-lowest/90 backdrop-blur-xl shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
-        <div className="flex items-center gap-4">
+      <header className="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-3 sm:px-6 py-2.5 border-b border-cyan/30 bg-surface-container-lowest/90 backdrop-blur-xl shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
+        <div className="flex items-center gap-3 sm:gap-4">
           <Menu 
             className="text-cyan hover:glow-cyan cursor-pointer transition-all active:scale-95 hover:text-white" 
             size={20} 
@@ -296,8 +296,8 @@ export const JarvisHUD: React.FC = () => {
               appendLog("SYSTEM: Dashboard interface loaded.");
             }}
           />
-          <div className="font-sans font-black text-2xl tracking-[0.35em] text-cyan glow-cyan cursor-default">ZAYD</div>
-          <span className="font-mono text-[9px] text-cyan/60 px-2.5 py-0.5 border border-cyan/30 chamfer-card-sm bg-cyan/5">
+          <div className="font-sans font-black text-xl sm:text-2xl tracking-[0.35em] text-cyan glow-cyan cursor-default">ZAYD</div>
+          <span className="hidden sm:inline-block font-mono text-[9px] text-cyan/60 px-2.5 py-0.5 border border-cyan/30 chamfer-card-sm bg-cyan/5">
             [SYS_ACTIVE]
           </span>
           {/* Mission Clock & Uptime Ticker */}
