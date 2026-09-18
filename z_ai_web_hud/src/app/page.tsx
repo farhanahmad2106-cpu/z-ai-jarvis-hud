@@ -235,7 +235,7 @@ export default function Home() {
   };
 
   return (
-    <div className="relative h-screen w-full bg-background">
+    <div className="relative h-[100dvh] min-h-[100dvh] w-full bg-background overflow-hidden">
       <AnimatePresence mode="wait">
         {isLocked ? (
           <motion.div 
