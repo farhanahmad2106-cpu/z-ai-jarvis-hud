@@ -88,6 +88,27 @@ export const JarvisHUD: React.FC = () => {
     };
   }, [setIsOnline]);
 
+  // Pusher Real-Time Sync (Web-to-Mobile Handoff)
+  useEffect(() => {
+    if (session?.user?.email) {
+      import('@/lib/pusher').then(({ getPusherClient }) => {
+        const pusher = getPusherClient();
+        if (pusher) {
+          // Using email as an identifier since it's available in standard NextAuth session
+          const channelId = session.user.email.replace(/[^a-zA-Z0-9]/g, '_');
+          const channel = pusher.subscribe(`private-user-${channelId}`);
+          channel.bind('state-sync', (data: any) => {
+            appendLog(`SYNC: State update received [${data.action}]`);
+            // Additional state synchronizations can be handled here
+          });
+          return () => {
+            pusher.unsubscribe(`private-user-${channelId}`);
+          };
+        }
+      });
+    }
+  }, [session, appendLog]);
+
   // Connect to Desktop Daemon via WebSocket — only on localhost (not on Vercel production)
   useEffect(() => {
     const isLocal = typeof window !== 'undefined' && (
