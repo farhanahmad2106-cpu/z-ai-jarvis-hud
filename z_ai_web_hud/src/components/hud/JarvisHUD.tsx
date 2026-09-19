@@ -90,12 +90,13 @@ export const JarvisHUD: React.FC = () => {
 
   // Pusher Real-Time Sync (Web-to-Mobile Handoff)
   useEffect(() => {
-    if (session?.user?.email) {
+    const userEmail = session?.user?.email;
+    if (userEmail) {
       import('@/lib/pusher').then(({ getPusherClient }) => {
         const pusher = getPusherClient();
         if (pusher) {
           // Using email as an identifier since it's available in standard NextAuth session
-          const channelId = session.user.email.replace(/[^a-zA-Z0-9]/g, '_');
+          const channelId = userEmail.replace(/[^a-zA-Z0-9]/g, '_');
           const channel = pusher.subscribe(`private-user-${channelId}`);
           channel.bind('state-sync', (data: any) => {
             appendLog(`SYNC: State update received [${data.action}]`);
