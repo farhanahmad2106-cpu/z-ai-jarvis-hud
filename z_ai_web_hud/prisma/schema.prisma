@@ -43,6 +43,7 @@ model User {
   password      String?
   accounts      Account[]
   sessions      Session[]
+  memories      Memory[]
 }
 
 model VerificationToken {
@@ -52,4 +53,14 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model Memory {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String?  @db.ObjectId
+  content   String
+  embedding Float[]
+  createdAt DateTime @default(now())
+
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
