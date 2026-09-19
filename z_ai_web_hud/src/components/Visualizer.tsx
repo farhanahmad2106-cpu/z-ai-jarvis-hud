@@ -6,6 +6,7 @@ import { OrbitControls, Icosahedron, Stars } from "@react-three/drei";
 import * as THREE from "three";
 import { useAssistantStore } from "@/store/useAssistantStore";
 import { motion } from "framer-motion";
+import { HologramRing } from "./widgets/HologramRing";
 
 function HolographicCore({ status }: { status: string }) {
   const coreRef = useRef<THREE.Mesh>(null);
@@ -135,6 +136,7 @@ export function Visualizer() {
             autoRotateSpeed={1.5}
           />
           <HolographicCore status={status} />
+          <HologramRing color={palette.glow} />
         </Canvas>
       </div>
 

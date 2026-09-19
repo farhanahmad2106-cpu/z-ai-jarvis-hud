@@ -4,6 +4,7 @@ import { streamText, tool } from 'ai';
 import { z } from 'zod';
 import { exec } from 'child_process';
 import { promisify } from 'util';
+import { queryMemories, addMemory } from '@/lib/memoryService';
 
 const execAsync = promisify(exec);
 
@@ -364,6 +365,20 @@ export async function POST(req: Request) {
     try {
       let result;
       const { timeStr, dateStr } = getISTDateTime();
+      
+      let memoryContext = "";
+      try {
+        if (lastUserMessage.trim().length > 3) {
+          const memories = await queryMemories(lastUserMessage);
+          if (memories.length > 0) {
+            memoryContext = `\n          - Memory Context: ${memories.join(' | ')}`;
+          }
+          // Save the current interaction to memory asynchronously
+          addMemory(`User: ${lastUserMessage}`).catch(e => console.error(e));
+        }
+      } catch (err) {
+        console.error("Memory retrieval error:", err);
+      }
 
       const sanitizedMessages = (Array.isArray(messages) ? messages : [])
         .filter((m: any) => m && (m.role === 'user' || m.role === 'assistant'))
@@ -384,7 +399,7 @@ export async function POST(req: Request) {
 
           CURRENT SYSTEM TELEMETRY:
           - Time: ${timeStr}
-          - Date: ${dateStr}
+          - Date: ${dateStr}${memoryContext}
 
           CRITICAL BEHAVIORAL PARAMETERS:
           1. Speak in a calm, extremely professional, concise, and helpful tone.
@@ -508,7 +523,7 @@ export async function POST(req: Request) {
           
           CURRENT SYSTEM TELEMETRY:
           - Time: ${timeStr}
-          - Date: ${dateStr}
+          - Date: ${dateStr}${memoryContext}
 
           AUTONOMOUS DIRECT ACTION & CONTEXT RETENTION:
           1. NEVER ask rhetorical confirmation questions like "Shall I proceed?" or "Would you like me to search?". Answer the question or perform the search directly.
