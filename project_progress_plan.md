@@ -57,6 +57,15 @@ The Next.js core application is fully operational and has implemented premium fe
     *   A custom interactive overlay that gets spawned instantly on the HUD when Z-AI queries current weather.
 *   **🧠 Contextual Memory Loop (`useVoiceInterface.ts`)**:
     *   Keeps an active array of the last 5 turns of conversations, providing Z-AI with short-term context awareness.
+*   **📊 Real-Time System Performance Chart (`JarvisHUD.tsx` — Left Sidebar)**:
+    *   A dual-trace animated SVG line chart (`[MOD_PERF_07]`) showing live CPU utilization and memory allocation.
+    *   Uses a 12-tick sliding window updated every 2 seconds with Framer Motion path interpolation.
+    *   Reacts dynamically to system state — telemetry spikes when ZAYD enters `THINKING` mode.
+    *   No external charting library required — fully built on SVG + Framer Motion with gradient fills and pulsating live dots.
+*   **🎯 CTRL_ACTION Quick Actions Panel (`JarvisHUD.tsx` — Navbar)**:
+    *   A crosshair-icon button in the top navbar that deploys a spring-animated dropdown panel.
+    *   Provides four color-coded quick actions: Run Diagnostics, Refresh Telemetry, Recalibrate System, and Open Config.
+    *   Styled with per-action color theming (cyan, green, amber, purple) and glow state transitions.
 
 ---
 

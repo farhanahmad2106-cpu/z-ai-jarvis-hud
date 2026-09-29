@@ -6,7 +6,8 @@ import { useVoiceInterface } from '@/hooks/useVoiceInterface';
 import { 
   Terminal as TerminalIcon, Shield, Cpu, Activity, Network, 
   Settings2, Menu, X, Check, RotateCcw, Volume2, 
-  SlidersHorizontal, RefreshCw, Power, Radio, Layers, Wifi, Sparkles, Zap, Database, Thermometer, User, Maximize2, Minimize2
+  SlidersHorizontal, RefreshCw, Power, Radio, Layers, Wifi, Sparkles, Zap, Database, Thermometer, User, Maximize2, Minimize2,
+  BarChart3, Crosshair
 } from 'lucide-react';
 import Link from 'next/link';
 import { 
@@ -197,6 +198,11 @@ export const JarvisHUD: React.FC = () => {
   const [utcTime, setUtcTime] = useState('');
   const [uptime, setUptime] = useState(0);
 
+  // System Performance Chart State
+  const [chartData, setChartData] = useState<number[]>([30, 25, 40, 35, 28, 45, 38, 32, 50, 42, 36, 44]);
+  const [chartMemData, setChartMemData] = useState<number[]>([55, 58, 52, 60, 57, 62, 59, 64, 61, 58, 63, 60]);
+  const [isDemoActionOpen, setIsDemoActionOpen] = useState(false);
+
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const savedTheme = localStorage.getItem('zayd_hud_theme') as HudTheme;
@@ -220,6 +226,27 @@ export const JarvisHUD: React.FC = () => {
       clearInterval(uptimeInterval);
     };
   }, []);
+
+  // Live chart data simulation — pushes new data points every 2s
+  useEffect(() => {
+    const chartInterval = setInterval(() => {
+      setChartData(prev => {
+        const next = [...prev.slice(1)];
+        const base = isThinking ? 65 : 25;
+        const jitter = isThinking ? 30 : 20;
+        next.push(Math.floor(base + Math.random() * jitter));
+        return next;
+      });
+      setChartMemData(prev => {
+        const next = [...prev.slice(1)];
+        const base = isThinking ? 70 : 50;
+        const jitter = isThinking ? 20 : 15;
+        next.push(Math.floor(base + Math.random() * jitter));
+        return next;
+      });
+    }, 2000);
+    return () => clearInterval(chartInterval);
+  }, [isThinking]);
 
   const cycleTheme = () => {
     const currentIndex = THEMES.findIndex(t => t.id === hudTheme);
@@ -391,6 +418,89 @@ export const JarvisHUD: React.FC = () => {
           >
             <Sparkles size={12} className="animate-pulse" /> 3D_HERO
           </button>
+
+          {/* Control Action Button */}
+          <div className="relative">
+            <button
+              onClick={() => {
+                setIsDemoActionOpen(!isDemoActionOpen);
+                playChirp(2100);
+                appendLog(isDemoActionOpen ? "SYSTEM: Control panel dismissed." : "SYSTEM: CTRL_ACTION panel deployed.");
+              }}
+              className={`hidden md:flex font-mono text-[10px] px-3 py-1.5 chamfer-btn items-center gap-1.5 transition-all cursor-pointer active:scale-95 ${
+                isDemoActionOpen
+                  ? 'text-[#00ff9d] light-pipe-green bg-[#00ff9d]/15 border border-[#00ff9d]/40 shadow-[0_0_18px_rgba(0,255,157,0.35)]'
+                  : 'text-cyan light-pipe-cyan bg-cyan/10 hover:bg-cyan/25 shadow-[0_0_15px_rgba(0,242,255,0.25)]'
+              }`}
+              title="Quick Control Actions Panel"
+            >
+              <Crosshair size={12} className={isDemoActionOpen ? 'animate-spin' : 'animate-pulse'} />
+              <span className="tracking-widest font-bold">CTRL_ACTION</span>
+            </button>
+
+            {/* Dropdown Panel */}
+            <AnimatePresence>
+              {isDemoActionOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: -8, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -8, scale: 0.95 }}
+                  transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+                  className="absolute top-full right-0 mt-2 w-56 chamfer-card light-pipe-cyan bg-surface-container-low/95 backdrop-blur-2xl p-4 shadow-2xl z-[200] flex flex-col gap-2.5"
+                >
+                  <div className="font-mono text-[8px] text-cyan/50 tracking-widest uppercase border-b border-cyan/20 pb-2 mb-1">
+                    QUICK_ACTIONS [MOD_CTRL_01]
+                  </div>
+                  <button
+                    onClick={() => {
+                      appendLog("CTRL: Diagnostics sweep launched.");
+                      DIAGNOSTICS_RESPONSE.forEach((msg, idx) => {
+                        setTimeout(() => appendLog(msg), idx * 150);
+                      });
+                      setIsDemoActionOpen(false);
+                    }}
+                    className="w-full py-2 px-3 font-mono text-[9px] text-cyan bg-cyan/5 border border-cyan/25 chamfer-btn hover:bg-cyan/20 hover:border-cyan/50 transition-all cursor-pointer active:scale-95 flex items-center gap-2 font-bold tracking-wider"
+                  >
+                    <Activity size={11} /> RUN_DIAGNOSTICS
+                  </button>
+                  <button
+                    onClick={() => {
+                      appendLog("CTRL: Force refreshing all telemetry streams...");
+                      setChartData(Array.from({ length: 12 }, () => Math.floor(20 + Math.random() * 30)));
+                      setChartMemData(Array.from({ length: 12 }, () => Math.floor(45 + Math.random() * 20)));
+                      setTimeout(() => appendLog("CTRL: Telemetry streams reinitialized."), 600);
+                      setIsDemoActionOpen(false);
+                    }}
+                    className="w-full py-2 px-3 font-mono text-[9px] text-[#00ff9d] bg-[#00ff9d]/5 border border-[#00ff9d]/25 chamfer-btn hover:bg-[#00ff9d]/20 hover:border-[#00ff9d]/50 transition-all cursor-pointer active:scale-95 flex items-center gap-2 font-bold tracking-wider"
+                  >
+                    <RefreshCw size={11} /> REFRESH_TELEMETRY
+                  </button>
+                  <button
+                    onClick={() => {
+                      appendLog("CTRL: System-wide recalibration invoked.");
+                      clearLog();
+                      appendLog("SYSTEM: Log purged. Core recalibrated.");
+                      setIsDemoActionOpen(false);
+                    }}
+                    className="w-full py-2 px-3 font-mono text-[9px] text-amber-400 bg-amber-400/5 border border-amber-400/25 chamfer-btn hover:bg-amber-400/20 hover:border-amber-400/50 transition-all cursor-pointer active:scale-95 flex items-center gap-2 font-bold tracking-wider"
+                  >
+                    <RotateCcw size={11} /> RECALIBRATE_SYS
+                  </button>
+                  <button
+                    onClick={() => {
+                      setIsSettingsOpen(true);
+                      setIsDemoActionOpen(false);
+                      appendLog("CTRL: Opening core configuration...");
+                    }}
+                    className="w-full py-2 px-3 font-mono text-[9px] text-purple-400 bg-purple-400/5 border border-purple-400/25 chamfer-btn hover:bg-purple-400/20 hover:border-purple-400/50 transition-all cursor-pointer active:scale-95 flex items-center gap-2 font-bold tracking-wider"
+                  >
+                    <Settings2 size={11} /> OPEN_CONFIG
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
           <span className="hidden md:flex font-mono text-[9px] text-cyan/50 px-2 py-0.5 border border-cyan/20 chamfer-card-sm">V1.1.0</span>
           <div className="hidden lg:flex items-center gap-1.5 px-3 py-1 rounded-sm border border-cyan/40 bg-cyan/10 shadow-[0_0_12px_rgba(0,242,255,0.2)]">
             <span className={`w-2 h-2 rounded-full animate-pulse ${
@@ -462,6 +572,120 @@ export const JarvisHUD: React.FC = () => {
 
             <AtmosphericTelemetry />
             <TacticalWorldClocks />
+
+            {/* System Performance Line Chart */}
+            <div 
+              className="chamfer-card light-pipe-cyan glass-panel p-5 w-52 sm:w-56 cursor-default hover:shadow-[0_0_25px_rgba(0,242,255,0.3)] transition-all duration-300 group"
+            >
+              <div className="flex items-center justify-between mb-1">
+                <div className="font-mono text-[9px] text-cyan/70 tracking-[0.2em] uppercase">
+                  [MOD_PERF_07]
+                </div>
+                <div className="font-mono text-[8px] text-[#00ff9d] uppercase tracking-wider font-bold animate-pulse">
+                  LIVE
+                </div>
+              </div>
+              <div className="font-mono text-[10px] text-cyan mb-3 tracking-wider group-hover:glow-cyan transition-all font-bold flex items-center gap-1.5">
+                <BarChart3 size={12} className="text-cyan" />
+                SYS_PERF_CHART
+              </div>
+              {/* CPU Line */}
+              <div className="mb-1">
+                <div className="flex justify-between font-mono text-[8px] mb-0.5">
+                  <span className="text-cyan/60">CPU_UTIL</span>
+                  <span className="text-cyan font-bold">{chartData[chartData.length - 1]}%</span>
+                </div>
+                <svg className="w-full h-10 overflow-visible" viewBox="0 0 220 40" preserveAspectRatio="none">
+                  {/* Grid lines */}
+                  <line x1="0" y1="10" x2="220" y2="10" stroke="rgba(0,242,255,0.08)" strokeWidth="0.5" />
+                  <line x1="0" y1="20" x2="220" y2="20" stroke="rgba(0,242,255,0.08)" strokeWidth="0.5" />
+                  <line x1="0" y1="30" x2="220" y2="30" stroke="rgba(0,242,255,0.08)" strokeWidth="0.5" />
+                  {/* Gradient fill */}
+                  <defs>
+                    <linearGradient id="cpuGrad" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#00f2ff" stopOpacity="0.3" />
+                      <stop offset="100%" stopColor="#00f2ff" stopOpacity="0.02" />
+                    </linearGradient>
+                  </defs>
+                  <motion.path
+                    d={`M ${chartData.map((v, i) => `${i * (220 / (chartData.length - 1))},${40 - (v / 100) * 40}`).join(' L ')} L 220,40 L 0,40 Z`}
+                    fill="url(#cpuGrad)"
+                    animate={{ d: `M ${chartData.map((v, i) => `${i * (220 / (chartData.length - 1))},${40 - (v / 100) * 40}`).join(' L ')} L 220,40 L 0,40 Z` }}
+                    transition={{ duration: 1, ease: "easeInOut" }}
+                    className="transform-gpu will-change-transform"
+                  />
+                  <motion.path
+                    d={`M ${chartData.map((v, i) => `${i * (220 / (chartData.length - 1))},${40 - (v / 100) * 40}`).join(' L ')}`}
+                    fill="none"
+                    stroke="#00f2ff"
+                    strokeWidth="1.5"
+                    animate={{ d: `M ${chartData.map((v, i) => `${i * (220 / (chartData.length - 1))},${40 - (v / 100) * 40}`).join(' L ')}` }}
+                    transition={{ duration: 1, ease: "easeInOut" }}
+                    className="transform-gpu will-change-transform drop-shadow-[0_0_6px_#00f2ff]"
+                  />
+                  {/* Live dot */}
+                  <motion.circle
+                    cx={220}
+                    animate={{ cy: 40 - (chartData[chartData.length - 1] / 100) * 40 }}
+                    r="2.5"
+                    fill="#00f2ff"
+                    className="drop-shadow-[0_0_8px_#00f2ff] animate-pulse"
+                    transition={{ duration: 1, ease: "easeInOut" }}
+                  />
+                </svg>
+              </div>
+              {/* MEM Line */}
+              <div>
+                <div className="flex justify-between font-mono text-[8px] mb-0.5">
+                  <span className="text-amber-400/60">MEM_ALLOC</span>
+                  <span className="text-amber-400 font-bold">{chartMemData[chartMemData.length - 1]}%</span>
+                </div>
+                <svg className="w-full h-10 overflow-visible" viewBox="0 0 220 40" preserveAspectRatio="none">
+                  <defs>
+                    <linearGradient id="memGrad" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#fbbf24" stopOpacity="0.25" />
+                      <stop offset="100%" stopColor="#fbbf24" stopOpacity="0.02" />
+                    </linearGradient>
+                  </defs>
+                  <motion.path
+                    d={`M ${chartMemData.map((v, i) => `${i * (220 / (chartMemData.length - 1))},${40 - (v / 100) * 40}`).join(' L ')} L 220,40 L 0,40 Z`}
+                    fill="url(#memGrad)"
+                    animate={{ d: `M ${chartMemData.map((v, i) => `${i * (220 / (chartMemData.length - 1))},${40 - (v / 100) * 40}`).join(' L ')} L 220,40 L 0,40 Z` }}
+                    transition={{ duration: 1, ease: "easeInOut" }}
+                    className="transform-gpu will-change-transform"
+                  />
+                  <motion.path
+                    d={`M ${chartMemData.map((v, i) => `${i * (220 / (chartMemData.length - 1))},${40 - (v / 100) * 40}`).join(' L ')}`}
+                    fill="none"
+                    stroke="#fbbf24"
+                    strokeWidth="1.5"
+                    animate={{ d: `M ${chartMemData.map((v, i) => `${i * (220 / (chartMemData.length - 1))},${40 - (v / 100) * 40}`).join(' L ')}` }}
+                    transition={{ duration: 1, ease: "easeInOut" }}
+                    className="transform-gpu will-change-transform drop-shadow-[0_0_6px_#fbbf24]"
+                  />
+                  <motion.circle
+                    cx={220}
+                    animate={{ cy: 40 - (chartMemData[chartMemData.length - 1] / 100) * 40 }}
+                    r="2.5"
+                    fill="#fbbf24"
+                    className="drop-shadow-[0_0_8px_#fbbf24] animate-pulse"
+                    transition={{ duration: 1, ease: "easeInOut" }}
+                  />
+                </svg>
+              </div>
+              {/* Chart Legend */}
+              <div className="flex items-center gap-4 mt-2 font-mono text-[7px] text-foreground/50">
+                <div className="flex items-center gap-1">
+                  <span className="w-2 h-[2px] bg-cyan inline-block shadow-[0_0_4px_#00f2ff]" />
+                  CPU
+                </div>
+                <div className="flex items-center gap-1">
+                  <span className="w-2 h-[2px] bg-amber-400 inline-block shadow-[0_0_4px_#fbbf24]" />
+                  MEM
+                </div>
+                <span className="text-cyan/40 ml-auto">12-TICK WINDOW</span>
+              </div>
+            </div>
 
             <div 
               onClick={() => appendLog("SYSTEM: Calibrating altimeter core... Zero grid offset calibrated at 1123.4 FT.")}

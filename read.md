@@ -4,6 +4,38 @@ All system architectural upgrades, diagnostics, and incremental modifications ar
 
 ---
 
+## 🏷️ [v1.2.0] - 2026-09-29T22:59:00+05:30
+
+### 📊 New Feature: Real-Time System Performance Line Chart (Left Sidebar)
+*   **Module ID:** `[MOD_PERF_07]`
+*   **Location:** Left wing sidebar, positioned after `TacticalWorldClocks` and before `ALT_METER`.
+*   **Description:** Added a dual-trace live-updating SVG line chart rendering CPU utilization (cyan) and memory allocation (amber) telemetry streams. The chart uses a 12-tick sliding window that shifts every 2 seconds with Framer Motion animated path transitions and gradient area fills.
+*   **Features:**
+    *   Animated SVG paths with gradient fills (`linearGradient`) — no external charting library needed.
+    *   Live pulsating indicator dot on the trailing edge of each trace.
+    *   Reacts dynamically to system state: data shifts to higher ranges when ZAYD enters `THINKING` mode.
+    *   Grid lines and legend footer (`CPU / MEM / 12-TICK WINDOW`).
+    *   Fully styled with existing HUD glassmorphism (`chamfer-card`, `light-pipe-cyan`, `glass-panel`).
+
+### 🎯 New Feature: CTRL_ACTION Navbar Control Button
+*   **Location:** Top navigation bar, between `3D_HERO` button and version badge.
+*   **Description:** Added a quick-access control actions dropdown button with crosshair icon. The button toggles a spring-animated dropdown panel (`AnimatePresence`) containing four quick-action shortcuts:
+    1.  `RUN_DIAGNOSTICS` — Triggers the full diagnostics sweep sequence into the terminal log.
+    2.  `REFRESH_TELEMETRY` — Force-resets all chart data arrays to fresh random baselines.
+    3.  `RECALIBRATE_SYS` — Purges logs and logs a recalibration message.
+    4.  `OPEN_CONFIG` — Opens the core configuration settings modal.
+*   **Design:** Each action button uses distinct color coding (cyan, green, amber, purple) with matching glow borders and hover states. The main navbar button switches to green glow state when the panel is active.
+
+### 📂 Files Altered
+1.  **`/z_ai_web_hud/src/components/hud/JarvisHUD.tsx`**:
+    *   *Added:* `BarChart3`, `Crosshair` icon imports from `lucide-react`.
+    *   *Added:* `chartData`, `chartMemData`, `isDemoActionOpen` state variables.
+    *   *Added:* `useEffect` for live chart data simulation (2-second interval, reactive to `isThinking`).
+    *   *Added:* `SYS_PERF_CHART` widget in left wing sidebar (`<aside>` left wing).
+    *   *Added:* `CTRL_ACTION` button and dropdown panel in `<header>` navbar.
+
+---
+
 ## 🏷️ [v1.1.0] - 2026-05-23T18:57:42+05:30
 
 ### 🛑 Emergency Diagnosis & Resolution: The Silent Hook Error
