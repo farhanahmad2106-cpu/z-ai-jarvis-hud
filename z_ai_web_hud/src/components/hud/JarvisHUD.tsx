@@ -778,7 +778,7 @@ export const JarvisHUD: React.FC = () => {
       </section>
 
       {/* Right Wing: Status & Sensors */}
-      <aside className={`absolute right-4 xl:right-6 top-20 xl:top-16 bottom-20 flex flex-col gap-2.5 text-right z-[60] xl:z-40 overflow-y-auto max-h-[calc(100dvh-140px)] pr-2 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-cyan/50 [&::-webkit-scrollbar-track]:bg-cyan/10 hover:[&::-webkit-scrollbar-thumb]:bg-cyan/80 transition-transform duration-500 ease-in-out ${showRightWing ? 'translate-x-0' : 'translate-x-[150%] xl:translate-x-0'}`}>
+      <aside className={`absolute right-4 xl:right-6 top-20 xl:top-16 bottom-16 flex flex-col gap-2.5 text-right z-[60] xl:z-40 overflow-y-auto max-h-[calc(100dvh-140px)] pr-2 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-cyan/50 [&::-webkit-scrollbar-track]:bg-cyan/10 hover:[&::-webkit-scrollbar-thumb]:bg-cyan/80 transition-transform duration-500 ease-in-out ${showRightWing ? 'translate-x-0' : 'translate-x-[150%] xl:translate-x-0'}`}>
         <div className="relative">
           <div className={`flex flex-col gap-4 transition-all duration-500 ${modules.telemetry ? '' : 'opacity-20 blur-sm pointer-events-none'}`}>
             <RadarScanner />
@@ -887,7 +887,7 @@ export const JarvisHUD: React.FC = () => {
       </aside>
 
       {/* Bottom: Multi-Tab Command Center Panel */}
-      <section className={`absolute bottom-20 sm:bottom-24 xl:bottom-28 left-1/2 -translate-x-1/2 xl:-translate-x-0 xl:left-8 w-11/12 max-w-sm sm:max-w-md xl:max-w-none xl:w-[28rem] chamfer-card light-pipe-cyan bg-surface-container-low/90 backdrop-blur-2xl p-4 sm:p-6 shadow-2xl overflow-hidden z-[100] transform-gpu text-left transition-all duration-300 flex flex-col ${isCommandCenterExpanded ? 'h-[25vh] min-h-[12rem] xl:min-h-[16rem] max-h-[30vh] xl:max-h-72' : 'min-h-0 h-auto pb-4'}`}>
+      <section className={`absolute bottom-16 sm:bottom-16 xl:bottom-20 left-1/2 -translate-x-1/2 xl:-translate-x-0 xl:left-8 w-11/12 max-w-sm sm:max-w-md xl:max-w-none xl:w-[28rem] chamfer-card light-pipe-cyan bg-surface-container-low/90 backdrop-blur-2xl p-4 sm:p-6 shadow-2xl overflow-hidden z-[100] transform-gpu text-left transition-all duration-300 flex flex-col ${isCommandCenterExpanded ? 'h-[25vh] min-h-[12rem] xl:min-h-[16rem] max-h-[30vh] xl:max-h-72' : 'min-h-0 h-auto pb-4'}`}>
         
         {/* Tab 1: Terminal Logs */}
         {activeTab === 'terminal' && (
