@@ -1676,7 +1676,7 @@ export const JarvisHUD: React.FC = () => {
       />
 
       {/* Bottom Navigation Bar */}
-      <nav className="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-2 pb-6 sm:pb-8 pt-2 border-t border-outline/20 bg-surface-container/80 backdrop-blur-xl pb-[calc(1rem+env(safe-area-inset-bottom))]">
+      <nav className="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-2 pt-1 pb-[calc(0.5rem+env(safe-area-inset-bottom))] border-t border-outline/20 bg-surface-container/80 backdrop-blur-xl">
         <NavIcon icon={<TerminalIcon size={20} />} active={activeTab === 'terminal'} onClick={() => { setActiveTab('terminal'); appendLog("SYSTEM: Terminal telemetry active."); }} />
         <NavIcon icon={<Shield size={20} />} active={activeTab === 'shield'} onClick={() => { setActiveTab('shield'); appendLog("SYSTEM: Deflector shields status check complete."); }} />
         <NavIcon icon={<Cpu size={20} />} active={activeTab === 'cpu'} onClick={() => { setActiveTab('cpu'); appendLog("SYSTEM: CPU core workload balanced."); }} />
@@ -1693,7 +1693,7 @@ const NavIcon: React.FC<{ icon: React.ReactNode; active?: boolean; onClick?: () 
       playChirp(1800);
       onClick?.();
     }}
-    className={`flex flex-col items-center justify-center p-4 cursor-pointer transition-all active:scale-90 transform-gpu ${active ? 'text-surface-tint border-t-2 border-surface-tint shadow-[0_-4px_12px_rgba(0,219,231,0.3)] scale-110' : 'text-foreground/40 hover:text-surface-tint hover:opacity-100'}`}
+    className={`flex flex-col items-center justify-center p-3 cursor-pointer transition-all active:scale-90 transform-gpu ${active ? 'text-surface-tint border-t-2 border-surface-tint shadow-[0_-4px_12px_rgba(0,219,231,0.3)] scale-110' : 'text-foreground/40 hover:text-surface-tint hover:opacity-100'}`}
   >
     {icon}
   </div>
