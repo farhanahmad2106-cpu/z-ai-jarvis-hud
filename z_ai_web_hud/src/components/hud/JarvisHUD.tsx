@@ -75,6 +75,10 @@ export const JarvisHUD: React.FC = () => {
   } = useAssistantStore();
   const { toggleManualListen } = useVoiceInterface();
   const [ws, setWs] = useState<WebSocket | null>(null);
+
+  const isListening = status === 'LISTENING';
+  const isSpeaking = status === 'SPEAKING';
+  const isThinking = status === 'THINKING';
   
   useEffect(() => {
     const handleOnline = () => setIsOnline(true);
@@ -93,7 +97,7 @@ export const JarvisHUD: React.FC = () => {
   useEffect(() => {
     const userEmail = session?.user?.email;
     if (userEmail) {
-      import('@/lib/pusher').then(({ getPusherClient }) => {
+      import('@/lib/pusher-client').then(({ getPusherClient }) => {
         const pusher = getPusherClient();
         if (pusher) {
           // Using email as an identifier since it's available in standard NextAuth session
@@ -311,10 +315,6 @@ export const JarvisHUD: React.FC = () => {
     telemetry: true,
     hologram: true,
   });
-
-  const isListening = status === 'LISTENING';
-  const isSpeaking = status === 'SPEAKING';
-  const isThinking = status === 'THINKING';
 
   // Toggle active telemetry modules
   const toggleModule = (moduleName: 'acoustic' | 'telemetry' | 'hologram') => {
